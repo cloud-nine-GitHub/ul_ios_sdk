@@ -16,6 +16,7 @@
 #import "ULCmd.h"
 #import "ULAdvCallBackManager.h"
 #import "ULStringConst.h"
+#import "ULSplashViewController.h"
 
 @interface ULModuleBaseAdv ()<ULIAdv>
 
@@ -185,12 +186,16 @@
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
     
     if (![[ULNotificationDispatcher getInstance] postNotificationWithName:[[NSString alloc]initWithFormat:@"%@%@",UL_NOTIFICATION_SHOW_ADV_BASE,advId] withData:data]) {
+        if([advId isEqualToString:S_CONST_ADV_SPLASH_ADVID_DES]){
+            [[ULSplashViewController getInstance]removeSplashView];
+        }else{
+            [sdkAdvData setValue:type forKey:@"type"];
+            [sdkAdvData setValue:rewardType forKey:@"rewardType"];
+            [sdkAdvData setValue:advParams forKey:@"advParams"];
+            [sdkAdvData setValue:advParamProbabilities forKey:@"advParamProbabilities"];
+            [self showFailed:data];
+        }
         
-        [sdkAdvData setValue:type forKey:@"type"];
-        [sdkAdvData setValue:rewardType forKey:@"rewardType"];
-        [sdkAdvData setValue:advParams forKey:@"advParams"];
-        [sdkAdvData setValue:advParamProbabilities forKey:@"advParamProbabilities"];
-        [self showFailed:data];
     }
     
 }

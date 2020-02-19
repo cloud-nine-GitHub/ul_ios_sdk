@@ -16,15 +16,6 @@
 }
 
 
-- (void)onOpenPay :(NSDictionary *)data
-{
-    NSLog(@"%s",__func__);
-    
-}
-
-
-
-
 - (void)onDisposeModule
 {
     NSLog(@"%s",__func__);

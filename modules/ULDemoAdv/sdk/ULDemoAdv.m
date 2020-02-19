@@ -11,6 +11,7 @@
 #import "ULTools.h"
 #import "ULNotificationDispatcher.h"
 #import "ULNotification.h"
+#import "ULSplashViewController.h"
 
 @interface ULDemoAdv()<ULILifeCycle>
 
@@ -163,6 +164,7 @@
         //[self showAdv:json];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
+        [[ULSplashViewController getInstance]removeSplashView];
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
         [self showNextAdv:json];
