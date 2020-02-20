@@ -26,6 +26,9 @@
 + (void)startSDK:(NSNotification*) notification{
     NSLog(@"%s",__func__);
     
+    //TODO 为确保applicationDidBecomeActive生命周期能被正常监听，初始化函数必须及早调用，用于每个模块创建对象时注册消息监听，不能放在网络回调中处理，在回调时上述生命周期已经被调用
+    [ULConfig initConfigInfo];
+    [ULSDKManager init];
     //网络权限处理
     //网络判断
     //    [ZYNetworkAccessibity setAlertEnable:YES];
@@ -43,12 +46,8 @@
         //1.获取应用网络权限 TODO 用户无论选择哪个选项都会进游戏
         //2.判断当前网络状况，进行无网提示 TODO
         
-        [ULConfig initConfigInfo];
-        
         [ULCop initCopInfo];
         
-        //在启动viewController相关之前先初始化模块。TODO 提前初始化的目的只有一个，那就是确保applicationDidBecomeActive生命周期能被正常监听
-        [ULSDKManager init];
         
         [self startLogoView];
             
