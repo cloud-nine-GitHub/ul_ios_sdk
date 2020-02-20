@@ -9,6 +9,8 @@
 #import "ULInviteComment.h"
 #import "ULCmd.h"
 #import "ULTools.h"
+#import "ULConfig.h"
+#import <StoreKit/StoreKit.h>
 
 @implementation ULInviteComment
 
@@ -38,10 +40,30 @@
     NSString *cmd = [json objectForKey:@"cmd"];
     id data = [json objectForKey:@"data"];
     if ([cmd isEqualToString:MSG_CMD_INVITE_TO_COMMENT]) {
-        
+        [self openInviteToComment:data];
     }
     return nil;
 }
+
+-(void)openInviteToComment :(NSDictionary *)data
+{
+    
+    NSString *appleId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_app_appleid" :@""];
+    if (@available(iOS 10.3, *)) {
+        if([SKStoreReviewController respondsToSelector:@selector(requestReview)]){
+            [SKStoreReviewController requestReview];
+        }else{
+            NSString  * nsStringToOpen = [NSString  stringWithFormat: @"itms-apps://itunes.apple.com/app/id%@?action=write-review",appleId];//替换为对应的APPID
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:nsStringToOpen]];
+        }
+    } else {
+        // Fallback on earlier versions
+        NSString  *nsStringToOpen = [NSString stringWithFormat: @"itms-apps://itunes.apple.com/app/id%@?action=write-review",appleId];//替换为对应的APPID
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:nsStringToOpen]];
+    }
+
+}
+
 
 - (NSMutableDictionary *)onResultChannelInfo:(NSMutableDictionary *)baseChannelInfo
 {
