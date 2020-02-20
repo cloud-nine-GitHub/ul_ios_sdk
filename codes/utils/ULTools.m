@@ -579,6 +579,28 @@
     return idfa;
 }
 
+
+
+#pragma mark - NSUDID
++ (NSString *)getNSUDID
+{
+    NSString *nsUuid = [[NSUUID UUID] UUIDString];
+    if (nsUuid == nil) {
+        nsUuid = @"";
+    }
+    return nsUuid;
+}
+
+#pragma mark - Vendor标示符
++ (NSString *)getIDFV
+{
+    NSString *idfv = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    if (idfv == nil) {
+        idfv = @"";
+    }
+    return idfv;
+}
+
 @end
 
 

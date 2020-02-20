@@ -50,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIColor *)stringToColor:(NSString *)str;
 + (NSString *)getRandomParamBySplit:(NSString *)param :(NSString *)splitString;
 + (NSString*)getIDFA;
++ (NSString *)getNSUDID;
++ (NSString *)getIDFV;
 @end
 
 NS_ASSUME_NONNULL_END
