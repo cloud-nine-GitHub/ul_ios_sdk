@@ -264,7 +264,7 @@ static double currentVolume = 0.00;
         
     }else{
         //manager中只需要处理基础流程。 模块根据自身需求去监听其他cmd消息
-        [[ULNotificationDispatcher getInstance]postNotificationWithName:cmd withData:data];
+        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ONJSONAPI withData:jsonStr];
     }
     
 }
@@ -426,36 +426,36 @@ static double currentVolume = 0.00;
 //生命周期函数
 + (void)applicationWillResignActive {
     NSLog(@"%s",__func__);
-    [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_APPLICATION_WILL_RESIGN_ACTIVE object:nil userInfo:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_RESIGN_ACTIVE withData:nil];
 }
 
 + (void)applicationDidEnterBackground {
     NSLog(@"%s",__func__);
-    [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_APPLICATION_DID_ENTER_BACKGROUND object:nil userInfo:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_ENTER_BACKGROUND withData:nil];
 }
 
 
 + (void)applicationWillEnterForeground {
     NSLog(@"%s",__func__);
-    [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND object:nil userInfo:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND withData:nil];
 }
 
 
 //TODO 此生命周期在第一个viewController展示出来之后就会立即被触发，此时sdk各模块并未初始化，无法监听此消息
 + (void)applicationDidBecomeActive {
     NSLog(@"%s",__func__);
-    [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE object:nil userInfo:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE withData:nil];
 }
 
 
 + (void)applicationWillTerminate {
     NSLog(@"%s",__func__);
-    [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_APPLICATION_WILL_TERMINATE object:nil userInfo:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_TERMINATE withData:nil];
 }
 
 + (void)applicationDidReceiveMemoryWarning {
     NSLog(@"%s",__func__);
-    [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING object:nil userInfo:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING withData:nil];
 }
 
 + (void)volumeDidChange:(NSNotification *)notification

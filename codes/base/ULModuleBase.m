@@ -12,6 +12,8 @@
 #import "ULILifeCycle.h"
 #import "ULNotification.h"
 #import "ULTools.h"
+#import "ULNotification.h"
+#import "ULNotificationDispatcher.h"
 
 @interface ULModuleBase ()<ULIBase>
 
@@ -37,12 +39,12 @@
     if ([self conformsToProtocol:@protocol(ULILifeCycle)]) {
         [self setLifeCycleListener];
     }
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_ONJSONAPI withSelector:@selector(onBaseJsonAPI:) withPriority:PRIORITY_NONE];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBaseJsonAPI:) name:UL_NOTIFICATION_ONJSONAPI object:nil];
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_ONDISPOSEMODULE withSelector:@selector(onBaseDisposeModule:) withPriority:PRIORITY_NONE];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBaseDisposeModule:) name:UL_NOTIFICATION_ONDISPOSEMODULE object:nil];
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_ONJSONRPCCALL withSelector:@selector(onBaseJsonRpcCall:) withPriority:PRIORITY_NONE];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onBaseJsonRpcCall:) name:UL_NOTIFICATION_ONJSONRPCCALL object:nil];
 }
 
 
@@ -50,23 +52,28 @@
 
 - (void)setLifeCycleListener
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidReceiveMemoryWarning:) name:UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidEnterBackground:) name:UL_NOTIFICATION_APPLICATION_DID_ENTER_BACKGROUND object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationWillResignActive:) name:UL_NOTIFICATION_APPLICATION_WILL_RESIGN_ACTIVE object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationDidBecomeActive:) name:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE object:nil];
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING withSelector:@selector(onApplicationDidReceiveMemoryWarning:) withPriority:PRIORITY_NONE];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationWillTerminate:) name:UL_NOTIFICATION_APPLICATION_WILL_TERMINATE object:nil];
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_DID_ENTER_BACKGROUND withSelector:@selector(onApplicationDidEnterBackground:) withPriority:PRIORITY_NONE];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onApplicationWillEnterForeground:) name:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND object:nil];
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_WILL_RESIGN_ACTIVE withSelector:@selector(onApplicationWillResignActive:) withPriority:PRIORITY_NONE];
+    
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE withSelector:@selector(onApplicationDidBecomeActive:) withPriority:PRIORITY_NONE];
+    
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE withSelector:@selector(onApplicationWillTerminate:) withPriority:PRIORITY_NONE];
+    
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND withSelector:@selector(onApplicationWillEnterForeground:) withPriority:PRIORITY_NONE];
+    
 }
 
 
 - (void)onBaseJsonAPI:(NSNotification *)notification
 {
-    NSString *data = [ULTools DictionaryToString:notification.userInfo];
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *data = userInfo[@"data"];
     [self onJsonAPI:data];
 }
 
@@ -78,7 +85,8 @@
 
 - (void)onBaseJsonRpcCall:(NSNotification *)notification
 {
-    NSString *data = [ULTools DictionaryToString:notification.userInfo];
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *data = userInfo[@"data"];
     [self onJsonRpcCall:data];
 }
 
