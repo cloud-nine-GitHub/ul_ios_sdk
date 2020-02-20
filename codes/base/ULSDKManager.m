@@ -39,6 +39,7 @@
 #import "ULTimeOut.h"
 #import "ULSplashViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import "ULWebView.h"
 
 @interface ULSDKManager ()
 
@@ -255,7 +256,7 @@ static double currentVolume = 0.00;
     }else if([cmd isEqualToString:MSG_CMD_EXITGAME]){
         //ios应该没有退出一说。do nothing
     }else if([cmd isEqualToString:MSG_CMD_OPENWEBVIEW]){
-        
+        [ULWebView showWebView:data];
     }else if([cmd isEqualToString:MSG_CMD_OPENULMOREGAME]){
         
     }else if([cmd isEqualToString:MSG_CMD_OPENSHARE]){
