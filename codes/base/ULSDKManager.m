@@ -40,6 +40,7 @@
 #import "ULSplashViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "ULWebView.h"
+#import "ULMoreGame.h"
 
 @interface ULSDKManager ()
 
@@ -258,7 +259,7 @@ static double currentVolume = 0.00;
     }else if([cmd isEqualToString:MSG_CMD_OPENWEBVIEW]){
         [ULWebView showWebView:data];
     }else if([cmd isEqualToString:MSG_CMD_OPENULMOREGAME]){
-        
+        [ULMoreGame showMoreGame];
     }else if([cmd isEqualToString:MSG_CMD_OPENSHARE]){
         
     }else{
