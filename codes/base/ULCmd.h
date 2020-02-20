@@ -28,7 +28,8 @@ static NSString *const MSG_CMD_EXCHANGEGIFT = @"/c/exchangeGift";//礼品兑换
 static NSString *const MSG_CMD_CALLPHONE = @"/c/callPhone";//拨打电话
 static NSString *const MSG_CMD_SAVEPICTOGALLERY = @"/c/savePicToGallery";//保存图片至相册
 static NSString *const MSG_CMD_MEGADATASERVER = @"/c/megadataServer";// 大数据统计
-//网友部分
+static NSString *const MSG_CMD_INVITE_TO_COMMENT = @"/c/openInviteComment";// 邀评
+//网游部分
 static NSString *const MSG_CMD_ONLINE_OPENPAY = @"/o/openPay";//支付
 static NSString *const MSG_CMD_ONLINE_LOGIN = @"/o/login";//登陆
 static NSString *const MSG_CMD_ONLINE_SWITCH_ACCOUNT = @"/o/switchAccount";//切换账号

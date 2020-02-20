@@ -23,7 +23,7 @@ static NSString *const USE_CDKEY_DEFAULT_URL = @"https://cdkey.ultralisk.cn/comm
 - (void)onInitModule
 {
     NSLog(@"%s",__func__);
-    [self addListener];
+
 }
 
 - (void)onDisposeModule
@@ -34,16 +34,10 @@ static NSString *const USE_CDKEY_DEFAULT_URL = @"https://cdkey.ultralisk.cn/comm
 - (void)addListener
 {
     NSLog(@"%s",__func__);
-    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:MSG_CMD_USECDKEY withSelector:@selector(onUseCdkey:) withPriority:PRIORITY_NONE];
+    
 }
 
-- (void)onUseCdkey:(NSNotification *)notification
-{
-    NSDictionary *data = notification.userInfo[@"data"];
-    ULNotification *n = notification.userInfo[@"notification"];
-    [n stopDispatchNotification];
-    [self useCdkey:data];
-}
+
 
 - (void)useCdkey:(NSDictionary *)data
 {
@@ -122,6 +116,12 @@ static NSString *const USE_CDKEY_DEFAULT_URL = @"https://cdkey.ultralisk.cn/comm
 - (NSString *)onJsonAPI :(NSString *)param
 {
     NSLog(@"%s",__func__);
+    NSDictionary *json = [ULTools StringToDictionary: param];
+    NSString *cmd = [json objectForKey:@"cmd"];
+    id data = [json objectForKey:@"data"];
+    if ([cmd isEqualToString:MSG_CMD_USECDKEY]) {
+        [self useCdkey:data];
+    }
     return nil;
 }
 
