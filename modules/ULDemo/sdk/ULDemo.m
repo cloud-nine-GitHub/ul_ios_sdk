@@ -11,6 +11,7 @@
 #import "ULTools.h"
 #import "ULNotification.h"
 #import "ULNotificationDispatcher.h"
+#import "ULSDKManager.h"
 
 @interface ULDemo ()<ULILifeCycle>
 
@@ -92,6 +93,8 @@
 - (NSMutableDictionary *)onResultChannelInfo:(NSMutableDictionary *)baseChannelInfo
 {
     NSLog(@"%s",__func__);
+//    [baseChannelInfo setValue:@"1" forKey:@"test"];
+//    [ULSDKManager setBaseChannelInfo:baseChannelInfo];
     return nil;
 }
 

@@ -27,7 +27,7 @@
     if (self = [super init]) {
         [self onInitModule];
         [self setBaseListener];
-        [self onResultChannelInfo:baseChannelInfo];
+        [self onResultChannelInfo:[ULSDKManager getBaseChannelInfo]];
     }
     return self;
 }

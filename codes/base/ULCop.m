@@ -189,16 +189,23 @@ static NSThread *copRequestThread = nil;
     //是否显示互动广告按钮
     NSString *url = [ULTools GetStringFromDic:cop :@"s_sdk_adv_h5_url" :@""];
     if (![url isEqualToString:@""]) {
-        [json setValue:[NSNumber numberWithInt:true] forKey:@"isShowUrlAdIcon"];
+        [json setValue:[NSNumber numberWithBool:true] forKey:@"isShowUrlAdIcon"];
     }else{
-        [json setValue:[NSNumber numberWithInt:false] forKey:@"isShowUrlAdIcon"];
+        [json setValue:[NSNumber numberWithBool:false] forKey:@"isShowUrlAdIcon"];
     }
     //是否显示互推更多游戏按钮
     NSString *urlMoreGame = [ULTools GetStringFromDic:cop :@"s_sdk_ul_more_game_url" :@""];
     if (![urlMoreGame isEqualToString:@""]) {
-        [json setValue:[NSNumber numberWithInt:true] forKey:@"isULMoreGame"];
+        [json setValue:[NSNumber numberWithBool:true] forKey:@"isULMoreGame"];
     }else{
-        [json setValue:[NSNumber numberWithInt:false] forKey:@"isULMoreGame"];
+        [json setValue:[NSNumber numberWithBool:false] forKey:@"isULMoreGame"];
+    }
+    //是否显示互推按钮
+    NSString *inner = [ULTools GetStringFromDic:cop :@"s_sdk_inner_promotion_data" :@""];
+    if (inner && ![inner isEqualToString:@""]) {
+        [json setValue:[NSNumber numberWithBool:true] forKey:@"isShowUlInnerPromotionIcon"];
+    }else{
+        [json setValue:[NSNumber numberWithBool:false] forKey:@"isShowUlInnerPromotionIcon"];
     }
     [ULSDKManager JsonRpcCall:REMSG_CMD_COPINFO :json];
 }

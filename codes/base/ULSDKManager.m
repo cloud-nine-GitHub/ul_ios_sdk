@@ -55,6 +55,7 @@ static NSString *const MC_SDK_MANAGER_CLASS_NAME = @"MCULManager";
 
 static NSMutableDictionary *moduleClassDic = nil;
 static NSMutableDictionary *moduleObjDic = nil;
+static NSMutableDictionary *baseChannelInfo = nil;
 static long advRequestSerialNum = 0;
 static BOOL isSetVersion = NO;
 static NSMutableArray *remsgList = nil;
@@ -332,7 +333,37 @@ static double currentVolume = 0.00;
     [channeInfoDic setValue:[ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cop_channel_id" :@"0"] forKey:@"copChannelId"];
     //返回ulsdk版本
     [channeInfoDic setValue:[ULConfig getUlsdkVersion] forKey:@"ulsdkVersion"];
+    
+    NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
+    if ([isCloseCop isEqualToString:@"1"]) {
+        //对于不使用cop而使用本地配置的情况，下列配置依然需要返回
+        
+        //是否显示互动广告按钮
+        NSString *url = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_h5_url" :@""];
+        if (![url isEqualToString:@""]) {
+            [channeInfoDic setValue:[NSNumber numberWithBool:true] forKey:@"isShowUrlAdIcon"];
+        }else{
+            [channeInfoDic setValue:[NSNumber numberWithBool:false] forKey:@"isShowUrlAdIcon"];
+        }
+        //是否显示互推更多游戏按钮
+        NSString *urlMoreGame = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_ul_more_game_url" :@""];
+        if (![urlMoreGame isEqualToString:@""]) {
+            [channeInfoDic setValue:[NSNumber numberWithBool:true] forKey:@"isULMoreGame"];
+        }else{
+            [channeInfoDic setValue:[NSNumber numberWithBool:false] forKey:@"isULMoreGame"];
+        }
+    }
     return channeInfoDic;
+}
+
++ (long)getAdvRequestSerialNum
+{
+    return advRequestSerialNum;
+}
+
++ (void)setAdvRequestSerialNum:(long)num
+{
+    advRequestSerialNum = num;
 }
 
 
@@ -410,15 +441,16 @@ static double currentVolume = 0.00;
 }
 
 
-+ (long)getAdvRequestSerialNum
++ (NSMutableDictionary *)getBaseChannelInfo
 {
-    return advRequestSerialNum;
+    return baseChannelInfo;
 }
 
-+ (void)setAdvRequestSerialNum:(long)num
++ (void)setBaseChannelInfo:(NSMutableDictionary *)info
 {
-    advRequestSerialNum = num;
+    baseChannelInfo = info;
 }
+
 
 
 

@@ -11,8 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static NSMutableDictionary *baseChannelInfo = nil;
-
 @interface ULSDKManager : NSObject
 {
     
@@ -24,6 +22,8 @@ static NSMutableDictionary *baseChannelInfo = nil;
 + (void)openAdv:(NSDictionary *)data;
 + (long)getAdvRequestSerialNum;
 + (void)setAdvRequestSerialNum:(long)num;
++ (NSMutableDictionary *)getBaseChannelInfo;
++ (void)setBaseChannelInfo:(NSMutableDictionary *)info;
 @end
 
 NS_ASSUME_NONNULL_END
