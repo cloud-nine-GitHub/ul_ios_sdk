@@ -44,9 +44,9 @@ static NSString *const USE_CDKEY_DEFAULT_URL = @"https://cdkey.ultralisk.cn/comm
     NSString *useId = [ULTools GetStringFromDic:data :@"userId" :@""];
     NSString *cdkStr = [ULTools GetStringFromDic:data :@"cdkStr" :@""];
     
-    NSString *cdkChannelId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cdk_channel_id" :@"0"];
-    NSString *cdkAppId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cdk_app_id" :@"0"];
-    NSString *cdkUrl = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cdk_url" :USE_CDKEY_DEFAULT_URL];
+    NSString *cdkChannelId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_cdk_channel_id" :@"0"];
+    NSString *cdkAppId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_cdk_app_id" :@"0"];
+    NSString *cdkUrl = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_cdk_url" :USE_CDKEY_DEFAULT_URL];
     
     NSString *requestUrl = [[NSString alloc]initWithFormat:@"%@%@%@%@%@%@%@%@%@",cdkUrl,@"?userId=",useId,@"&cdkStr=",cdkStr,@"&appId=",cdkAppId,@"&channelId=",cdkChannelId];
     

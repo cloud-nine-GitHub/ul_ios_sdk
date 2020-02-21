@@ -46,7 +46,7 @@ static UIWebView *webView = nil;
 
 
         //默认竖屏展示
-        NSString *isForcePortrait = [ULTools getCopOrConfigStringWithKey:@"s_common_webview_force_portrait" withDefaultString:@"1"];
+        NSString *isForcePortrait = [ULTools getCopOrConfigStringWithKey:@"s_sdk_webview_force_portrait" withDefaultString:@"1"];
         if([isForcePortrait isEqualToString:@"1"]){
             if(orien == UIInterfaceOrientationLandscapeLeft || orien == UIInterfaceOrientationLandscapeRight){
                 [self landscapeExecute:orien];

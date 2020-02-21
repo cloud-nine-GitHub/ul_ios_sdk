@@ -18,7 +18,7 @@
 {
     
     NSMutableDictionary *jsonData = [NSMutableDictionary new];
-    NSString *url = [ULTools getCopOrConfigStringWithKey:@"s_common_ul_more_game_url" withDefaultString:@""];
+    NSString *url = [ULTools getCopOrConfigStringWithKey:@"s_sdk_ul_more_game_url" withDefaultString:@""];
     NSString *channelName = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_channel_name" :@""];
     
     NSArray  *array = [[NSArray alloc] initWithArray:[url componentsSeparatedByString:@"?"]];
