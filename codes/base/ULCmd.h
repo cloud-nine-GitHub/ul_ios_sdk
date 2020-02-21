@@ -29,6 +29,8 @@ static NSString *const MSG_CMD_CALLPHONE = @"/c/callPhone";//拨打电话
 static NSString *const MSG_CMD_SAVEPICTOGALLERY = @"/c/savePicToGallery";//保存图片至相册
 static NSString *const MSG_CMD_MEGADATASERVER = @"/c/megadataServer";// 大数据统计
 static NSString *const MSG_CMD_INVITE_TO_COMMENT = @"/c/openInviteComment";// 邀评
+static NSString *const MSG_CMD_INNER_PROMOTION_DOWNLOAD_RESULT = @"/c/ulInnerPromotionDownloadResult";//互推下载结果
+static NSString *const MSG_CMD_INNER_PROMOTION_CHECK_RESULT = @"/c/ulInnerPromotionCheckResult";//互推检测结果
 //网游部分
 static NSString *const MSG_CMD_ONLINE_OPENPAY = @"/o/openPay";//支付
 static NSString *const MSG_CMD_ONLINE_LOGIN = @"/o/login";//登陆
