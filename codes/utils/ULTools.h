@@ -52,6 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString*)getIDFA;
 + (NSString *)getNSUDID;
 + (NSString *)getIDFV;
++ (void)showMessageWithTartVC:(UIViewController *)vc withMsg:(NSString *)message;
 @end
 
 NS_ASSUME_NONNULL_END
