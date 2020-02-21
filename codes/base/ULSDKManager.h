@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setAdvRequestSerialNum:(long)num;
 + (NSMutableDictionary *)getBaseChannelInfo;
 + (void)setBaseChannelInfo:(NSMutableDictionary *)info;
++ (NSMutableDictionary *)getModuleTypeParamsDic;
 @end
 
 NS_ASSUME_NONNULL_END

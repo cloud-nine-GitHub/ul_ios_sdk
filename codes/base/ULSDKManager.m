@@ -56,6 +56,7 @@ static NSString *const MC_SDK_MANAGER_CLASS_NAME = @"MCULManager";
 static NSMutableDictionary *moduleClassDic = nil;
 static NSMutableDictionary *moduleObjDic = nil;
 static NSMutableDictionary *baseChannelInfo = nil;
+static NSMutableDictionary *moduleTypeParamsDic = nil;
 static long advRequestSerialNum = 0;
 static BOOL isSetVersion = NO;
 static NSMutableArray *remsgList = nil;
@@ -140,7 +141,43 @@ static double currentVolume = 0.00;
         ULAdvBean *bean = [[ULAdvBean alloc]initWithModule:advModule andType:advType andRewardTag:advRewardType andParams:advParams andParamProbabilities:advParamProbabilitys];
         
         [advBeanWithTemplateMutDic setValue:bean forKey:key];
+        
+        //将模块各广告类型所对应的参数列表存储
+        if (!moduleTypeParamsDic) {
+            moduleTypeParamsDic = [[NSMutableDictionary alloc] init];
+        }
+        NSMutableDictionary *typeParamsDic = [moduleTypeParamsDic objectForKey:advModule];
+        if (!typeParamsDic) {
+            typeParamsDic = [NSMutableDictionary new];
+            NSMutableArray *paramArray = [NSMutableArray new];
+            for (NSString *param in advParams) {
+                if (![paramArray containsObject:param]) {//参数去重
+                    [paramArray addObject:param];
+                }
+            }
+            [typeParamsDic setValue:paramArray forKey:advType];
+            [moduleTypeParamsDic setValue:typeParamsDic forKey:advModule];
+        }else{
+            NSMutableArray *paramArray = [typeParamsDic objectForKey:advType];
+            if (!paramArray) {
+                paramArray = [NSMutableArray new];
+                for (NSString *param in advParams) {
+                    if (![paramArray containsObject:param]) {//参数去重
+                        [paramArray addObject:param];
+                    }
+                }
+                [typeParamsDic setValue:paramArray forKey:advType];
+            }else{
+                for (NSString *param in advParams) {
+                    if (![paramArray containsObject:param]) {//参数去重
+                        [paramArray addObject:param];
+                    }
+                }
+            }
+        }
     }
+    
+    NSLog(@"%s%@",__func__,moduleTypeParamsDic);
     
     //step3
     //step4
@@ -366,6 +403,10 @@ static double currentVolume = 0.00;
     advRequestSerialNum = num;
 }
 
++ (NSMutableDictionary *)getModuleTypeParamsDic
+{
+    return moduleTypeParamsDic;
+}
 
 
 + (void)openPay:(NSDictionary *)data

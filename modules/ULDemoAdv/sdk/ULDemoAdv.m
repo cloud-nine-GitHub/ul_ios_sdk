@@ -12,6 +12,7 @@
 #import "ULNotificationDispatcher.h"
 #import "ULNotification.h"
 #import "ULSplashViewController.h"
+#import "ULConfig.h"
 
 @interface ULDemoAdv()<ULILifeCycle>
 
@@ -146,6 +147,19 @@
 {
     NSLog(@"%s",__func__);
     [self addListener];
+    //举例：比如插屏需要预加载
+    //获取本地配置的插屏参数
+    NSString *interParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_demo_interid" :@""];
+    NSArray *localInterParams = [interParamsStr componentsSeparatedByString:@"|"];
+    NSArray *interParamsArray = [self getParamArrayWithModule:@"ULDemoAdv" withType:@"interstitial" withDefaultValue:localInterParams];
+    for (NSString *param in interParamsArray) {
+        //应该有个参数和广告对象存储的map
+        
+        //该参数已创建对象则无需再次创建
+        
+        //可以继续封装，不一只一个模块存在预加载的情况
+    }
+    
 }
 
 - (void)onConstructorAdv
@@ -183,6 +197,21 @@
 - (void)showInterstitialAdv:(NSDictionary *)json
 {
     NSLog(@"%s",__func__);
+    //调用插屏是解析json获取参数类表
+    
+    //获取当前需要请求的广告参数
+    
+    
+    //获取该参数对应已创建的广告对象
+    
+    
+    //调用广告对象的show函数
+    
+    
+    //调用广告对象的load函数为下次加载
+    
+    
+    
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemoAdv插屏广告展示" withBtnOneText:@"模拟插屏广告展示成功" withBtnTwoText:@"模拟插屏广告展示失败" withBtnThreeText:@"模拟插屏广告点击" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示成功");
         [self showAdv:json];

@@ -44,6 +44,17 @@
     [self initModuleAdv];
 }
 
+//根据对应模块对应广告类型获取参数列表
+- (NSArray *)getParamArrayWithModule:(NSString *)module withType:(NSString *)type withDefaultValue:(NSArray *)defaultValue
+{
+    NSMutableDictionary *moduleTypeParamsDic = [ULSDKManager getModuleTypeParamsDic];
+    if (!moduleTypeParamsDic) {//未初始化
+        return defaultValue;
+    }
+    NSMutableDictionary *typeParamsDic = [moduleTypeParamsDic objectForKey:module];
+    return [typeParamsDic objectForKey:type];
+}
+
 
 
 - (void)setDisableAdvPriority:(NSString *)disableType,...
