@@ -9,7 +9,7 @@
 #import "ULConfig.h"
 #import "ULTools.h"
 
-static NSString *const MODULE_DEFAULT_LIST = @"ULDefaultModule,ULCdk";
+static NSString *const MODULE_DEFAULT_LIST = @"ULDefaultModule,ULCdk,ULAccountTask";
 
 @implementation ULConfig
 

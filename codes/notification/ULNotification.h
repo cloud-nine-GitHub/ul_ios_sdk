@@ -36,6 +36,9 @@ static NSString *const UL_NOTIFICATION_SHOW_ADV_BASE = @"ulNotificationShowAdv";
 static NSString *const UL_NOTIFICATION_SETVERSION = @"ulNotificationSetVersion";
 static NSString *const UL_NOTIFICATION_MANAGER_INIT_ADV = @"ulNotificationManagerInitAdv";
 
+static NSString *const UL_NOTIFICATION_ACCOUNT_WRITE_DATA = @"ulNotificationAccountWriteData";
+static NSString *const UL_NOTIFICATION_ACCOUNT_READ_DATA = @"ulNotificationAccountReadData";
+
 //测试界面消息
 static NSString *const UL_NOTIFICATION_MC_OPEN_DEMO_PAY = @"ulNotificationMcOpenDemoPay";
 static NSString *const UL_NOTIFICATION_MC_OPEN_DEMO_PAY_CALLBACK = @"ulNotificationMcOpenDemoPayCallback";

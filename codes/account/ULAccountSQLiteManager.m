@@ -71,7 +71,7 @@ static ULAccountSQLiteManager *instance = nil;
     //NOT NULL不为空
     //PRIMARY KEY 唯一
     //AUTOINCREMENT 自增
-    NSString *createTableStr = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@",@"CREATE TABLE IF NOT EXISTS ",ULA_SQLITE_TABLE_NAME,@" (",ULA_SQLITE_TABLE_UP_DATA_ID,@" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ",ULA_SQLITE_TABLE_UP_DATA,@" TEXT"];
+    NSString *createTableStr = [[NSString alloc] initWithFormat:@"%@%@%@%@%@%@%@",@"CREATE TABLE IF NOT EXISTS ",ULA_SQLITE_TABLE_NAME,@" (",ULA_SQLITE_TABLE_UP_DATA_ID,@" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ",ULA_SQLITE_TABLE_UP_DATA,@" TEXT)"];
     
     if([self execuSQL:createTableStr])
     {
@@ -113,6 +113,14 @@ static ULAccountSQLiteManager *instance = nil;
     }
 }
 
+/*
+ 获取当前数据库中的数据总条数
+ **/
+
+- (long)getCountNumFromSqlite
+{
+    return 0;
+}
 
 
 /*

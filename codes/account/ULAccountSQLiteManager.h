@@ -17,7 +17,15 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (instancetype)getInstance;
-
+- (BOOL)openDB;
+- (void)closeDB;
+- (BOOL)createTable;
+- (BOOL)execuSQL:(NSString *)sqlStr;
+- (BOOL) insertData:(NSString *)upData;
+- (BOOL)deleteData :(long )idNum;
+- (void) queryData:(NSString *)upData;
+- (void) update;
+- (long)getCountNumFromSqlite;
 @end
 
 NS_ASSUME_NONNULL_END
