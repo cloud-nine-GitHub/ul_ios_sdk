@@ -628,6 +628,43 @@
     }];
 }
 
+#pragma marks - json格式字符串转数组
++  (NSArray *)stringToJsonArray:(NSString *)jsonArrayStr
+{
+    //将NSString转为NSData
+    NSData *data = [jsonArrayStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData:data
+                                                    options:NSJSONReadingAllowFragments
+                                                      error:nil];
+    
+    if (jsonArray != nil && error == nil){
+        return jsonArray;
+    }else{
+        // 解析错误
+        return nil;
+    }
+    
+}
+
+#pragma marks - json数组转字符串
++ (NSString *)jsonArrayToJsonStr:(NSArray *)jsonArray
+{
+    
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonArray
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    
+    if ([jsonData length] > 0 && error == nil){
+        NSString *result = [[NSString alloc] initWithData:jsonData  encoding:NSUTF8StringEncoding];
+        return result;
+    }else{
+        return nil;
+    }
+}
+
+
 @end
 
 

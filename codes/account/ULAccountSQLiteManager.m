@@ -8,6 +8,7 @@
 
 #import "ULAccountSQLiteManager.h"
 #import <sqlite3.h>
+#import "ULAccountBean.h"
 
 
 static NSString *const ULA_SQLITE_NAME = @"ULAccount.sqlite";//数据库名
@@ -19,6 +20,7 @@ static NSString *const ULA_SQLITE_TABLE_UP_DATA = @"up_data";
 @interface ULAccountSQLiteManager ()
 
 @property (nonatomic,assign) sqlite3 *db;
+@property (nonatomic,strong) NSMutableArray *list;
 
 @end
 
@@ -35,6 +37,14 @@ static ULAccountSQLiteManager *instance = nil;
         instance = [[self alloc] init];
     });
     return instance;
+}
+
+-(id)init
+{
+    if (self = [super init]) {
+        _list = [NSMutableArray new];
+    }
+    return self;
 }
 
 //打开数据库，返回是布尔值
@@ -155,6 +165,38 @@ static ULAccountSQLiteManager *instance = nil;
 - (void) update
 {
     NSLog(@"%s",__func__);
+}
+
+/*
+ 获取前100条数据
+ **/
+- (NSMutableArray *)getCountUpData
+{
+    [_list removeAllObjects];
+    NSString *sql = [NSString stringWithFormat:@"select from %@ order by up_data_id asc limit '%d'",ULA_SQLITE_TABLE_NAME,100];
+    sqlite3_stmt *stmt = nil;
+    if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &stmt, nil) != SQLITE_OK) {
+        NSLog(@"%s,准备查询失败!",__func__);
+        return _list;
+    }
+    //准备成功,开始查询数据
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        //取出i位置存储的值,作为字典的值value
+        const char *idValue = (const char *)sqlite3_column_text(stmt, 0);
+        NSString *upDataId = [NSString stringWithUTF8String:idValue];
+         
+        const char *dataValue = (const char *)sqlite3_column_text(stmt, 1);
+        NSString *upData = [NSString stringWithUTF8String:dataValue];
+            
+        ULAccountBean *bean = [[ULAccountBean alloc]initWithId:[upDataId longLongValue] andUpData:upData];
+        //按理说每个bean对应的id都是唯一的（自增）
+        if (![_list containsObject:bean]) {
+            [_list addObject:bean];
+        }
+        
+    }
+    return _list;
+    
 }
 
 

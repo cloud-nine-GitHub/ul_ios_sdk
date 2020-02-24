@@ -53,6 +53,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)getNSUDID;
 + (NSString *)getIDFV;
 + (void)showMessageWithTartVC:(UIViewController *)vc withMsg:(NSString *)message;
++  (NSArray *)stringToJsonArray:(NSString *)jsonArrayStr;
++ (NSString *)jsonArrayToJsonStr:(NSArray *)jsonArray;
+
 @end
 
 NS_ASSUME_NONNULL_END

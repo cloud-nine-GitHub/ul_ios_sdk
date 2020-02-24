@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) queryData:(NSString *)upData;
 - (void) update;
 - (long)getCountNumFromSqlite;
+- (NSMutableArray *)getCountUpData;
 @end
 
 NS_ASSUME_NONNULL_END

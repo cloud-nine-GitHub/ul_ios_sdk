@@ -11,7 +11,7 @@
 @implementation ULAccountBean
 
 
--(id)initWithId:(int )upDataId andUpData:(NSString *)upData
+-(id)initWithId:(long )upDataId andUpData:(NSString *)upData
 {
     
     if (self = [super init]) {

@@ -17,16 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ULAccountBean : NSObject
 {
     NSString *_upData;  //数据
-    int _upDataId; //排序ID
+    long _upDataId; //排序ID
     
 }
 
 
 @property (nonatomic,strong) NSString *upData;
-@property (nonatomic,assign) int upDataId;
+@property (nonatomic,assign) long upDataId;
 
 
--(id)initWithId:(int )upDataId andUpData:(NSString *)upData;
+-(id)initWithId:(long )upDataId andUpData:(NSString *)upData;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -15,6 +15,7 @@
 #import "ULNotificationDispatcher.h"
 #import "ULTimer.h"
 #import "ULConfig.h"
+#import "ULAccountBean.h"
 
 static NSString *const UL_ACCOUNT_TASK_WRITE_THREAD = @"ul_account_task_write_thread";
 static NSString *const UL_ACCOUNT_TASK_READ_THREAD = @"ul_account_task_read_thread";
@@ -57,7 +58,13 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 - (void)addListener
 {
     NSLog(@"%s",__func__);
-    
+    //提供外部调用消息，外部数据通过统一入口处理后再做上报
+    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_UP_DATA withSelector:@selector(upData:) withPriority:PRIORITY_NONE];
+}
+
+- (void)upData:(NSNotification *)notification
+{
+
 }
 
 
@@ -112,12 +119,15 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 - (void)createTimer
 {
     NSLog(@"%s",__func__);
-    NSTimer *timer = [[ULTimer getInstance] createTimerWithName:UL_ACCOUNT_TIMER_NAME withTarget:self withTime:UL_ACCOUNT_TIMER_LOOP_TIME withSel:@selector(sendMsgToReadThread:) withUserInfo:nil withRepeat:YES];
+    if (_accountTimer) {
+        return;
+    }
+    _accountTimer = [[ULTimer getInstance] createTimerWithName:UL_ACCOUNT_TIMER_NAME withTarget:self withTime:UL_ACCOUNT_TIMER_LOOP_TIME withSel:@selector(sendMsgToReadThread:) withUserInfo:nil withRepeat:YES];
     //立即执行
-    [timer fire];
+    [_accountTimer fire];
     //线程中创建的timer需要添加到runloop中
     NSRunLoop *runloop = [NSRunLoop currentRunLoop];
-    [runloop addTimer:timer forMode:NSDefaultRunLoopMode];
+    [runloop addTimer:_accountTimer forMode:NSDefaultRunLoopMode];
     [runloop run];
 }
 
@@ -142,13 +152,30 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 {
     NSLog(@"%s",__func__);
     //获取数据
-    NSString *data = @"";
-    [self requestPost:data];
+    //把数组对象转成json字符串存起来
+    NSMutableArray *upDataBeanList = [[ULAccountSQLiteManager getInstance] getCountUpData];
+    
+    NSMutableArray *jsonArray = [NSMutableArray new];
+    
+    for (ULAccountBean *bean in upDataBeanList) {
+        [jsonArray addObject:bean.upData];
+    }
+
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonArray options:NSJSONWritingPrettyPrinted error:nil];
+
+    NSString *jsonArrayStr = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+
+    //删除某个id之前的全部数据
+    ULAccountBean *lastBean = [upDataBeanList lastObject];
+    long number = lastBean.upDataId;
+    [[ULAccountSQLiteManager getInstance]deleteData:number];
+
+    [self requestPost:jsonArrayStr];
     
 }
 
 
-- (void)requestPost :(NSString *)data
+- (void)requestPost :(NSString *)upDataStr
 {
     //请求地址
     NSURL *url = [NSURL URLWithString:_accountAddr];
@@ -159,7 +186,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     request.HTTPMethod = @"POST";
     
     NSDictionary * paramsDic = [[NSDictionary alloc]initWithObjectsAndKeys:
-                                data,@"updata",nil];
+                                upDataStr,@"updata",nil];
     
     //设置请求参数
     request.HTTPBody = [[self getRequestParams: paramsDic] dataUsingEncoding:NSUTF8StringEncoding];
@@ -177,12 +204,21 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
             if (error) {
                 NSLog(@"%s 数据上报异常:error = %@",__func__,error);
                 //数据重新存储
+                NSArray *array = [ULTools stringToJsonArray:upDataStr];
+                for (NSString *str in array) {
+                    [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:str];
+                }
+                
             }else
             {
                 NSString *result = [[NSString alloc] initWithData:data  encoding:NSUTF8StringEncoding];
                 if(![result isEqualToString:@"Successful"]){
                     
                     //数据重新存储
+                    NSArray *array = [ULTools stringToJsonArray:upDataStr];
+                    for (NSString *str in array) {
+                        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:str];
+                    }
                 }
                     
             }
@@ -262,13 +298,13 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 - (void)applicationDidEnterBackground {
     //开启后台任务,进行数据上报，测试只有3分钟
-    UIApplication *application = [UIApplication sharedApplication];
-    NSLog(@"%s:可持续后台运行时间：%f",__func__,application.backgroundTimeRemaining);
-    __block UIBackgroundTaskIdentifier taskId = [application beginBackgroundTaskWithExpirationHandler:^{
-        NSLog(@"%s",__func__);
-        [[UIApplication sharedApplication] endBackgroundTask:taskId];
-        taskId = UIBackgroundTaskInvalid;
-    }];
+//    UIApplication *application = [UIApplication sharedApplication];
+//    NSLog(@"%s:可持续后台运行时间：%f",__func__,application.backgroundTimeRemaining);
+//    __block UIBackgroundTaskIdentifier taskId = [application beginBackgroundTaskWithExpirationHandler:^{
+//        NSLog(@"%s",__func__);
+//        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+//        taskId = UIBackgroundTaskInvalid;
+//    }];
 }
 
 - (void)applicationDidReceiveMemoryWarning {
