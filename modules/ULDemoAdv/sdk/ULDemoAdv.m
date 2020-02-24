@@ -181,7 +181,7 @@
         [[ULSplashViewController getInstance]removeSplashView];
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
-        [self showNextAdv:json];
+        [self showNextAdv:json :@"" :@"模拟测试失败"];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withData:@"模拟测试失败"];
@@ -214,21 +214,21 @@
     
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemoAdv插屏广告展示" withBtnOneText:@"模拟插屏广告展示成功" withBtnTwoText:@"模拟插屏广告展示失败" withBtnThreeText:@"模拟插屏广告点击" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示成功");
-        [self showAdv:json];
+        [self showAdv:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
-        [self showNextAdv:json];
+        [self showNextAdv:json :@"" :@"模拟测试失败"];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withData:@"模拟测试失败"];
     } withThreeListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"广告点击");
-        [self showClicked:json];
+        [self showClicked:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
-        [self showAdv:json];
+        [self showAdv:json :@""];
     }];
 }
 
@@ -237,19 +237,19 @@
     NSLog(@"%s",__func__);
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemoAdv视频广告展示" withBtnOneText:@"模拟视频广告展示成功" withBtnTwoText:@"模拟视频广告展示失败" withBtnThreeText:@"模拟视频广告点击" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示成功");
-        [self showAdv:json];
+        [self showAdv:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
-        [self showClose:json];
+        [self showClose:json :@""];
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
-        [self showNextAdv:json];
+        [self showNextAdv:json :@"" :@"模拟测试失败"];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withData:@"模拟测试失败"];
     } withThreeListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"广告点击");
-        [self showClicked:json];
+        [self showClicked:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         //[self showAdv:json];
@@ -261,21 +261,21 @@
     NSLog(@"%s",__func__);
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemoAdv全屏视频广告展示" withBtnOneText:@"模拟全屏视频广告展示成功" withBtnTwoText:@"模拟全屏视频广告展示失败" withBtnThreeText:@"模拟全屏视频广告点击" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示成功");
-        [self showAdv:json];
+        [self showAdv:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
-        [self showNextAdv:json];
+        [self showNextAdv:json :@"" :@"模拟测试失败"];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withData:@"模拟测试失败"];
     } withThreeListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"广告点击");
-        [self showClicked:json];
+        [self showClicked:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
-        [self showAdv:json];
+        [self showAdv:json :@""];
     }];
 }
 
@@ -284,22 +284,22 @@
     NSLog(@"%s",__func__);
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemoAdv横幅广告展示" withBtnOneText:@"模拟横幅广告展示成功" withBtnTwoText:@"模拟横幅广告展示失败" withBtnThreeText:@"模拟横幅广告点击" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示成功");
-        [self showAdv:json];
+        [self showAdv:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
-        [self showNextAdv:json];
+        [self showNextAdv:json :@"" :@"模拟测试失败"];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withData:@"模拟测试失败"];
     } withThreeListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"广告点击");
-        [self showClicked:json];
+        [self showClicked:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
-        [self showAdv:json];
+        [self showAdv:json :@""];
     }];
     
 }
@@ -309,12 +309,12 @@
     NSLog(@"%s",__func__);
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemoAdv互动广告展示" withBtnOneText:@"模拟互动广告展示成功" withBtnTwoText:@"模拟互动广告展示失败" withBtnThreeText:@"互动广告无法点击" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示成功");
-        [self showAdv:json];
+        [self showAdv:json :@""];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"展示失败");
-        [self showNextAdv:json];
+        [self showNextAdv:json :@"" :@"模拟测试失败"];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withData:@"模拟测试失败"];

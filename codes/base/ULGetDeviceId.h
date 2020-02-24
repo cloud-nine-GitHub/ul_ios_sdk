@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ULGetDeviceId : NSObject
 
+
++ (NSString *)getUniqueDeviceId;
 @end
 
 NS_ASSUME_NONNULL_END

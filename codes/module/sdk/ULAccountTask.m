@@ -6,6 +6,11 @@
 //  Copyright © 2020 一号机雷兽. All rights reserved.
 //
 
+/**
+ 在线时长：
+        取“UIApplicationDidBecomeActiveNotification”和“UIApplicationWillResignActiveNotification”两个系统消息之间的时长差值。iOS退到后台无论多长时间再回到前端都视为一次新启动。
+ */
+
 #import "ULAccountTask.h"
 #import "ULILifeCycle.h"
 #import "ULTools.h"
@@ -16,6 +21,10 @@
 #import "ULTimer.h"
 #import "ULConfig.h"
 #import "ULAccountBean.h"
+#import "ULGetDeviceId.h"
+#import "ULAccountType.h"
+#import "ULSDKManager.h"
+#import "ULCop.h"
 
 static NSString *const UL_ACCOUNT_TASK_WRITE_THREAD = @"ul_account_task_write_thread";
 static NSString *const UL_ACCOUNT_TASK_READ_THREAD = @"ul_account_task_read_thread";
@@ -31,7 +40,8 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 @property(nonatomic,assign)BOOL isSqliteOpened,isTableCreated;
 @property(nonatomic,strong)NSTimer *accountTimer;
 @property(nonatomic,strong)NSString *accountAddr;
-
+@property(nonatomic,strong)NSString *activeTime,*resignActiveTime,*gameStartTime;
+@property(nonatomic,strong)NSString *gameLevelStartTime,*gameLevelCompleteTime;
 
 @end
 
@@ -52,6 +62,8 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     [self addListener];
     //创建工作线程
     [self createTaskThread];
+    //应用启动统计
+    [self upData:@[[NSString stringWithFormat:@"%d",ULA_GAME_BASE_INFO],@"gameStart"]];
     
 }
 
@@ -59,12 +71,108 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 {
     NSLog(@"%s",__func__);
     //提供外部调用消息，外部数据通过统一入口处理后再做上报
-    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_UP_DATA withSelector:@selector(upData:) withPriority:PRIORITY_NONE];
+    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_UP_DATA withSelector:@selector(onUpData:) withPriority:PRIORITY_NONE];
 }
 
-- (void)upData:(NSNotification *)notification
+- (void)onUpData:(NSNotification *)notification
 {
+    NSDictionary *userInfo = notification.userInfo;
+    NSArray *array = userInfo[@"data"];
+    [self upData:array];
+}
 
+- (void)upData:(NSArray *)array
+{
+    NSMutableDictionary *json = [self assembleJsonData:array];
+    NSString *jsonStr = [ULTools DictionaryToString:json];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:jsonStr];
+}
+
+
+//拼装json数据
+- (NSMutableDictionary *)assembleJsonData:(NSArray *)array
+{
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    NSString *copGameId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cop_game_id" :@""];
+    NSString *accountId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_account_id" :@""];
+    NSString *copChannelId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cop_channel_id" :@""];
+    NSString *copVersion = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cop_version" :@""];
+    NSString *channelName = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_channel_name" :@""];
+    
+    NSMutableArray *jsonArray = [NSMutableArray new];
+    NSString *accountIdAndTypeId = [[NSString alloc] initWithFormat:@"%@%@%@",accountId,@"-",array[0]];
+    [json setValue:accountIdAndTypeId forKey:@"typeid"];
+    //基础数据
+    NSString *upDataTime = [ULTools getCurrentTimes];
+    [jsonArray addObject:upDataTime];//数据生成时间
+    NSString *deviceId = [[NSString alloc] initWithFormat:@"%@%@%@",[ULGetDeviceId getUniqueDeviceId],@"_",copChannelId];
+    [jsonArray addObject:deviceId];//唯一设备吗
+    [jsonArray addObject:@""];//签名
+
+    switch ([array[0] intValue]) {
+        case ULA_GAME_BASE_INFO:
+            _gameStartTime = upDataTime;
+            [jsonArray addObject:[ULTools getIMSI]];//IMSI
+            [jsonArray addObject:[ULTools getICCID]];//ICCID
+            [jsonArray addObject:[ULTools getCurrentAppName]];//游戏名称
+            [jsonArray addObject:copGameId];//gameId
+            [jsonArray addObject:[ULTools getProvidersName]];//运营商
+            [jsonArray addObject:copChannelId];//渠道id
+            [jsonArray addObject:copVersion];//cop版本
+            [jsonArray addObject:[ULTools getCurrentPhoneVersion]];//ios版本
+            [jsonArray addObject:array[1]];//统计类型
+            [jsonArray addObject:[ULTools getIMEI]];//IMEI
+            [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
+            [jsonArray addObject:[ULTools getCurrentPhoneModel]];//设备型号
+            break;
+        case ULA_GAME_PAY_INFO:
+            [jsonArray addObject:array[1]];//支付渠道
+            [jsonArray addObject:array[2]];//支付类型
+            [jsonArray addObject:array[3]];//支付金额
+            [jsonArray addObject:array[4]];//支付结果/统计类型
+            [jsonArray addObject:copVersion];//cop版本
+            [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
+            break;
+        case ULA_GAME_ADV_INFO:
+            [jsonArray addObject:array[1]];//广告渠道
+            [jsonArray addObject:array[2]];//广告类型
+            [jsonArray addObject:array[3]];//展示结果/买点请求/广告请求
+            [jsonArray addObject:array[4]];//失败原因
+            [jsonArray addObject:copVersion];//cop版本
+            [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
+            [jsonArray addObject:array[5]];//advGroupId
+            [jsonArray addObject:array[6]];//advId
+            [jsonArray addObject:array[7]];//广告买点信息
+            [jsonArray addObject:array[8]];//原生广告内容标题
+            [jsonArray addObject:array[9]];//原生广告参数
+            break;
+        case ULA_GAME_COP_REQUEST:
+            [jsonArray addObject:array[1]];//统计类型
+            [jsonArray addObject:array[2]];//请求结果
+            [jsonArray addObject:copVersion];//cop版本
+            [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
+            [jsonArray addObject:array[3]];//cop请求失败原因
+            [jsonArray addObject:array[4]];//返回的json字段
+            break;
+        case ULA_GAME_USER_EVENT:
+            for (NSString *str in array) {
+                [jsonArray addObject:str];
+            }
+            [jsonArray addObject:copVersion];//cop版本
+            [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
+            [jsonArray addObject:channelName];//渠道信息
+            break;
+        case ULA_GAME_USER_ONLINE_TIME:
+            [jsonArray addObject:array[1]];//与用户活跃表关联的唯一标示
+            [jsonArray addObject:array[2]];//在线时长
+            [jsonArray addObject:copVersion];//cop版本
+            [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
+            break;
+    }
+    
+    [json setValue:jsonArray forKey:@"updata"];
+    
+    return json;
 }
 
 
@@ -272,8 +380,80 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 }
 
 
-- (void)megadataAccount :(NSDictionary *)data
+- (void)megadataAccount :(NSArray *)data
 {
+
+    
+    if([_isCloseAccount isEqualToString:@"1"]){
+        NSLog(@"%s:统计功能关闭",__func__);
+        NSMutableDictionary *json = [NSMutableDictionary new];
+        [json setValue:[NSNumber numberWithInt:0] forKey:@"code"];
+        [json setValue:@"failed" forKey:@"message"];
+        [ULSDKManager JsonRpcCall:REMSG_CMD_MEGADATASERVER :json];
+        return;
+    }
+    
+    //是否关闭自定义数据上传，默认不关闭
+    NSString *isCloseCustomData = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_account_close_custom" :@"0"];
+    if ([isCloseCustomData isEqualToString:@"1"]) {
+        NSMutableDictionary *json = [NSMutableDictionary new];
+        [json setValue:[NSNumber numberWithInt:0] forKey:@"code"];
+        [json setValue:@"failed" forKey:@"message"];
+        [ULSDKManager JsonRpcCall:REMSG_CMD_MEGADATASERVER :json];
+        return;
+    }
+    
+    if (!data || data.count == 0) {
+        NSMutableDictionary *json = [NSMutableDictionary new];
+        [json setValue:[NSNumber numberWithInt:0] forKey:@"code"];
+        [json setValue:@"failed" forKey:@"message"];
+        [ULSDKManager JsonRpcCall:REMSG_CMD_MEGADATASERVER :json];
+    }else{
+        NSMutableDictionary *json = [NSMutableDictionary new];
+        [json setValue:[NSNumber numberWithInt:1] forKey:@"code"];
+        [json setValue:@"success" forKey:@"message"];
+        [ULSDKManager JsonRpcCall:REMSG_CMD_MEGADATASERVER :json];
+    }
+    
+    NSMutableArray *strArray = [NSMutableArray new];
+    NSString *actionTypeStr = data[0];
+    if ([actionTypeStr isEqualToString:@"gameLevelStart"]) {//关卡开始
+        NSDate *datenow = [NSDate date];//当前时间戳，单位s
+        NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+        _gameLevelStartTime = timeSp;
+    }
+    if ([actionTypeStr isEqualToString:@"gameLevelComplete"]) {//关卡结束
+        NSDate *datenow = [NSDate date];//当前时间戳，单位s
+        NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+        _gameLevelCompleteTime = timeSp;
+        long complete = [_gameLevelCompleteTime longLongValue] - [_gameLevelStartTime longLongValue];//通关时间
+        
+        [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
+        for (int i = 0; i < data.count; i++) {
+            //TODO 需要验证ios这边传过来的数组字符串是否也是异常
+            @try {//传过来是字符类型，那么会""test""是这种的形式
+                strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
+            } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
+                [strArray addObject:data[i]];
+            }
+            //[strArray addObject:data[i]];
+        }
+        [strArray addObject:[NSString stringWithFormat:@"%ld",complete]];
+        [self upData:strArray];
+        return;
+    }
+    [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
+    for (int i = 0; i < data.count; i++) {
+        //TODO 需要验证ios这边传过来的数组字符串是否也是异常
+        @try {//传过来是字符类型，那么会""test""是这种的形式
+            strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
+        } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
+            [strArray addObject:data[i]];
+        }
+    }
+    [self upData:strArray];
+
+    
     
 }
 
@@ -294,6 +474,13 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 - (void)applicationDidBecomeActive {
     NSLog(@"%s",__func__);
+    if([_isCloseAccount isEqualToString:@"1"]){
+        NSLog(@"%s:统计功能关闭",__func__);
+        return;
+    }
+    NSDate *datenow = [NSDate date];//当前时间戳，单位s
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+    _activeTime = timeSp;
 }
 
 - (void)applicationDidEnterBackground {
@@ -317,6 +504,16 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 - (void)applicationWillResignActive {
     NSLog(@"%s",__func__);
+    if([_isCloseAccount isEqualToString:@"1"]){
+        NSLog(@"%s:统计功能关闭",__func__);
+        return;
+    }
+    NSDate *datenow = [NSDate date];//当前时间戳，单位s
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
+    _resignActiveTime = timeSp;
+    long onlineTime = [_resignActiveTime longLongValue]-[_activeTime longLongValue];
+    NSLog(@"%s:本次在线时长:%ld",__func__,onlineTime);
+    [self upData:@[[NSString stringWithFormat:@"%d",ULA_GAME_USER_ONLINE_TIME],_gameStartTime,[NSString stringWithFormat:@"%ld",onlineTime]]];
 }
 
 - (void)applicationWillTerminate {

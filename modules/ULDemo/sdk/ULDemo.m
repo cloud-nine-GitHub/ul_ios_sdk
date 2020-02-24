@@ -57,18 +57,18 @@
     NSLog(@"%s",__func__);
     __block UIAlertController *alert = [ULTools showThreeBtnDialogWithTitle:@"温馨提示" withDesc:@"模拟ULDemo支付" withBtnOneText:@"模拟成功" withBtnTwoText:@"模拟失败" withBtnThreeText:@"模拟取消" withOneListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"支付成功");
-        [self payResult:paySuccess :data];
+        [self payResult:paySuccess :data :0.00];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
     } withTwoListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"支付失败");
-        [self payResult:payFailed :data];
+        [self payResult:payFailed :data :0.00];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_OPEN_DEMO_PAY_CALLBACK withData:@"模拟测试失败"];
     } withThreeListener:^(UIAlertAction *_Nonnull action){
         NSLog(@"%s%@",__func__,@"支付取消");
-        [self payResult:payCancel :data];
+        [self payResult:payCancel :data :0.00];
         [alert dismissViewControllerAnimated:YES completion:nil];
         alert = nil;
     }];

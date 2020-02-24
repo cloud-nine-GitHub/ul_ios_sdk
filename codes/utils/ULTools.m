@@ -17,6 +17,8 @@
 #import "ULCop.h"
 #import "ULConfig.h"
 #import <AdSupport/ASIdentifierManager.h>
+#import <CoreTelephony/CTCarrier.h>
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
 
 @implementation ULTools
@@ -214,7 +216,7 @@
     
     NSString *currentTimeString = [formatter stringFromDate:datenow];
     
-    NSLog(@"currentTimeString =  %@",currentTimeString);
+    //NSLog(@"currentTimeString =  %@",currentTimeString);
     
     return currentTimeString;
     
@@ -664,6 +666,68 @@
     }
 }
 
+#pragma marks - imsi
++ (NSString *)getIMSI
+{
+
+    CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
+
+    CTCarrier *carrier = [info subscriberCellularProvider];
+
+    NSString *mcc = [carrier mobileCountryCode];
+    NSString *mnc = [carrier mobileNetworkCode];
+
+    NSString *imsi = [NSString stringWithFormat:@"%@%@", mcc, mnc];
+
+    return imsi;
+}
+
+
+#pragma marks - iccid
++ (NSString *)getICCID
+{
+
+
+    return @"";
+}
+
+
+#pragma marks - imei
++ (NSString *)getIMEI
+{
+
+
+    return @"";
+}
+
+#pragma marks - 运营商
++ (NSString *)getProvidersName
+{
+    //获取本机运营商名称
+    
+    CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
+    
+    CTCarrier *carrier = [info subscriberCellularProvider];
+    
+    //当前手机所属运营商名称
+    
+    NSString *mobile;
+    
+    //先判断有没有SIM卡，如果没有则不获取本机运营商
+    
+    if (!carrier.isoCountryCode) {
+        
+        //NSLog(@"没有SIM卡");
+        
+        mobile = @"未知运营商";
+        
+    }else{
+        
+        mobile = [carrier carrierName];
+        
+    }
+    return mobile;
+}
 
 @end
 

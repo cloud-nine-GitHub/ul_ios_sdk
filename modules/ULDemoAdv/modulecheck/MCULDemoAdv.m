@@ -152,8 +152,10 @@
 
 - (void)openAdv:(NSMutableDictionary *)advData
 {
+    
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:advData :@"sdkAdvData" :nil];
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    
     if ([type isEqualToString:UL_ADV_SPLAH]) {
         [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
     }else if([type isEqualToString:UL_ADV_INTERSTITIAL]){

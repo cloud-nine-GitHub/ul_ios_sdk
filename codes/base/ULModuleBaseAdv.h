@@ -58,15 +58,15 @@ static int SDK_ADV_STATE = 1;
 - (void)initModuleBaseAdv :(NSDictionary *)advPriorityDic;
 - (void)setDisableAdvPriority:(NSString *)disableType,...;
 - (NSArray *)getParamArrayWithModule:(NSString *)module withType:(NSString *)type withDefaultValue:(NSArray *)defaultValue;
-- (void)showNextAdv:(NSDictionary *)data;
+- (void)showNextAdv:(NSDictionary *)data :(NSString *)param :(NSString *)failedReason;
 
-- (void)showFailed:(NSDictionary *)data;
+- (void)showFailed:(NSDictionary *)data :(NSString *)param :(NSString *)failedReason;
 
-- (void)showClicked:(NSDictionary *)data;
+- (void)showClicked:(NSDictionary *)data :(NSString *)param ;
 
-- (void)showAdv:(NSDictionary *)data;
+- (void)showAdv:(NSDictionary *)data :(NSString *)param ;
 
-- (void)showClose:(NSDictionary *)data;
+- (void)showClose:(NSDictionary *)data :(NSString *)param ;
 
 - (void)showNativeAdvResultSuccess:(NSDictionary *)nativeData :(NSDictionary *)data;
 

@@ -55,6 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)showMessageWithTartVC:(UIViewController *)vc withMsg:(NSString *)message;
 +  (NSArray *)stringToJsonArray:(NSString *)jsonArrayStr;
 + (NSString *)jsonArrayToJsonStr:(NSArray *)jsonArray;
++ (NSString *)getIMSI;
++ (NSString *)getICCID;
++ (NSString *)getIMEI;
++ (NSString *)getProvidersName;
 
 @end
 
