@@ -179,6 +179,8 @@ def make_by_config(rootPath, config):
 	info_data["CFBundleShortVersionString"] = config["version"]
 	info_data["CFBundleVersion"] = config["build_version"]
 
+	del info_data["UIMainStoryboardFile"]
+
 	# 打上mod
 	info_mod = config["info_plist_mod"]
 	if info_mod != None:
