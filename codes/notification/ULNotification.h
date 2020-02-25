@@ -57,6 +57,18 @@ static NSString *const UL_NOTIFICATION_MC_SHOW_TOUTIAO_VIDEO_ADV = @"ulNotificat
 static NSString *const UL_NOTIFICATION_MC_SHOW_TOUTIAO_BANNER_ADV = @"ulNotificationMcShowToutiaoBannerAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_TOUTIAO_URL_ADV = @"ulNotificationMcShowToutiaoUrlAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK = @"ulNotificationMcShowToutiaoAdvCallback";
+static NSString *const UL_NOTIFICATION_MC_SHOW_ULURL_URL_ADV = @"ulNotificationMcShowUlUrlurlAdvCallback";
+
+
+
+
+
+
+
+
+
+
+
 
 @interface ULNotification : NSObject
 {
