@@ -117,8 +117,10 @@ static ULAccountSQLiteManager *instance = nil;
     NSString *sql = [NSString stringWithFormat:@"insert into %@ (%@) values('%@')", ULA_SQLITE_TABLE_NAME,ULA_SQLITE_TABLE_UP_DATA,upData];
     if([self execuSQL:sql])
     {
+        NSLog(@"%s：数据添加成功",__func__);
         return YES;
     }else{
+        NSLog(@"%s：数据添加失败",__func__);
         return NO;
     }
 }
@@ -129,7 +131,28 @@ static ULAccountSQLiteManager *instance = nil;
 
 - (long)getCountNumFromSqlite
 {
-    return 0;
+    NSString *sql = [NSString stringWithFormat:@"select count(*) from %@",ULA_SQLITE_TABLE_NAME];
+    sqlite3_stmt *stmt = nil;
+    if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &stmt, nil) != SQLITE_OK) {
+        NSLog(@"%s,准备查询失败!",__func__);
+        return 0;
+    }
+    long count = 0;
+    //准备成功,开始查询数据
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        int columnCount= sqlite3_column_count(stmt);
+        for (int i=0; i<columnCount; i++) {
+            const char *value= (const char *)sqlite3_column_text(stmt, i);//取得某列的值
+            NSString *valueS = [NSString stringWithUTF8String:value];
+            count = [valueS longLongValue];
+        }
+    }
+    
+     
+    //释放句柄
+    sqlite3_finalize(stmt);
+    
+    return count;
 }
 
 
@@ -138,12 +161,14 @@ static ULAccountSQLiteManager *instance = nil;
  */
 - (BOOL)deleteData :(long )idNum
 {
-     NSLog(@"%s",__func__);
+     
     NSString *sql = [NSString stringWithFormat:@"delete from %@ where %@ <= '%ld'",ULA_SQLITE_TABLE_NAME,ULA_SQLITE_TABLE_UP_DATA_ID,idNum];
     if([self execuSQL:sql])
     {
+        NSLog(@"%s：数据删除成功",__func__);
         return YES;
     }else{
+        NSLog(@"%s：数据删除失败",__func__);
         return NO;
     }
 }
@@ -173,7 +198,7 @@ static ULAccountSQLiteManager *instance = nil;
 - (NSMutableArray *)getCountUpData
 {
     [_list removeAllObjects];
-    NSString *sql = [NSString stringWithFormat:@"select from %@ order by up_data_id asc limit '%d'",ULA_SQLITE_TABLE_NAME,100];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ order by up_data_id asc limit '%d'",ULA_SQLITE_TABLE_NAME,100];
     sqlite3_stmt *stmt = nil;
     if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &stmt, nil) != SQLITE_OK) {
         NSLog(@"%s,准备查询失败!",__func__);
@@ -195,6 +220,10 @@ static ULAccountSQLiteManager *instance = nil;
         }
         
     }
+    
+    //释放句柄
+    sqlite3_finalize(stmt);
+    
     return _list;
     
 }

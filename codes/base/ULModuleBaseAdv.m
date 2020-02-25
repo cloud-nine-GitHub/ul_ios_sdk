@@ -17,6 +17,7 @@
 #import "ULAdvCallBackManager.h"
 #import "ULStringConst.h"
 #import "ULSplashViewController.h"
+#import "ULAccountType.h"
 
 @interface ULModuleBaseAdv ()<ULIAdv>
 
@@ -132,15 +133,22 @@
     NSArray *paramProbabilities = bean.paramsProbability;
     int level = bean.level;
     
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    //广告请求统计 对于多参数来说并不知道本次请求的是哪一个参数
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],moduleS,typeS,@"branchAdvRequest",@"",@"",advId,advId,@"",@""];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     [sdkAdvData setValue:typeS forKey:@"type"];
+    [sdkAdvData setValue:moduleS forKey:@"module"];
     [sdkAdvData setValue:rewardTypeS forKey:@"rewardType"];
     [sdkAdvData setValue:params forKey:@"advParams"];
     [sdkAdvData setValue:paramProbabilities forKey:@"advParamProbabilities"];
     
     if([_moduleDisableAdvTypes containsObject:typeS]){
         NSLog(@"%s%@",__func__,[[NSString alloc]initWithFormat:@"%@%@%@%@%@",@"模块:(",moduleS,@")不支持[",typeS,@"]类型广告,请检查配置"]);
-        [self showNextAdv:data];
+        [self showNextAdv:data :@"" :[[NSString alloc]initWithFormat:@"%@%@%@%@%@",@"模块:(",moduleS,@")不支持[",typeS,@"]类型广告"]];
         return;
     }
     
@@ -151,7 +159,7 @@
     NSLog(@"%s%@%@%@%@%@%@%@%@%@%@",__func__,@"(",moduleS,@")",@"[",typeS,@"]",@"----state值：",[NSString stringWithFormat:@"%d",SDK_ADV_STATE] ,@";level:",[NSString stringWithFormat:@"%d",level]);
     
     if ((SDK_ADV_STATE & level) == 0) {
-        [self showNextAdv: data];
+        [self showNextAdv: data :@"" :[[NSString alloc]initWithFormat:@"%@%@%@%@%@",@"模块:(",moduleS,@")不支持[",typeS,@"]类型广告"]];
         return;
     }
     
@@ -176,59 +184,107 @@
     }
 }
 
-- (void)showNextAdv:(NSDictionary *)data
+- (void)showNextAdv:(NSDictionary *)data :(NSString *)param :(NSString *)failedReason
 {
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
-    BOOL isStopDispatch = [ULTools GetBoolFromDic:data :@"isStopDispatch" :NO];
-    if (isStopDispatch) {
-        return;
-    }
+    
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     NSString *rewardType = [ULTools GetStringFromDic:sdkAdvData :@"rewardType" :@""];
     NSString *advParams = [ULTools GetStringFromDic:sdkAdvData :@"advParams" :@""];
     NSString *advParamProbabilities = [ULTools GetStringFromDic:sdkAdvData :@"advParamProbabilities" :@""];
     
     [sdkAdvData removeObjectForKey:@"type"];
+    [sdkAdvData removeObjectForKey:@"module"];
     [sdkAdvData removeObjectForKey:@"rewardType"];
     [sdkAdvData removeObjectForKey:@"advParams"];
     [sdkAdvData removeObjectForKey:@"advParamProbabilities"];
     
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
     
+    BOOL isStopDispatch = [ULTools GetBoolFromDic:data :@"isStopDispatch" :NO];
+    if (isStopDispatch) {
+        return;
+    }
+    
     if (![[ULNotificationDispatcher getInstance] postNotificationWithName:[[NSString alloc]initWithFormat:@"%@%@",UL_NOTIFICATION_SHOW_ADV_BASE,advId] withData:data]) {
         if([advId isEqualToString:S_CONST_ADV_SPLASH_ADVID_DES]){
             [[ULSplashViewController getInstance]removeSplashView];
         }else{
             [sdkAdvData setValue:type forKey:@"type"];
+            [sdkAdvData setValue:module forKey:@"module"];
             [sdkAdvData setValue:rewardType forKey:@"rewardType"];
             [sdkAdvData setValue:advParams forKey:@"advParams"];
             [sdkAdvData setValue:advParamProbabilities forKey:@"advParamProbabilities"];
-            [self showFailed:data];
+            [self showFailed:(NSMutableDictionary *)data :param :failedReason];
         }
         
+    }else{
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"failed",failedReason,@"",advId,advId,@"",param];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
     
 }
 
-- (void)showFailed:(NSMutableDictionary *)data
+- (void)showFailed:(NSMutableDictionary *)data :(NSString *)param :(NSString *)failedReason
 {
     [ULAdvCallBackManager callBackEntry:failed :data];
+    //广告点击统计
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
+    
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"failed",failedReason,@"",advId,advId,@"",param];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
 }
 
-- (void)showClicked:(NSMutableDictionary *)data
+- (void)showClicked:(NSMutableDictionary *)data :(NSString *)param
 {
     [ULAdvCallBackManager callBackEntry:clicked :data];
+    //广告点击统计
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
+    
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,advId,@"",param];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
 }
 
-- (void)showAdv:(NSMutableDictionary *)data
+- (void)showAdv:(NSMutableDictionary *)data :(NSString *)param
 {
     [ULAdvCallBackManager callBackEntry:showed :data];
+    //广告点击统计
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
+    if (![type isEqualToString:UL_ADV_VIDEO]) {
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,advId,@"",param];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    }
+    
+    
 }
 
-- (void)showClose:(NSMutableDictionary *)data
+- (void)showClose:(NSMutableDictionary *)data :(NSString *)param
 {
     [ULAdvCallBackManager callBackEntry:closed :data];
+    //广告点击统计
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    
+    if ([type isEqualToString:UL_ADV_VIDEO]) {
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],NSStringFromClass([self class]),type,@"success",@"",@"",advId,advId,@"",param];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    }
 }
 
 - (void)showNativeAdvResultSuccess:(NSMutableDictionary *)nativeData :(NSMutableDictionary *)data

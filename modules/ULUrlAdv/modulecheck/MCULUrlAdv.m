@@ -1,12 +1,12 @@
 //
-//  MCULDefaultModule.m
-//  ULGameDemo
+//  MCULUrlAdv.m
+//  ulsdkgamedemo
 //
-//  Created by 一号机雷兽 on 2020/2/17.
-//  Copyright © 2020 ul_mac04. All rights reserved.
+//  Created by 一号机雷兽 on 2020/2/25.
+//  Copyright © 2020 一号机雷兽. All rights reserved.
 //
 
-#import "MCULDemoAdv.h"
+#import "MCULUrlAdv.h"
 #import "ULTools.h"
 #import "MCULModuleLayoutCreater.h"
 #import "ULCop.h"
@@ -19,7 +19,7 @@
 #import "MenuItemView.h"
 #import "ULModuleBaseAdv.h"
 
-@interface MCULDemoAdv ()<UITextFieldDelegate>
+@interface MCULUrlAdv ()<UITextFieldDelegate>
 
 @property(nonatomic,strong)UIView *view;
 @property(nonatomic,assign)int y;
@@ -29,7 +29,7 @@
 @property(nonatomic,strong)UITextField* paramTextField;
 @end
 
-@implementation MCULDemoAdv
+@implementation MCULUrlAdv
 
 
 -(BOOL)hasNativeAdv
@@ -52,7 +52,7 @@
     [ULTools getCurrentViewController].automaticallyAdjustsScrollViewInsets = NO;//这个属性设置textView文本吸顶显示，TODO是否会产生其他因素待定。这个属性貌似禁用了滑动属性，具体的还需要验证
     
     UILabel *advLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,100,100,30)];
-    advLabel.text = @"demo广告:";
+    advLabel.text = @"互动广告:";
     advLabel.textColor = [UIColor whiteColor];
     advLabel.font = [UIFont systemFontOfSize:12];
     advLabel.textAlignment = NSTextAlignmentCenter;
@@ -112,25 +112,16 @@
 
 - (void)addListener
 {
-    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_MC_SHOW_DEMO_ADV_CALLBACK withSelector:@selector(advCallback:) withPriority:-1];
-}
-
-- (void)advCallback:(NSNotification *)notification
-{
-    NSString *data = notification.userInfo[@"data"];
-    ULNotification *n = notification.userInfo[@"notification"];
-    [n stopDispatchNotification];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self->_paramShowText.text = data;
-    });
     
 }
+
+
 
 - (void)initData
 {
     _advType = @"";
     _advParam = @"";
-    _advTypeArray = @[UL_ADV_SPLAH,UL_ADV_INTERSTITIAL,UL_ADV_FULLSCREEN,UL_ADV_VIDEO,UL_ADV_BANNER,UL_ADV_URL];
+    _advTypeArray = @[UL_ADV_URL];
 }
 
 
@@ -156,26 +147,8 @@
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:advData :@"sdkAdvData" :nil];
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     
-    if ([type isEqualToString:UL_ADV_SPLAH]) {
-        [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
-    }else if([type isEqualToString:UL_ADV_INTERSTITIAL]){
-        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_INTER_ADV withData:advData]) {
-            [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
-        }
-    }else if([type isEqualToString:UL_ADV_FULLSCREEN]){
-        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_FULLSCREEN_ADV withData:advData]) {
-            [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
-        }
-    }else if([type isEqualToString:UL_ADV_VIDEO]){
-        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_VIDEO_ADV withData:advData]) {
-            [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
-        }
-    }else if([type isEqualToString:UL_ADV_BANNER]){
-        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_BANNER_ADV withData:advData]) {
-            [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
-        }
-    }else if([type isEqualToString:UL_ADV_URL]){
-        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_DEMO_URL_ADV withData:advData]) {
+    if([type isEqualToString:UL_ADV_URL]){
+        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_ULURL_URL_ADV withData:advData]) {
             [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
         }
     }
@@ -277,5 +250,6 @@
 
 
 @end
+
 
 

@@ -16,6 +16,7 @@
 #import "ULStringConst.h"
 #import "ULNotification.h"
 #import "ULModuleBaseSdk.h"
+#import "ULAccountType.h"
 
 @interface MCULDefaultModule ()<UITextFieldDelegate>
 
@@ -193,6 +194,10 @@
     [ULAdvCallBackManager callBackInit:advData];
     NSDictionary *gameAdvData = [advData objectForKey:@"gameAdvData"];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    
+    //广告埋点统计
+    //NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"",@"",@"totalAdvRequest",@"",@"",advId,advId,@"",@""];
+    //[[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     //开始调用聚合流程
     [[ULNotificationDispatcher getInstance] postNotificationWithName:[[NSString alloc]initWithFormat:@"%@%@",UL_NOTIFICATION_PREPARE_SHOW_ADV_BASE,advId]  withData:advData];
     

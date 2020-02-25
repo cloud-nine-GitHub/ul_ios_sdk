@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 /**
  定时器工具函数
+        TODO:测试发现：debug不能中断timer，依然会正常执行，引发意想不到的bug
  */
 @interface ULTimer : NSObject
 

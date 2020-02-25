@@ -15,6 +15,7 @@
 #import "ULCmd.h"
 #import "ULTools.h"
 #import "ULCop.h"
+#import "ULAccountType.h"
 
 
 @interface ULModuleBaseSdk ()<ULISdk>
@@ -68,6 +69,9 @@
     NSDictionary *data = notification.userInfo[@"data"];
     ULNotification *n = notification.userInfo[@"notification"];
     [n stopDispatchNotification];
+    //支付请求统计
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],@"",@"",@"",@"requestPay"];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     [self onOpenPay:data];
     
 }
@@ -96,13 +100,15 @@
 }
 
 
-
-- (void)payResult:(PayState )payState :(NSDictionary *)payData
+//传入金额，避免不同渠道计费点金额不一致
+- (void)payResult:(PayState )payState :(NSDictionary *)payData :(float )price
 {
+    NSString *payResult = @"";
     //支付取消是否继续走支付流程，交由控制
     NSString *isDispatchWhenCancel = [ULTools getCopOrConfigStringWithKey:@"s_sdk_pay_dispatch_when_cancel" withDefaultString:@"0"];
     if (payState == paySuccess) {
         [self payResultCallBackWithCode:1 withMsg:@"支付成功" withPayData:payData];
+        payResult = @"success";
         return;
     }
     NSMutableDictionary *sdkPayData = [ULTools GetNSMutableDictionaryFromDic:payData :@"sdkPayData" :nil];
@@ -115,6 +121,7 @@
         if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_OPEN_PAY withData:payData]) {
             //无后续支付流程，返回支付结果
             [self payResultCallBackWithCode:-1 withMsg:@"支付失败" withPayData:payData];
+            payResult = @"failed";
         }
     }
     
@@ -123,11 +130,17 @@
             if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_OPEN_PAY withData:payData]) {
                 //无后续支付流程，返回支付结果
                 [self payResultCallBackWithCode:0 withMsg:@"支付取消" withPayData:payData];
+                payResult = @"cancel";
             }
         }else{
             [self payResultCallBackWithCode:0 withMsg:@"支付取消" withPayData:payData];
+            payResult = @"cancel";
         }
     }
+    
+    //支付结果统计
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],NSStringFromClass([self class]),@"",[NSString stringWithFormat:@"%f",price] ,payResult];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
 
 }
 

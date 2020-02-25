@@ -14,6 +14,7 @@
 #import "ULCmd.h"
 #import "ULNotificationDispatcher.h"
 #import "ULNotification.h"
+#import "ULAccountType.h"
 
 
 static NSString *const UL_COP_TIMER_NAME = @"getCopTimer";
@@ -25,7 +26,10 @@ static int const UL_COP_TIMER_LOOP_TIME = 30;
 static ULCop* instance=nil;
 static NSDictionary* copInfoDic = nil;
 static NSThread *copRequestThread = nil;
-
+static NSMutableDictionary *copFailedDataCountMap = nil;
+static NSString *copRequestResult = @"";
+static NSString *copRequestFialReason = @"";
+static NSString *upCopInfoString = @"";
 
 + (instancetype)getInstance{
     if(!instance){
@@ -42,6 +46,8 @@ static NSThread *copRequestThread = nil;
         NSLog(@"%s%@",__func__,@"cop is unavailable!");
         return;
     }
+    copFailedDataCountMap = [NSMutableDictionary new];
+    
     [self createGetCopThread];
 }
 
@@ -93,10 +99,13 @@ static NSThread *copRequestThread = nil;
         //response ： 响应：服务器的响应
         //data：二进制数据：服务器返回的数据。（就是我们想要的内容）
         //error：链接错误的信息
-        NSLog(@"cop请求网络响应：response：%@",response);
+        //NSLog(@"cop请求网络响应：response：%@",response);
         if (!error) {
             if (!data) {
                 NSLog(@"%s%@",__func__,@"copInfoString return nil");
+                copRequestResult = @"failed";
+                copRequestFialReason = @"cop返回对象为nil";
+                [self doPostCopResultData:copRequestResult :copRequestFialReason :@""];
                 return ;
             }
             //根据返回的二进制数据，生成字符串！NSUTF8StringEncoding：编码方式
@@ -104,6 +113,21 @@ static NSThread *copRequestThread = nil;
             NSLog(@"%s%@%@",__func__,@"copInfoString Is : ",copInfoStr);
             NSDictionary *copObject = [ULTools StringToDictionary:copInfoStr];
             int code = [ULTools GetIntFromDic:copObject :@"code" :0];
+            if (code == -1) {
+                copRequestResult = @"failed";
+                copRequestFialReason = [ULTools GetStringFromDic:copObject :@"mess" :@""];
+            }else{
+                copRequestResult = @"success";
+                copRequestFialReason = @"";
+            }
+            if ([copInfoStr length] > 120) {
+                upCopInfoString = [copInfoStr substringWithRange:NSMakeRange(0, 120)];
+            }else{
+                upCopInfoString = copInfoStr;
+            }
+            
+            [self doPostCopResultData:copRequestResult :copRequestFialReason :upCopInfoString];
+            
             [self setCopJsonObject:copObject];
             [self returnCopInfo:copInfoStr];
             //停止定时器
@@ -120,7 +144,18 @@ static NSThread *copRequestThread = nil;
 //            }
         }else{
             NSLog(@"%s%@%@",__func__,@"cop request error : ",error);
-            
+            copRequestResult = @"failed";
+            if (error) {
+                NSString *errorMsg = error.localizedFailureReason;
+                if ([errorMsg length] > 120) {
+                    copRequestFialReason = [errorMsg substringWithRange:NSMakeRange(0, 120)];
+                }else{
+                    copRequestFialReason = errorMsg;
+                }
+            }else{
+                copRequestFialReason = @"cop请求异常";
+            }
+            [self doPostCopResultData:copRequestResult :copRequestFialReason :@""];
         }
         
         
@@ -208,6 +243,32 @@ static NSThread *copRequestThread = nil;
         [json setValue:[NSNumber numberWithBool:false] forKey:@"isShowUlInnerPromotionIcon"];
     }
     [ULSDKManager JsonRpcCall:REMSG_CMD_COPINFO :json];
+}
+
++ (void)doPostCopResultData:(NSString *)copRequestResult :(NSString *)copResultFailReason :(NSString *)upCopInfoString
+{
+    NSLog(@"%s：上报cop统计",__func__);
+    if ([copRequestResult isEqualToString:@"success"]) {
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_COP_REQUEST],@"coprequest",copRequestResult,copResultFailReason,upCopInfoString];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+        return;
+    }
+    
+    if (![copFailedDataCountMap objectForKey:copResultFailReason]) {
+        [copFailedDataCountMap setValue:[NSNumber numberWithInt:1] forKey:copResultFailReason];
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_COP_REQUEST],@"coprequest",copRequestResult,copResultFailReason,upCopInfoString];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    }else{
+        int count = [ULTools GetIntFromDic:copFailedDataCountMap :copResultFailReason :0];
+        if (count < 5) {
+            count = count + 1;
+            [copFailedDataCountMap setValue:[NSNumber numberWithInt:count] forKey:copResultFailReason];
+            NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_COP_REQUEST],@"coprequest",copRequestResult,copResultFailReason,upCopInfoString];
+            [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+        }else{
+            //相同失败原因超过5条不做上报
+        }
+    }
 }
 
 @end
