@@ -60,6 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)getIMEI;
 + (NSString *)getProvidersName;
 + (NSString *)platformString;
++ (NSString *)getRandomParamByCopOrConfigWithParamArray:(NSArray *)paramArray withProbabilityArray:(NSArray *)probabilityArray withParamKey:(NSString *)paramsKey withDefaultParam:(NSString *)defaultParam withSplitString:(NSString *)splitString;
 
 @end
 
