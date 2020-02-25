@@ -95,17 +95,21 @@ def make_by_config(rootPath, config):
 			    				file1.add_compiler_flag("-fno-objc-arc")
 
 	# preprocessors
-	for _, p in enumerate(config["preprocessors"]):
-		print "  project.add_preprocessor(%s)" % p
-		project.add_preprocessor(p)
+	if config.has_key("preprocessors")
+		for _, p in enumerate(config["preprocessors"]):
+			print "  project.add_preprocessor(%s)" % p
+			project.add_preprocessor(p)
 
 	# search_path
-	print "  project.add_header_search_paths(%s)" % config["header_search_paths"]
-	project.add_header_search_paths(config["header_search_paths"])
-	print "  project.add_framework_search_paths(%s)" % config["framework_search_paths"]
-	project.add_framework_search_paths(config["framework_search_paths"])
-	print "  project.add_library_search_paths(%s)" % config["libaray_search_paths"]
-	project.add_library_search_paths(config["libaray_search_paths"])
+	if config.has_key("header_search_paths")
+		print "  project.add_header_search_paths(%s)" % config["header_search_paths"]
+		project.add_header_search_paths(config["header_search_paths"])
+	if config.has_key("framework_search_paths")
+		print "  project.add_framework_search_paths(%s)" % config["framework_search_paths"]
+		project.add_framework_search_paths(config["framework_search_paths"])
+	if config.has_key("libaray_search_paths")
+		print "  project.add_library_search_paths(%s)" % config["libaray_search_paths"]
+		project.add_library_search_paths(config["libaray_search_paths"])
 
 	# 3d特殊处理
 	if config.has_key("game_type") and config["game_type"] == "3d":
@@ -128,28 +132,31 @@ def make_by_config(rootPath, config):
 		project.add_flags({"CLANG_ENABLE_MODULES": ["YES"]})
 			
 	# other_link
-	for _, flag in enumerate(config["other_link_flags"]):
-		print "  project.add_other_ldflags(%s)" % (flag)
-		project.add_other_ldflags(flag)
-	# other_link
-	# for _, flag in enumerate(config["weak_references_in_manual_retain_release"]):
-		print "  project.weak_references(%s)" % (config["weak_references_in_manual_retain_release"])
-		if config["weak_references_in_manual_retain_release"]=="YES":
-			project.add_flags({"CLANG_ENABLE_OBJC_WEAK":"YES"})
+	if config.has_key("other_link_flags")
+		for _, flag in enumerate(config["other_link_flags"]):
+			print "  project.add_other_ldflags(%s)" % (flag)
+			project.add_other_ldflags(flag)
+		# other_link
+		# for _, flag in enumerate(config["weak_references_in_manual_retain_release"]):
+			# print "  project.weak_references(%s)" % (config["weak_references_in_manual_retain_release"])
+			if config.has_key("weak_references_in_manual_retain_release") and config["weak_references_in_manual_retain_release"]=="YES":
+				project.add_flags({"CLANG_ENABLE_OBJC_WEAK":"YES"})
 
 	# framework
-	group_Frameworks = project.get_or_create_group("Frameworks")
-	for _, f in enumerate(config["frameworks"]):
-		print "  project.add_file_if_doesnt_exist(%s, parent = group_Frameworks)" % f
-		project.add_file_if_doesnt_exist(f, parent = group_Frameworks, tree = "SDKROOT")
+	if config.has_key("frameworks")
+		group_Frameworks = project.get_or_create_group("Frameworks")
+		for _, f in enumerate(config["frameworks"]):
+			print "  project.add_file_if_doesnt_exist(%s, parent = group_Frameworks)" % f
+			project.add_file_if_doesnt_exist(f, parent = group_Frameworks, tree = "SDKROOT")
 
 	# resources
 	# project.remove_group_by_name("Resources")
 	# group_Resources = project.get_or_create_group("Resources")
-	group_Resources = project.get_or_create_group(config["project_name"])
-	for _, r in enumerate(config["resources"]):
-		print "  project.add_file(%s, parent = group_Resources, create_build_files = True)" % os.path.join(rootPath, r)
-		project.add_file(os.path.join(rootPath, r), parent = group_Resources, create_build_files = True)
+	if config.has_key("resources")
+		group_Resources = project.get_or_create_group(config["project_name"])
+		for _, r in enumerate(config["resources"]):
+			print "  project.add_file(%s, parent = group_Resources, create_build_files = True)" % os.path.join(rootPath, r)
+			project.add_file(os.path.join(rootPath, r), parent = group_Resources, create_build_files = True)
 	#embeded binaries
 	if config.has_key("embeded"):
 		# for _, r in enumerate(config["embeded"]):
