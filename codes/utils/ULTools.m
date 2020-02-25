@@ -126,7 +126,7 @@
 }
 
 #pragma mark - 从字典中获取指定NSArray
-+ (NSArray *)GetArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSArray *)defValue
++ (NSArray *)GetArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSArray *_Nullable)defValue
 {
     
     if (!dic) {
@@ -144,7 +144,7 @@
 
 
 #pragma mark - 从字典中获取指定NSMutableArray
-+ (NSMutableArray *)GetMutableArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableArray *)defValue
++ (NSMutableArray *)GetMutableArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableArray *_Nullable)defValue
 {
     
     if (!dic) {

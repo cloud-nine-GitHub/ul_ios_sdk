@@ -59,11 +59,9 @@
     //获取banner的轮播时间间隔，单位s
     NSString *bannerRefreshTimeStr = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_toutiao_banner_refresh_time" withDefaultString:@""];
     if (bannerRefreshTimeStr != nil && ![bannerRefreshTimeStr isEqualToString:@""]) {
-        try {
-            _bannerRefreshTime = [bannerRefreshTimeStr intValue];
-        } catch (NSException *e) {//配置的非法字符
-            _bannerRefreshTime = 30;
-        }
+        
+        _bannerRefreshTime = [bannerRefreshTimeStr intValue];
+        
         
     }else{//默认值
         _bannerRefreshTime = 30;
@@ -205,7 +203,7 @@
 //普通开屏
 - (void)showNormalSplashAdv : (NSDictionary *)json
 {
-    NSDictionary *gameAdvData = [ULTools GetNSDictionaryFromDic:json :@"gameAdvData" :nil];
+    
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
@@ -213,7 +211,7 @@
     
     
     CGRect frame = [UIScreen mainScreen].bounds;
-    BUSplashAdView *splashView = [[BUSplashAdView alloc] initWithSlotID:splashId frame:frame];
+    BUSplashAdView *splashView = [[BUSplashAdView alloc] initWithSlotID:_splashId frame:frame];
     splashView.delegate = self;
     [splashView loadAdData];
     [[ULTools getCurrentViewController].view addSubview:splashView];
@@ -232,7 +230,7 @@
     CGRect frame = [UIScreen mainScreen].bounds;
     BUNativeExpressSplashView *splashView = [[BUNativeExpressSplashView alloc] initWithSlotID:_splashId adSize:frame.size rootViewController:[ULTools getCurrentViewController]];
     splashView.delegate = self;
-
+    
     [splashView loadAdData];
     [[ULTools getCurrentViewController].view addSubview:splashView];
 }
@@ -240,7 +238,7 @@
 - (void)showInterstitialAdv:(NSDictionary *)json
 {
     NSLog(@"%s",__func__);
-
+    _interJson = json;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
@@ -254,13 +252,16 @@
 - (void)showVideoAdv:(NSDictionary *)json
 {
     NSLog(@"%s",__func__);
+    _videoJson = json;
     //视频
     BURewardedVideoModel *videoModel = [[BURewardedVideoModel alloc] init];
     
     videoModel.userId = @"123";
-    NSDictionary *advConfigDic = [CommonTool::getInstance()->getConfigJson() objectForKey:@"advConfig"];
-    NSString *videoId = CommonTool::getInstance()->getRandomParamBySplit(CommonTool::getInstance()->getCopOrConfigString(@"csjVideoId", [CommonAppDelegate getInstance]->copConfig, CommonTool::getInstance()->d2j(advConfigDic), @""), @"|");
-    self.expressRewardedVideoAd = [[BUNativeExpressRewardedVideoAd alloc] initWithSlotID:videoId rewardedVideoModel:videoModel];
+    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
+    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    _videoId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_videoid" withDefaultParam:@"" withSplitString:@"|"];
+    self.expressRewardedVideoAd = [[BUNativeExpressRewardedVideoAd alloc] initWithSlotID:_videoId rewardedVideoModel:videoModel];
     self.expressRewardedVideoAd.delegate = self;
     [self.expressRewardedVideoAd loadAdData];
 }
@@ -272,11 +273,13 @@
     //        csjFullScreenVidedoId = @"000";
     //    }
     //每次请求数据 需要重新创建一个对应的 BUFullscreenVideoAd管理,不可使用同一条重复请求数据.
-
     
-    NSDictionary *advConfigDic = [CommonTool::getInstance()->getConfigJson() objectForKey:@"advConfig"];
-    NSString *fullVideoId = CommonTool::getInstance()->getRandomParamBySplit(CommonTool::getInstance()->getCopOrConfigString(@"csjFullScreenVidedoId", [CommonAppDelegate getInstance]->copConfig, CommonTool::getInstance()->d2j(advConfigDic), @""), @"|");
-    self.expressFullscreenVideoAd = [[BUNativeExpressFullscreenVideoAd alloc] initWithSlotID: fullVideoId];
+    _fullscreenJson = json;
+    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
+    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    _fullscreenId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_fullscreenid" withDefaultParam:@"" withSplitString:@"|"];
+    self.expressFullscreenVideoAd = [[BUNativeExpressFullscreenVideoAd alloc] initWithSlotID: _fullscreenId];
     self.expressFullscreenVideoAd.delegate = self;
     [self.expressFullscreenVideoAd loadAdData];
     
@@ -286,26 +289,29 @@
 {
     NSLog(@"%s",__func__);
     //banner素材的宽高
-    BUSize *size = [BUSize sizeBy:BUProposalSize_Banner600_100];
-    CGSize screenSize = [UIScreen mainScreen].bounds.size;
-    CGFloat bannerHeight = screenSize.width * size.height / size.width;
+//    _bannerJson = json;
+//    BUSize *size = [BUSize sizeBy:BUProposalSize_Banner600_100];
+//    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+//    CGFloat bannerHeight = screenSize.width * size.height / size.width;
+//
+//    CGFloat bannerY = screenSize.height - bannerHeight;
+//
+//
+//    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
+//    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
+//    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+//    _bannerId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_bannerid" withDefaultParam:@"" withSplitString:@"|"];
+//
+//    self.expressBannerAd = [[BUNativeExpressBannerView alloc] initWithSlotID:_bannerId rootViewController:[ULTools getCurrentViewController] adSize:CGSizeMake(screenSize.width, bannerHeight) IsSupportDeepLink:YES interval:_bannerRefreshTime];
+//
+//
+//    self.expressBannerAd.frame = CGRectMake(0, bannerY, screenSize.width, bannerHeight);
+//    self.expressBannerAd.delegate = self;
+//    [[ULTools getCurrentViewController].view addSubview:self.expressBannerAd];
+//
+//    [self.expressBannerAd loadAdData];
     
-    CGFloat bannerY = screenSize.height - bannerHeight;
-    
-    
-    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
-    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
-    _bannerId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_bannerid" withDefaultParam:@"" withSplitString:@"|"];
-    
-    self.expressBannerAd = [[BUNativeExpressBannerView alloc] initWithSlotID:_bannerId rootViewController:[ULTools getCurrentViewController] adSize:CGSizeMake(screenSize.width, bannerHeight) IsSupportDeepLink:YES interval:_bannerRefreshTime];
-    
-    
-    self.expressBannerAd.frame = CGRectMake(0, bannerY, screenSize.width, bannerHeight);
-    self.expressBannerAd.delegate = self;
-    [[ULTools getCurrentViewController].view addSubview:self.expressBannerAd];
-    
-    [self.expressBannerAd loadAdData];
+    //TODO banner需要重新处理逻辑
     
 }
 
@@ -340,28 +346,28 @@
 
 #pragma mark - normal splash delegate
 /**
-This method is called when splash ad material loaded successfully.
-*/
+ This method is called when splash ad material loaded successfully.
+ */
 - (void)splashAdDidLoad:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
 }
 
 /**
-This method is called when splash ad material failed to load.
-@param error : the reason of error
-*/
+ This method is called when splash ad material failed to load.
+ @param error : the reason of error
+ */
 - (void)splashAd:(BUSplashAdView *)splashAd didFailWithError:(NSError *)error
 {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithString:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%d",error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
     [splashAd removeFromSuperview];
-    [self showNextAdv:_splashJson :_splashId :errorMsg]
+    [self showNextAdv:_splashJson :_splashId :errorMsg];
 }
 
 /**
-This method is called when splash ad slot will be showing.
-*/
+ This method is called when splash ad slot will be showing.
+ */
 - (void)splashAdWillVisible:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
@@ -369,8 +375,8 @@ This method is called when splash ad slot will be showing.
 }
 
 /**
-This method is called when splash ad is clicked.
-*/
+ This method is called when splash ad is clicked.
+ */
 - (void)splashAdDidClick:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
@@ -378,8 +384,8 @@ This method is called when splash ad is clicked.
 }
 
 /**
-This method is called when splash ad is closed.
-*/
+ This method is called when splash ad is closed.
+ */
 - (void)splashAdDidClose:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
@@ -388,8 +394,8 @@ This method is called when splash ad is closed.
 }
 
 /**
-This method is called when splash ad is about to close.
-*/
+ This method is called when splash ad is about to close.
+ */
 - (void)splashAdWillClose:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
@@ -413,7 +419,14 @@ This method is called when splash ad is about to close.
 }
 
 
-
+/**
+ This method is called when another controller has been closed.
+ @param interactionType : open appstore in app or open the webpage or view video ad details page.
+ */
+- (void)splashAdDidCloseOtherController:(BUSplashAdView *)splashAd interactionType:(BUInteractionType)interactionType
+{
+    NSLog(@"%s",__func__);
+}
 
 
 
@@ -421,15 +434,15 @@ This method is called when splash ad is about to close.
 #pragma mark - express splash delegate
 - (void)nativeExpressSplashViewDidLoad:(nonnull BUNativeExpressSplashView *)splashAdView {
     NSLog(@"%s",__func__);
-
+    
 }
 
 - (void)nativeExpressSplashView:(nonnull BUNativeExpressSplashView *)splashAdView didFailWithError:(NSError * _Nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithString:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%d",error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
     [splashAdView removeSplashView];
     [splashAdView removeFromSuperview];
-    [self showNextAdv:_splashJson :_splashId :errorMsg]
+    [self showNextAdv:_splashJson :_splashId :errorMsg];
 }
 
 
@@ -440,15 +453,15 @@ This method is called when splash ad is about to close.
 
 - (void)nativeExpressSplashViewRenderFail:(nonnull BUNativeExpressSplashView *)splashAdView error:(NSError * _Nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithString:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%d",error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
     [splashAdView removeSplashView];
     [splashAdView removeFromSuperview];
-    [self showNextAdv:_splashJson :_splashId :errorMsg]
+    [self showNextAdv:_splashJson :_splashId :errorMsg];
 }
 
 - (void)nativeExpressSplashViewWillVisible:(nonnull BUNativeExpressSplashView *)splashAdView {
     NSLog(@"%s",__func__);
-
+    
 }
 
 - (void)nativeExpressSplashViewDidClick:(nonnull BUNativeExpressSplashView *)splashAdView {
@@ -474,18 +487,26 @@ This method is called when splash ad is about to close.
     NSLog(@"%s%@",__func__,error);
 }
 
+/**
+ This method is called when nativeExpressSplashAdView countdown equals to zero
+ */
+- (void)nativeExpressSplashViewCountdownToZero:(BUNativeExpressSplashView *)splashAdView
+{
+    NSLog(@"%s",__func__);
+}
+
 
 #pragma mark - inter delegate
 - (void)nativeExpresInterstitialAdDidLoad:(BUNativeExpressInterstitialAd *)interstitialAd {
-
+    
     NSLog(@"%s",__func__);
 }
 
 - (void)nativeExpresInterstitialAd:(BUNativeExpressInterstitialAd *)interstitialAd didFailWithError:(NSError *__nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithString:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%d",error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
     [self showNextAdv:_interJson :_interId :errorMsg];
-    
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
 
@@ -497,14 +518,16 @@ This method is called when splash ad is about to close.
     }else{
         NSLog(@"%s%@",__func__,@"express inter not ready");
         [self showNextAdv:_interJson :_interId :@"express inter not ready"];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:@"express inter not ready"];
     }
 }
 
 - (void)nativeExpresInterstitialAdRenderFail:(BUNativeExpressInterstitialAd *)interstitialAd error:(NSError *__nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithString:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%d",error.code],@"; errorMsg = ",error.localizedFailureReason];
-    [self showNextAdv:_interJson :_interId :@"express inter not ready"];
-
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self showNextAdv:_interJson :_interId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
+    
 }
 
 
@@ -523,9 +546,9 @@ This method is called when splash ad is about to close.
 }
 
 - (void)nativeExpresInterstitialAdDidClose:(BUNativeExpressInterstitialAd *)interstitialAd {
-
+    
     NSLog(@"%s",__func__);
-
+    
 }
 
 
@@ -536,14 +559,20 @@ This method is called when splash ad is about to close.
 }
 
 - (void)nativeExpressRewardedVideoAd:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd didFailWithError:(NSError *_Nullable)error{
-
+    
     NSLog(@"%s%@",__func__,error);
-#if (CDSC_ENABLE_ADVSET_IN_HOST)
-    [[CommonAdvSet getInstance]showRewardVideoNext];
-#else
-    [[CommonAdvMgr getInstance]advShowResult:@"0" msg:@"Show Video adv failed" advType:UL_VIDEO];
-#endif
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self showNextAdv:_videoJson :_videoId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
+    
+}
 
+/**
+ this methods is to tell delegate the type of native express rewarded video Ad
+ */
+- (void)nativeExpressRewardedVideoAdCallback:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd withType:(BUNativeExpressRewardedVideoAdType)nativeExpressVideoType
+{
+    NSLog(@"%s",__func__);
 }
 
 - (void)nativeExpressRewardedVideoAdDidDownLoadVideo:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
@@ -555,77 +584,69 @@ This method is called when splash ad is about to close.
     
     if (self.expressRewardedVideoAd.isAdValid) {
         // The reward based video ad is available, present the ad.
-        UIViewController *controller = [UIApplication sharedApplication].keyWindow.rootViewController;
+        //UIViewController *controller = [UIApplication sharedApplication].keyWindow.rootViewController;
         // 物料有效 数据不为空且没有展示过为 YES, 重复展示不计费.
-        [self.expressRewardedVideoAd showAdFromRootViewController:controller];
+        [self.expressRewardedVideoAd showAdFromRootViewController:[ULTools getCurrentViewController]];
     } else {
-#if (CDSC_ENABLE_ADVSET_IN_HOST)
-        [[CommonAdvSet getInstance]showRewardVideoNext];
-#else
-        [[CommonAdvMgr getInstance]advShowResult:@"0" msg:@"Show Video adv failed" advType:UL_VIDEO];
-#endif
+        [self showNextAdv:_videoJson :_videoId :@"广告素材无效"];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:@"广告素材无效"];
     }
 }
 
 - (void)nativeExpressRewardedVideoAdViewRenderFail:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd error:(NSError *_Nullable)error{
     NSLog(@"%s%@",__func__,error);
-#if (CDSC_ENABLE_ADVSET_IN_HOST)
-    [[CommonAdvSet getInstance]showRewardVideoNext];
-#else
-    [[CommonAdvMgr getInstance]advShowResult:@"0" msg:@"Show Video adv failed" advType:UL_VIDEO];
-#endif
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self showNextAdv:_videoJson :_videoId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
-- (void)nativeExpressRewardedVideoAdWillVisible:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
+- (void)nativeExpressRewardedVideoAdWillVisible:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
+{
     NSLog(@"%s",__func__);
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    resultDict[@"cmd"] = UL_PAUSE_SOUND;
-    resultDict[@"data"] = {};
-    NSString *resultStr = CommonTool::getInstance()->d2j(resultDict);
-    [[MessageMgr getInstance] sendMsgToGame:resultStr];
-    [[CommonAdvMgr getInstance]advShowResult:@"7" msg:@" adv ready show" advType:UL_VIDEO];
+    [self pauseSound];
+    
 }
 
-- (void)nativeExpressRewardedVideoAdDidVisible:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
+- (void)nativeExpressRewardedVideoAdDidVisible:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
+{
     NSLog(@"%s",__func__);
-    [[CommonAdvMgr getInstance]advShowResult:@"4" msg:@" adv start show" advType:UL_VIDEO];
+    [self showAdv:_videoJson :_videoId];
 }
 
-- (void)nativeExpressRewardedVideoAdWillClose:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
+- (void)nativeExpressRewardedVideoAdWillClose:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
+{
     NSLog(@"%s",__func__);
+    [self resumeSound];
 }
 
-- (void)nativeExpressRewardedVideoAdDidClose:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
+- (void)nativeExpressRewardedVideoAdDidClose:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
+{
     NSLog(@"%s",__func__);
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    resultDict[@"cmd"] = UL_RESUME_SOUND;
-    resultDict[@"data"] = {};
-    NSString *resultStr = CommonTool::getInstance()->d2j(resultDict);
-    [[MessageMgr getInstance] sendMsgToGame:resultStr];
-    [[CommonAdvMgr getInstance]advShowResult:@"1" msg:@" adv show success" advType:UL_VIDEO];
+    [self showClose:_videoJson :_videoId];
 }
 
-- (void)nativeExpressRewardedVideoAdDidClick:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
+- (void)nativeExpressRewardedVideoAdDidClick:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
+{
+    
     NSLog(@"%s",__func__);
-    [[CommonAdvMgr getInstance]advShowResult:@"5" msg:@" adv show click" advType:UL_VIDEO];
+    [self showClicked:_videoJson :_videoId];
 }
 
-- (void)nativeExpressRewardedVideoAdDidClickSkip:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd{
+- (void)nativeExpressRewardedVideoAdDidClickSkip:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
+{
     NSLog(@"%s",__func__);
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    resultDict[@"cmd"] = UL_RESUME_SOUND;
-    resultDict[@"data"] = {};
-    NSString *resultStr = CommonTool::getInstance()->d2j(resultDict);
-    [[MessageMgr getInstance] sendMsgToGame:resultStr];
+    [self resumeSound];
+    [self showFailed:_videoJson :_videoId :@"adv not play complete"];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:@"adv not play complete"];
 }
 
-- (void)nativeExpressRewardedVideoAdDidPlayFinish:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd didFailWithError:(NSError *_Nullable)error{
+- (void)nativeExpressRewardedVideoAdDidPlayFinish:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd didFailWithError:(NSError *_Nullable)error
+{
     NSLog(@"%s%@",__func__,error);
-    if (error) {
-        NSLog(@"nativeExpressRewardedVideoAd play error");
-    } else {
-        NSLog(@"nativeExpressRewardedVideoAd play finish");
-    }
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self resumeSound];
+    [self showNextAdv:_videoJson :_videoId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
 - (void)nativeExpressRewardedVideoAdServerRewardDidSucceed:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd verify:(BOOL)verify{
@@ -642,9 +663,9 @@ This method is called when splash ad is about to close.
 }
 
 - (void)nativeExpressBannerAdView:(BUNativeExpressBannerView *)bannerAdView didLoadFailWithError:(NSError * _Nullable)error {
-
+    
     NSLog(@"%s%@",__func__,error);
-
+    
 }
 
 - (void)nativeExpressBannerAdViewRenderSuccess:(BUNativeExpressBannerView *)bannerAdView {
@@ -678,31 +699,30 @@ This method is called when splash ad is about to close.
 }
 
 - (void)nativeExpressFullscreenVideoAd:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd didFailWithError:(NSError *_Nullable)error{
-
+    
     NSLog(@"%s%@",__func__,error);
-#if (CDSC_ENABLE_ADVSET_IN_HOST)
-    [[CommonAdvSet getInstance]showInterstitiaAdvNext];
-#else
-    [[CommonAdvMgr getInstance]advShowResult:@"0" msg:@"Show full video adv failed" advType:UL_INTERSTITIAL];
-#endif
-
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
 - (void)nativeExpressFullscreenVideoAdViewRenderSuccess:(BUNativeExpressFullscreenVideoAd *)rewardedVideoAd{
     NSLog(@"%s",__func__);
-    
-    [self showNativeExpressFullScreenAdv];
+    if(self.expressFullscreenVideoAd.isAdValid){
+        [self.expressFullscreenVideoAd showAdFromRootViewController:[ULTools getCurrentViewController]];
+    }else {
+        [self showNextAdv:_fullscreenJson :_fullscreenId :@"广告素材无效"];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:@"广告素材无效"];
+    }
 }
 
 - (void)nativeExpressFullscreenVideoAdViewRenderFail:(BUNativeExpressFullscreenVideoAd *)rewardedVideoAd error:(NSError *_Nullable)error{
-
+    
     NSLog(@"%s%@",__func__,error);
-#if (CDSC_ENABLE_ADVSET_IN_HOST)
-    [[CommonAdvSet getInstance]showInterstitiaAdvNext];
-#else
-    [[CommonAdvMgr getInstance]advShowResult:@"0" msg:@"Show full video adv failed" advType:UL_INTERSTITIAL];
-#endif
-
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
+    
 }
 
 - (void)nativeExpressFullscreenVideoAdDidDownLoadVideo:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
@@ -710,66 +730,52 @@ This method is called when splash ad is about to close.
 }
 
 - (void)nativeExpressFullscreenVideoAdWillVisible:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
-
+    
     NSLog(@"%s",__func__);
-
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    resultDict[@"cmd"] = UL_PAUSE_SOUND;
-    resultDict[@"data"] = {};
-    NSString *resultStr = CommonTool::getInstance()->d2j(resultDict);
-    [[MessageMgr getInstance] sendMsgToGame:resultStr];
-    [[CommonAdvMgr getInstance]advShowResult:@"1" msg:@" adv show success" advType:UL_INTERSTITIAL];
+    [self pauseSound];
 }
 
 - (void)nativeExpressFullscreenVideoAdDidVisible:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
-
+    
     NSLog(@"%s",__func__);
-
-    [[CommonAdvMgr getInstance]advShowResult:@"4" msg:@" adv start show" advType:UL_INTERSTITIAL];
+    [self showAdv:_fullscreenJson :_fullscreenId];
 }
 
 - (void)nativeExpressFullscreenVideoAdDidClick:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
-
     NSLog(@"%s",__func__);
-
-    [[CommonAdvMgr getInstance]advShowResult:@"5" msg:@"show banner adv clicked" advType:UL_INTERSTITIAL];
+    [self showClicked:_fullscreenJson :_fullscreenId];
 }
 
 - (void)nativeExpressFullscreenVideoAdDidClickSkip:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
     NSLog(@"%s",__func__);
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    
-    resultDict[@"cmd"] = UL_RESUME_SOUND;
-    resultDict[@"data"] = {};
-    NSString *resultStr = CommonTool::getInstance()->d2j(resultDict);
-    [[MessageMgr getInstance] sendMsgToGame:resultStr];
+    [self resumeSound];
 }
 
 - (void)nativeExpressFullscreenVideoAdWillClose:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
     NSLog(@"%s",__func__);
+    [self resumeSound];
 }
 
 - (void)nativeExpressFullscreenVideoAdDidClose:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
     NSLog(@"%s",__func__);
-    NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];
-    
-    resultDict[@"cmd"] = UL_RESUME_SOUND;
-    resultDict[@"data"] = {};
-    NSString *resultStr = CommonTool::getInstance()->d2j(resultDict);
-    [[MessageMgr getInstance] sendMsgToGame:resultStr];
-    
-    [[CommonAdvMgr getInstance]advShowResult:@"6" msg:@"Show Interstitial Adv close" advType:UL_INTERSTITIAL];
 }
 
 - (void)nativeExpressFullscreenVideoAdDidPlayFinish:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd didFailWithError:(NSError *_Nullable)error{
     NSLog(@"%s%@",__func__,error);
-    if (error) {
-        NSLog(@"nativeExpressFullscreenVideoAdDidPlayFinish play error");
-    } else {
-        NSLog(@"nativeExpressFullscreenVideoAdDidPlayFinish play finish");
-    }
+    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    [self resumeSound];
+    [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
+
+/**
+ This method is used to get the type of nativeExpressFullScreenVideo ad
+ */
+- (void)nativeExpressFullscreenVideoAdCallback:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd withType:(BUNativeExpressFullScreenAdType) nativeExpressVideoAdType
+{
+    NSLog(@"%s",__func__);
+}
 
 @end
 

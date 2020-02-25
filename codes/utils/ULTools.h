@@ -25,8 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (int)GetIntFromDic :(NSDictionary *)dic :(NSString *)key :(int)defValue;
 + (long)GetLongFromDic :(NSDictionary *)dic :(NSString *)key :(long)defValue;
 + (BOOL)GetBoolFromDic :(NSDictionary *)dic :(NSString *)key :(BOOL)defValue;
-+ (NSArray *)GetArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSArray *)defValue;
-+ (NSMutableArray *)GetMutableArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableArray *)defValue;
++ (NSArray *)GetArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSArray *_Nullable)defValue;
++ (NSMutableArray *)GetMutableArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableArray *_Nullable)defValue;
 + (NSDictionary *)GetNSDictionaryFromDic :(NSDictionary *)dic :(NSString *)key :(NSDictionary *_Nullable)defValue;
 + (NSMutableDictionary *)GetNSMutableDictionaryFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableDictionary *_Nullable)defValue;
 + (NSString *)getCopOrConfigStringWithKey:(NSString *)key withDefaultString:(NSString *)defaultString;
