@@ -99,7 +99,7 @@ static NSString *upCopInfoString = @"";
         //response ： 响应：服务器的响应
         //data：二进制数据：服务器返回的数据。（就是我们想要的内容）
         //error：链接错误的信息
-        NSLog(@"cop请求网络响应：response：%@",response);
+        //NSLog(@"cop请求网络响应：response：%@",response);
         if (!error) {
             if (!data) {
                 NSLog(@"%s%@",__func__,@"copInfoString return nil");
@@ -247,9 +247,11 @@ static NSString *upCopInfoString = @"";
 
 + (void)doPostCopResultData:(NSString *)copRequestResult :(NSString *)copResultFailReason :(NSString *)upCopInfoString
 {
+    NSLog(@"%s：上报cop统计",__func__);
     if ([copRequestResult isEqualToString:@"success"]) {
         NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_COP_REQUEST],@"coprequest",copRequestResult,copResultFailReason,upCopInfoString];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+        return;
     }
     
     if (![copFailedDataCountMap objectForKey:copResultFailReason]) {
