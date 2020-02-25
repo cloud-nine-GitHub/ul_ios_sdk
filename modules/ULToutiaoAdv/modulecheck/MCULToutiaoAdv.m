@@ -146,8 +146,18 @@
         }];
         return;
     }
+    NSString *key = @"";
+    if([_advType isEqualToString:UL_ADV_INTERSTITIAL]){
+        key = @"s_sdk_adv_toutiao_interid";
+    }else if([_advType isEqualToString:UL_ADV_FULLSCREEN]){
+        key = @"s_sdk_adv_toutiao_fullscreenid";
+    }else if([_advType isEqualToString:UL_ADV_VIDEO]){
+        key = @"s_sdk_adv_toutiao_videoid";
+    }else if([_advType isEqualToString:UL_ADV_BANNER]){
+        key = @"s_sdk_adv_toutiao_bannerid";
+    }
     //未输入参数则使用本地默认的参数
-    NSMutableDictionary *advData = [self getModuleAdvTestDataWithType:_advType withEditParam:_advParam withLocalParamKey:@""];
+    NSMutableDictionary *advData = [self getModuleAdvTestDataWithType:_advType withEditParam:_advParam withLocalParamKey:key];
     [self openAdv:advData];
 }
 
@@ -280,6 +290,7 @@
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
     NSLog(@"%s",__func__);
+    _advParam = @"";
     return YES;
 }
 

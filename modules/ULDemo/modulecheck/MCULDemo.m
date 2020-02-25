@@ -204,6 +204,11 @@
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
     NSLog(@"%s",__func__);
+    switch (textField.tag) {
+        case 10:
+            _payId = @"";
+            break;
+    }
     return YES;
 }
 

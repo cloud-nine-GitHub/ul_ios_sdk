@@ -27,7 +27,7 @@
 #import <BUAdSDK/BUNativeExpressRewardedVideoAd.h>
 #import <BUAdSDK/BUNativeExpressFullscreenVideoAd.h>
 #import <BUAdSDK/BUNativeExpressSplashView.h>
-
+#import "ULTimer.h"
 
 
 @interface ULToutiaoAdv()<ULILifeCycle,BUSplashAdDelegate,BUNativeExpressSplashViewDelegate,BUNativeExpressRewardedVideoAdDelegate,BUNativeExpresInterstitialAdDelegate,BUNativeExpressBannerViewDelegate,BUNativeExpressFullscreenVideoAdDelegate>
@@ -45,6 +45,7 @@
 @property (nonatomic, strong) NSDictionary *splashJson,*interJson,*videoJson,*fullscreenJson,*bannerJson;
 @property (nonatomic, strong) NSString *splashId,*interId,*videoId,*fullscreenId,*bannerId;
 @property (nonatomic, assign) int bannerRefreshTime;
+@property (nonatomic, assign) BOOL isSplashClicked;
 @end
 
 @implementation ULToutiaoAdv
@@ -189,13 +190,14 @@
 {
     
     NSLog(@"%s",__func__);
-    [self setDisableAdvPriority:UL_ADV_URL,UL_ADV_GIFT,UL_ADV_ICON,UL_ADV_EMBEDDED];
+    [self setDisableAdvPriority:UL_ADV_GIFT,UL_ADV_ICON,UL_ADV_EMBEDDED];
 }
 
 
 - (void)showSplashAdv:(NSDictionary *)json
 {
     NSLog(@"%s",__func__);
+    _isSplashClicked = NO;
     _splashJson = json;
     [self showNormalSplashAdv:json];
 }
@@ -208,7 +210,6 @@
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
     _splashId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_splashid" withDefaultParam:@"" withSplitString:@"|"];
-    
     
     CGRect frame = [UIScreen mainScreen].bounds;
     BUSplashAdView *splashView = [[BUSplashAdView alloc] initWithSlotID:_splashId frame:frame];
@@ -380,6 +381,7 @@
 - (void)splashAdDidClick:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
+    _isSplashClicked = YES;
     [self showClicked:_splashJson :_splashId];
 }
 
@@ -390,6 +392,18 @@
 {
     NSLog(@"%s",__func__);
     [splashAd removeFromSuperview];
+    if (!_isSplashClicked) {
+        [[ULSplashViewController getInstance]removeSplashView];
+    }else{
+        //延时设置rootvc
+        [[ULTimer getInstance]startTimerWithName:@"toutiao_splash_delay_close" withTarget:self withTime:2.0 withSel:@selector(delayClose) withUserInfo:nil withRepeat:NO];
+    }
+
+}
+
+- (void)delayClose
+{
+    [[ULTimer getInstance] stopTimerWithName:@"toutiao_splash_delay_close"];
     [[ULSplashViewController getInstance]removeSplashView];
 }
 
@@ -643,10 +657,10 @@
 - (void)nativeExpressRewardedVideoAdDidPlayFinish:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd didFailWithError:(NSError *_Nullable)error
 {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
-    [self resumeSound];
-    [self showNextAdv:_videoJson :_videoId :errorMsg];
-    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
+//    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+//    [self resumeSound];
+//    [self showNextAdv:_videoJson :_videoId :errorMsg];
+//    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
 - (void)nativeExpressRewardedVideoAdServerRewardDidSucceed:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd verify:(BOOL)verify{
@@ -762,10 +776,10 @@
 
 - (void)nativeExpressFullscreenVideoAdDidPlayFinish:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd didFailWithError:(NSError *_Nullable)error{
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
-    [self resumeSound];
-    [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
-    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
+//    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+//    [self resumeSound];
+//    [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
+//    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
 
 

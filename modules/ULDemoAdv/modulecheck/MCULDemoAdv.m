@@ -290,6 +290,7 @@
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
     NSLog(@"%s",__func__);
+    _advParam = @"";
     return YES;
 }
 

@@ -37,6 +37,13 @@ static ULSplashViewController* instance=nil;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+//    UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//    [UIApplication sharedApplication].delegate.window = window;
+//    window.backgroundColor = [UIColor whiteColor];
+//    [window makeKeyAndVisible];
+//    [window setRootViewController:self];
+    
     //TODO 开屏横转竖功能是否保留
     
     //TODO 是否设置开屏底图
