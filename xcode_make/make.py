@@ -186,7 +186,7 @@ def make_by_config(rootPath, config):
 	plistlib.writePlist(info_data, info_plist_filename)
 
 	# 3. 打包
-	if config["b_export"]:
+	if config["b_export"] and config["b_export"] == True:
 		args = [
 			"--channel=%s" % config["channel"],
 			"--export_path=%s" % os.path.join(rootPath, "package"),
