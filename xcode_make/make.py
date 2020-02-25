@@ -55,44 +55,46 @@ def make_by_config(rootPath, config):
 	project = XcodeProject.Load(pbxproj_filename)
 
 	#codes
-	group_codes = project.get_or_create_group("codes")
-	for _, f in enumerate(config["codes"]):
-		project.add_folder(os.path.join(codes_path, f), parent = group_codes)
+	if config.has_key("codes"):
+		group_codes = project.get_or_create_group("codes")
+		for _, f in enumerate(config["codes"]):
+			project.add_folder(os.path.join(codes_path, f), parent = group_codes)
 
 	# 3rdparts
 	# group_3rdparts = project.get_or_create_group("3rdparts")
-	for _, f in enumerate(config["3rdparts"]):
-		print "  project.add_folder(%s, parent = group_3rdparts)" % os.path.join(sdk_path, f)
-		# project.add_folder(os.path.join(sdk_path, f), parent = group_3rdparts)
-		project.add_folder(os.path.join(sdk_path, f), parent = "")
-		# 3d特殊处理
-		if config.has_key("game_type") and config["game_type"] == "3d":
-			# 添加-fno-objc-arc
-			dirs = os.listdir(os.path.join(sdk_path, f))
-			print "dirs %s" % dirs
-			for i in dirs:                             # 循环读取路径下的文件并筛选输出
-			    if os.path.splitext(i)[1] == ".mm":   # 筛选mm, m文件
-		        	fileId = project.get_file_id_by_path("../../../prj.ulsdk/UISDK/ios/" + f + "/" + i)
-		        	# print "fileId(%s)" % fileId
-		        	files = project.get_build_files(fileId)
-		        	# print "files %s" % files
-		        	for file in files:
-		        		file.add_compiler_flag("-fno-objc-arc")
+	if config.has_key("3rdparts"):
+		for _, f in enumerate(config["3rdparts"]):
+			print "  project.add_folder(%s, parent = group_3rdparts)" % os.path.join(sdk_path, f)
+			# project.add_folder(os.path.join(sdk_path, f), parent = group_3rdparts)
+			project.add_folder(os.path.join(sdk_path, f), parent = "")
+			# 3d特殊处理
+			if config.has_key("game_type") and config["game_type"] == "3d":
+				# 添加-fno-objc-arc
+				dirs = os.listdir(os.path.join(sdk_path, f))
+				print "dirs %s" % dirs
+				for i in dirs:                             # 循环读取路径下的文件并筛选输出
+				    if os.path.splitext(i)[1] == ".mm":   # 筛选mm, m文件
+			        	fileId = project.get_file_id_by_path("../../../prj.ulsdk/UISDK/ios/" + f + "/" + i)
+			        	# print "fileId(%s)" % fileId
+			        	files = project.get_build_files(fileId)
+			        	# print "files %s" % files
+			        	for file in files:
+			        		file.add_compiler_flag("-fno-objc-arc")
 
-		        # 特殊处理2个文件夹
-			    if os.path.splitext(i)[0] == "ZYNetworkAccessibity" or os.path.splitext(i)[0] == "Utils":
-			    	dirs1 = os.listdir("../../../prj.ulsdk/UISDK/ios/ULSDK/ZYNetworkAccessibity")
-			    	if os.path.splitext(i)[0] == "Utils":
-			    		dirs1 = os.listdir("../../../prj.ulsdk/UISDK/ios/ULSDK/Utils")
-			    	print "dirs1 %s" % dirs1
-			    	for j in dirs1:
-			    		if os.path.splitext(j)[1] == ".m" or os.path.splitext(j)[1] == ".mm":
-			    			fileId1 = project.get_file_id_by_path("../../../prj.ulsdk/UISDK/ios/ULSDK/ZYNetworkAccessibity/" + j)
-			    			if os.path.splitext(i)[0] == "Utils":
-			    				fileId1 = project.get_file_id_by_path("../../../prj.ulsdk/UISDK/ios/ULSDK/Utils/" + j)
-			    			files1 = project.get_build_files(fileId1)
-			    			for file1 in files1:
-			    				file1.add_compiler_flag("-fno-objc-arc")
+			        # 特殊处理2个文件夹
+				    if os.path.splitext(i)[0] == "ZYNetworkAccessibity" or os.path.splitext(i)[0] == "Utils":
+				    	dirs1 = os.listdir("../../../prj.ulsdk/UISDK/ios/ULSDK/ZYNetworkAccessibity")
+				    	if os.path.splitext(i)[0] == "Utils":
+				    		dirs1 = os.listdir("../../../prj.ulsdk/UISDK/ios/ULSDK/Utils")
+				    	print "dirs1 %s" % dirs1
+				    	for j in dirs1:
+				    		if os.path.splitext(j)[1] == ".m" or os.path.splitext(j)[1] == ".mm":
+				    			fileId1 = project.get_file_id_by_path("../../../prj.ulsdk/UISDK/ios/ULSDK/ZYNetworkAccessibity/" + j)
+				    			if os.path.splitext(i)[0] == "Utils":
+				    				fileId1 = project.get_file_id_by_path("../../../prj.ulsdk/UISDK/ios/ULSDK/Utils/" + j)
+				    			files1 = project.get_build_files(fileId1)
+				    			for file1 in files1:
+				    				file1.add_compiler_flag("-fno-objc-arc")
 
 	# preprocessors
 	if config.has_key("preprocessors"):
