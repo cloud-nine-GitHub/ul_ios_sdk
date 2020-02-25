@@ -95,19 +95,19 @@ def make_by_config(rootPath, config):
 			    				file1.add_compiler_flag("-fno-objc-arc")
 
 	# preprocessors
-	if config.has_key("preprocessors")
+	if config.has_key("preprocessors"):
 		for _, p in enumerate(config["preprocessors"]):
 			print "  project.add_preprocessor(%s)" % p
 			project.add_preprocessor(p)
 
 	# search_path
-	if config.has_key("header_search_paths")
+	if config.has_key("header_search_paths"):
 		print "  project.add_header_search_paths(%s)" % config["header_search_paths"]
 		project.add_header_search_paths(config["header_search_paths"])
-	if config.has_key("framework_search_paths")
+	if config.has_key("framework_search_paths"):
 		print "  project.add_framework_search_paths(%s)" % config["framework_search_paths"]
 		project.add_framework_search_paths(config["framework_search_paths"])
-	if config.has_key("libaray_search_paths")
+	if config.has_key("libaray_search_paths"):
 		print "  project.add_library_search_paths(%s)" % config["libaray_search_paths"]
 		project.add_library_search_paths(config["libaray_search_paths"])
 
@@ -132,7 +132,7 @@ def make_by_config(rootPath, config):
 		project.add_flags({"CLANG_ENABLE_MODULES": ["YES"]})
 			
 	# other_link
-	if config.has_key("other_link_flags")
+	if config.has_key("other_link_flags"):
 		for _, flag in enumerate(config["other_link_flags"]):
 			print "  project.add_other_ldflags(%s)" % (flag)
 			project.add_other_ldflags(flag)
@@ -143,7 +143,7 @@ def make_by_config(rootPath, config):
 				project.add_flags({"CLANG_ENABLE_OBJC_WEAK":"YES"})
 
 	# framework
-	if config.has_key("frameworks")
+	if config.has_key("frameworks"):
 		group_Frameworks = project.get_or_create_group("Frameworks")
 		for _, f in enumerate(config["frameworks"]):
 			print "  project.add_file_if_doesnt_exist(%s, parent = group_Frameworks)" % f
@@ -152,7 +152,7 @@ def make_by_config(rootPath, config):
 	# resources
 	# project.remove_group_by_name("Resources")
 	# group_Resources = project.get_or_create_group("Resources")
-	if config.has_key("resources")
+	if config.has_key("resources"):
 		group_Resources = project.get_or_create_group(config["project_name"])
 		for _, r in enumerate(config["resources"]):
 			print "  project.add_file(%s, parent = group_Resources, create_build_files = True)" % os.path.join(rootPath, r)
