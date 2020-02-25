@@ -59,6 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)getICCID;
 + (NSString *)getIMEI;
 + (NSString *)getProvidersName;
++ (NSString *)platformString;
 
 @end
 
