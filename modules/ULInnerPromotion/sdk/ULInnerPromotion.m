@@ -219,6 +219,13 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
 - (NSString *)onJsonAPI :(NSString *)param
 {
     NSLog(@"%s",__func__);
+    NSDictionary *json = [ULTools StringToDictionary: param];
+    NSString *cmd = [json objectForKey:@"cmd"];
+    id data = [json objectForKey:@"data"];
+    if ([cmd isEqualToString:MSG_CMD_INNER_PROMOTION_DOWNLOAD_RESULT]) {
+        [self requestDownloadApp:data];
+    }
+    
     return nil;
 }
 

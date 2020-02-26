@@ -18,6 +18,7 @@
 #import "ULModuleBaseSdk.h"
 #import "MenuItemView.h"
 #import "ULModuleBaseAdv.h"
+#import "ULAccountType.h"
 
 @interface MCULUrlAdv ()<UITextFieldDelegate>
 
@@ -144,10 +145,21 @@
 - (void)openAdv:(NSMutableDictionary *)advData
 {
     
+    //TODO 临时写法(插入未知不合理) 为方便后期统计字段扩展修改
+    //广告埋点统计
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"",@"",@"totalAdvRequest",@"",@"",S_CONST_ADV_MC_ADVID_DES,S_CONST_ADV_MC_ADVID_DES,@"",@""];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    
+    
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:advData :@"sdkAdvData" :nil];
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     
     if([type isEqualToString:UL_ADV_URL]){
+        
+        //广告请求统计 对于多参数来说并不知道本次请求的是哪一个参数
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"ULUrlAdv",UL_ADV_URL,@"branchAdvRequest",@"",@"",S_CONST_ADV_MC_ADVID_DES,S_CONST_ADV_MC_ADVID_DES,@"",@""];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+        
         if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_ULURL_URL_ADV withData:advData]) {
             [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
         }
@@ -229,6 +241,7 @@
 - (BOOL)textFieldShouldClear:(UITextField *)textField
 {
     NSLog(@"%s",__func__);
+    _advParam = @"";
     return YES;
 }
 
