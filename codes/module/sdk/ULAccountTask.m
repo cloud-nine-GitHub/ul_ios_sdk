@@ -109,7 +109,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     }
     
     NSMutableDictionary *json = [self assembleJsonData:array];
-    NSLog(@"%s%@",__func__,json);
+    NSLog(@"%s%@",__func__,[ULTools DictionaryToString:json]);
     NSString *jsonStr = [ULTools DictionaryToString:json];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:jsonStr];
 }
@@ -126,7 +126,6 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 {
     for (NSArray *arr in array) {
         NSMutableDictionary *json = [self assembleJsonData:arr];
-        NSLog(@"%s%@",__func__,json);
         NSString *jsonStr = [ULTools DictionaryToString:json];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:jsonStr];
     }
@@ -336,7 +335,10 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     
     for (ULAccountBean *bean in upDataBeanList) {
         NSDictionary *upDataJson = [ULTools StringToDictionary:bean.upData];
-        [jsonArray addObject:upDataJson];
+        if (upDataJson) {
+            [jsonArray addObject:upDataJson];
+        }
+        
     }
     
 
@@ -591,7 +593,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     [self upData:@[[NSString stringWithFormat:@"%d",ULA_GAME_USER_ONLINE_TIME],_gameStartTime,[NSString stringWithFormat:@"%ld",onlineTime]]];
     
     //停止定时器
-    [self performSelector:@selector(cancelThreadTimer) onThread:_upDataWriteThread withObject:nil waitUntilDone:YES];
+    //[self performSelector:@selector(cancelThreadTimer) onThread:_upDataWriteThread withObject:nil waitUntilDone:YES];
 }
 
 
