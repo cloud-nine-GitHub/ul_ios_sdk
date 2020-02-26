@@ -25,9 +25,9 @@ def make_by_config(rootPath, config):
 	src_project_path = os.path.join(rootPath, config["src_project_path"])
 	dst_project_path = os.path.join(rootPath, "_proj.ios_%s" % config["channel"])
 	# sdk_path = os.path.join(sys.path[0], "..","..","UISDK", "ios")
-	sdk_path = os.path.join(sys.path[0], "..", "modules")
-	codes_path = os.path.join(sys.path[0], "..", "codes")
-	exporter_script = os.path.join(sdk_path, "..", "xcode_exporter", "exporter.py")
+	sdk_path = os.path.join(sys.path[0], "..", "..", "modules")
+	codes_path = os.path.join(sys.path[0], "..", "..", "codes")
+	exporter_script = os.path.join(sdk_path, "..", "exporter", "xcode_exporter", "exporter.py")
 
 
 
