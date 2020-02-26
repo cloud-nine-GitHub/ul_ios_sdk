@@ -50,11 +50,21 @@
             //            NSLog(@"out animate completion");
             //label.alpha = 0.0;
             //next
+            //部分sdk开屏广告需要rootVC，preset跳转不能正常展示广告
+            //            ULSplashViewController* splashViewController = [[ULSplashViewController alloc] init];
+            //            //处理ios13新特性，调用present方法会出现折叠视图
+            //            splashViewController.modalPresentationStyle = 0;
+            //            [self presentViewController:splashViewController animated:false completion:nil];
+            
+            //这里需要重新设置游戏所在的viewControoler
+            UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            [UIApplication sharedApplication].delegate.window = window;
+            window.backgroundColor = [UIColor whiteColor];
+            [window makeKeyAndVisible];
             ULSplashViewController* splashViewController = [[ULSplashViewController alloc] init];
-            //处理ios13新特性，调用present方法会出现折叠视图
-            splashViewController.modalPresentationStyle = 0;
-            [self presentViewController:splashViewController animated:false completion:nil];
-
+            [window setRootViewController:splashViewController];
+            
+            
         }];
         
         

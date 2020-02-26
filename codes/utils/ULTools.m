@@ -126,7 +126,7 @@
 }
 
 #pragma mark - 从字典中获取指定NSArray
-+ (NSArray *)GetArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSArray *)defValue
++ (NSArray *)GetArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSArray *_Nullable)defValue
 {
     
     if (!dic) {
@@ -144,7 +144,7 @@
 
 
 #pragma mark - 从字典中获取指定NSMutableArray
-+ (NSMutableArray *)GetMutableArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableArray *)defValue
++ (NSMutableArray *)GetMutableArrayFromDic :(NSDictionary *)dic :(NSString *)key :(NSMutableArray *_Nullable)defValue
 {
     
     if (!dic) {
@@ -952,6 +952,83 @@
     return deviceString;
 
 
+}
+
+
++ (NSString *)getRandomParamByCopOrConfigWithParamArray:(NSArray *)paramArray withProbabilityArray:(NSArray *)probabilityArray withParamKey:(NSString *)paramsKey withDefaultParam:(NSString *)defaultParam withSplitString:(NSString *)splitString
+{
+    NSString *paramString = [self GetStringFromDic:[ULConfig getConfigInfo] :paramsKey :@""];
+    if (!paramArray || paramArray.count == 0) {
+        return [self getRandomParamBySplit:paramString :splitString];
+    }
+    return [self getProbabilityParamByArray:paramArray:probabilityArray:defaultParam];
+}
+
++ (NSString *)getProbabilityParamByArray:(NSArray *)paramArray :(NSArray *)probabilityArray :(NSString *)defaultParam
+{
+    if (!paramArray) {
+        return defaultParam;
+    }
+    if (!probabilityArray) {
+        return [self getRandomParamByArray: paramArray :defaultParam];
+    }
+    long paramLength = paramArray.count;
+    long proLength = probabilityArray.count;
+    if (paramLength >= 1) {
+        if (paramLength == proLength) {
+            int proCount = 0;
+            for (int i = 0; i < proLength; i++) {
+                int proUnit = 0;
+                id value = probabilityArray[i];
+                if([value isKindOfClass:[NSNumber class]]){
+                    proUnit = [value intValue];
+                }else{
+                    return [self getRandomParamByArray: paramArray :defaultParam];
+                }
+                if (proUnit < 0 || proUnit > 100) {
+                    return [self getRandomParamByArray: paramArray :defaultParam];
+                }
+                proCount = proCount + proUnit;
+            }
+            
+            if (proCount != 100) {
+                return [self getRandomParamByArray: paramArray :defaultParam];
+            }
+            
+            //取随机数
+            //获取一个随机整数范围在：[1,101)包括1，不包括101
+            int random = arc4random() % 100 + 1;
+            int min = 0;
+            int max = 0;
+            for (int i = 0; i < proLength; i ++) {
+                int proUnit = (int )probabilityArray[i];
+                max = max + proUnit;
+                if (min < random && random <= max) {
+                    return paramArray[i];
+                }
+                min = max;
+            }
+            
+        }
+        //配置错误
+        return [self getRandomParamByArray: paramArray :defaultParam];
+    }
+    //只有一个参数
+    return defaultParam;
+}
+
++ (NSString *)getRandomParamByArray:(NSArray *)param :(NSString *)defaultParam
+{
+    if (!param) {
+        return defaultParam;
+    }
+    
+    long length = param.count;
+    if (length >= 1) {
+        int idx = arc4random() % length;
+        return param[idx];
+    }
+    return defaultParam;
 }
 
 @end

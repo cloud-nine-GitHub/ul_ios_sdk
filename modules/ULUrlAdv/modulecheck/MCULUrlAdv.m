@@ -34,7 +34,7 @@
 
 -(BOOL)hasNativeAdv
 {
-    return YES;
+    return NO;
 }
 
 - (void)initView:(int)floatY

@@ -166,7 +166,7 @@
 {
     
     NSLog(@"%s",__func__);
-    [self setDisableAdvPriority:UL_ADV_GIFT,UL_ADV_ICON,UL_ADV_EMBEDDED];
+    [self setDisableAdvPriorityByArray:@[UL_ADV_GIFT,UL_ADV_ICON,UL_ADV_EMBEDDED]];
 }
 
 

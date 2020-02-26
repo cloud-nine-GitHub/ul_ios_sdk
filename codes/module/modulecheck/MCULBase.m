@@ -61,6 +61,7 @@
     [sdkAdvData setValue:[NSNumber numberWithInt:true] forKey:@"isStopDispatch"];//测试模块广告调用，中断流程分发
     [sdkAdvData setValue:advType forKey:@"type"];
     [sdkAdvData setValue:@"show" forKey:@"rewardType"];
+    
     NSArray *advParamArray;
     if([advParam isEqualToString:@""]){//未输入参数，那么则使用本地的参数配置
         NSString *localParam = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :key :@""];

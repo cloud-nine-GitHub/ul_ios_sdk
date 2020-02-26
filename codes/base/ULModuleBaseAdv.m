@@ -86,6 +86,22 @@
     [_moduleDisableAdvTypes addObject:@"unknow"];
 }
 
+
+
+- (void)setDisableAdvPriorityByArray:(NSArray *)disableType
+{
+
+    for (NSString *type in disableType) {
+        if (![_moduleDisableAdvTypes containsObject:type]) {
+            [_moduleDisableAdvTypes addObject:type];
+        }
+        
+    }
+    
+    [_moduleDisableAdvTypes addObject:@"unknow"];
+}
+
+
 - (void)setBaseAdvListener
 {
     
@@ -243,7 +259,7 @@
 
 - (void)showClicked:(NSMutableDictionary *)data :(NSString *)param
 {
-    [ULAdvCallBackManager callBackEntry:clicked :data];
+    
     //广告点击统计
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
@@ -253,12 +269,15 @@
     
     NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,advId,@"",param];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    if(![type isEqualToString:UL_ADV_SPLAH]){
+        [ULAdvCallBackManager callBackEntry:clicked :data];
+    }
 }
 
 - (void)showAdv:(NSMutableDictionary *)data :(NSString *)param
 {
-    [ULAdvCallBackManager callBackEntry:showed :data];
-    //广告点击统计
+    
+    //广告展示统计
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
@@ -269,13 +288,15 @@
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
     
-    
+    if(![type isEqualToString:UL_ADV_SPLAH]){
+        [ULAdvCallBackManager callBackEntry:showed :data];
+    }
 }
 
 - (void)showClose:(NSMutableDictionary *)data :(NSString *)param
 {
     [ULAdvCallBackManager callBackEntry:closed :data];
-    //广告点击统计
+    //广告展示统计
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
