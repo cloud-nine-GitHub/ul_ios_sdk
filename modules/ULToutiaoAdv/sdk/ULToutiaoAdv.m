@@ -395,16 +395,24 @@
     if (!_isSplashClicked) {
         [[ULSplashViewController getInstance]removeSplashView];
     }else{
-        //延时设置rootvc
-        [[ULTimer getInstance]startTimerWithName:@"toutiao_splash_delay_close" withTarget:self withTime:2.0 withSel:@selector(delayClose) withUserInfo:nil withRepeat:NO];
+        //TODO 零时处理方案：由于单独提供vc作为开屏展示，在关闭回调中有处理跳转逻辑，开屏点击后也会回调关闭，导致点击广告跳转存在问题。目前是每秒钟去检测当前的vc来判断是否已经回到开屏，然后做对应的逻辑处理，但是这种临时方案对l打开链接性广告还是无法生效。
+        [[ULTimer getInstance]startTimerWithName:@"toutiao_splash_delay_close" withTarget:self withTime:1.0 withSel:@selector(delayClose) withUserInfo:nil withRepeat:YES];
     }
 
 }
 
 - (void)delayClose
 {
-    [[ULTimer getInstance] stopTimerWithName:@"toutiao_splash_delay_close"];
-    [[ULSplashViewController getInstance]removeSplashView];
+    NSLog(@"%s",__func__);
+    //检测当前的vc是否是开屏vc
+    UIViewController *vc = [ULTools getCurrentViewController];
+    NSString *vcName = NSStringFromClass([vc class]);
+    if ([vcName isEqualToString:@"ULSplashViewController"]) {
+        NSLog(@"%s:已经回到开屏vc",__func__);
+        [[ULTimer getInstance] stopTimerWithName:@"toutiao_splash_delay_close"];
+        [[ULSplashViewController getInstance]removeSplashView];
+    }
+    
 }
 
 /**
@@ -440,6 +448,8 @@
 - (void)splashAdDidCloseOtherController:(BUSplashAdView *)splashAd interactionType:(BUInteractionType)interactionType
 {
     NSLog(@"%s",__func__);
+    
+    //经测试，本函数不回调。按理说点击后的vc逻辑应该在本回调中处理，用户关闭广告跳转页面后再进行vc跳转
 }
 
 
