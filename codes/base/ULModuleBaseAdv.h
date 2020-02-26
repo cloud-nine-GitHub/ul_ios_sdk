@@ -56,7 +56,8 @@ static int SDK_ADV_STATE = 1;
 }
 
 - (void)initModuleBaseAdv :(NSDictionary *)advPriorityDic;
-- (void)setDisableAdvPriority:(NSString *)disableType,...;
+//- (void)setDisableAdvPriority:(NSString *)disableType,...;
+- (void)setDisableAdvPriorityByArray:(NSArray *)disableType;
 - (NSArray *)getParamArrayWithModule:(NSString *)module withType:(NSString *)type withDefaultValue:(NSArray *)defaultValue;
 - (void)showNextAdv:(NSDictionary *)data :(NSString *)param :(NSString *)failedReason;
 

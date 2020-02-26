@@ -86,6 +86,22 @@
     [_moduleDisableAdvTypes addObject:@"unknow"];
 }
 
+
+
+- (void)setDisableAdvPriorityByArray:(NSArray *)disableType
+{
+
+    for (NSString *type in disableType) {
+        if (![_moduleDisableAdvTypes containsObject:type]) {
+            [_moduleDisableAdvTypes addObject:type];
+        }
+        
+    }
+    
+    [_moduleDisableAdvTypes addObject:@"unknow"];
+}
+
+
 - (void)setBaseAdvListener
 {
     
