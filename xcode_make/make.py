@@ -176,10 +176,13 @@ def make_by_config(rootPath, config):
 
 	info_data = plistlib.readPlist(info_plist_filename)
 
-	info_data["CFBundleShortVersionString"] = config["version"]
-	info_data["CFBundleVersion"] = config["build_version"]
+	if info_data["CFBundleShortVersionString"]:
+		info_data["CFBundleShortVersionString"] = config["version"]
+	if info_data["CFBundleVersion"]:
+		info_data["CFBundleVersion"] = config["build_version"]
 
-	del info_data["UIMainStoryboardFile"]
+	if info_data["UIMainStoryboardFile"]:
+		del info_data["UIMainStoryboardFile"]
 
 	# 打上mod
 	info_mod = config["info_plist_mod"]
