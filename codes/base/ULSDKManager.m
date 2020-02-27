@@ -42,6 +42,7 @@
 #import "ULWebView.h"
 #import "ULMoreGame.h"
 #import "ULAccountType.h"
+#import "ULGetDeviceId.h"
 
 @interface ULSDKManager ()
 
@@ -371,6 +372,9 @@ static double currentVolume = 0.00;
     [channeInfoDic setValue:[ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_cop_channel_id" :@"0"] forKey:@"copChannelId"];
     //返回ulsdk版本
     [channeInfoDic setValue:[ULConfig getUlsdkVersion] forKey:@"ulsdkVersion"];
+    
+    //返回用户唯一标识
+    [channeInfoDic setValue:[ULGetDeviceId getUniqueDeviceId] forKey:@"udid"];
     
     NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
     if ([isCloseCop isEqualToString:@"1"]) {
