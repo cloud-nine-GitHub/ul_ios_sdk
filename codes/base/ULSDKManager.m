@@ -505,35 +505,52 @@ static double currentVolume = 0.00;
 + (void)applicationWillResignActive {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_RESIGN_ACTIVE withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationWillResignActive" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 + (void)applicationDidEnterBackground {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_ENTER_BACKGROUND withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationDidEnterBackground" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 
 + (void)applicationWillEnterForeground {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationWillEnterForeground" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 
-//TODO 此生命周期在第一个viewController展示出来之后就会立即被触发，此时sdk各模块并未初始化，无法监听此消息
 + (void)applicationDidBecomeActive {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationDidBecomeActive" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 
 + (void)applicationWillTerminate {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_TERMINATE withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationWillTerminate" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 + (void)applicationDidReceiveMemoryWarning {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationDidReceiveMemoryWarning" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 + (void)volumeDidChange:(NSNotification *)notification
