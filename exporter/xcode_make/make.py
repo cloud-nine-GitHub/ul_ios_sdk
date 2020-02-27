@@ -24,7 +24,6 @@ def make_by_config(rootPath, config):
 	# 1. 生成参数
 	src_project_path = os.path.join(rootPath, config["src_project_path"])
 	dst_project_path = os.path.join(rootPath, "_proj.ios_%s" % config["channel"])
-	# sdk_path = os.path.join(sys.path[0], "..","..","UISDK", "ios")
 	sdk_path = os.path.join(sys.path[0], "..", "..", "modules")
 	codes_path = os.path.join(sys.path[0], "..", "..", "codes")
 	exporter_script = os.path.join(sdk_path, "..", "exporter", "xcode_exporter", "exporter.py")
@@ -48,24 +47,19 @@ def make_by_config(rootPath, config):
 	xcodeproj_filename = os.path.join(dst_project_path, "%s.xcodeproj" % config["project_name"])
 	pbxproj_filename = os.path.join(xcodeproj_filename, "project.pbxproj")
 
-	# print "  xcodeproj_filename", xcodeproj_filename
-	# print "  pbxproj_filename", pbxproj_filename
-
 	print "  XcodeProject.Load(%s)" % pbxproj_filename
 	project = XcodeProject.Load(pbxproj_filename)
 
-	#codes
+	# codes
 	if config.has_key("codes"):
 		group_codes = project.get_or_create_group("codes")
 		for _, f in enumerate(config["codes"]):
 			project.add_folder(os.path.join(codes_path, f), parent = group_codes)
 
 	# 3rdparts
-	# group_3rdparts = project.get_or_create_group("3rdparts")
 	if config.has_key("3rdparts"):
 		for _, f in enumerate(config["3rdparts"]):
 			print "  project.add_folder(%s, parent = group_3rdparts)" % os.path.join(sdk_path, f)
-			# project.add_folder(os.path.join(sdk_path, f), parent = group_3rdparts)
 			project.add_folder(os.path.join(sdk_path, f), parent = "")
 			# 3d特殊处理
 			if config.has_key("game_type") and config["game_type"] == "3d":
@@ -138,9 +132,7 @@ def make_by_config(rootPath, config):
 		for _, flag in enumerate(config["other_link_flags"]):
 			print "  project.add_other_ldflags(%s)" % (flag)
 			project.add_other_ldflags(flag)
-		# other_link
-		# for _, flag in enumerate(config["weak_references_in_manual_retain_release"]):
-			# print "  project.weak_references(%s)" % (config["weak_references_in_manual_retain_release"])
+			# weak_references_in_manual_retain_release
 			if config.has_key("weak_references_in_manual_retain_release") and config["weak_references_in_manual_retain_release"]=="YES":
 				project.add_flags({"CLANG_ENABLE_OBJC_WEAK":"YES"})
 
@@ -152,24 +144,33 @@ def make_by_config(rootPath, config):
 			project.add_file_if_doesnt_exist(f, parent = group_Frameworks, tree = "SDKROOT")
 
 	# resources
-	# project.remove_group_by_name("Resources")
-	# group_Resources = project.get_or_create_group("Resources")
 	if config.has_key("resources"):
 		group_Resources = project.get_or_create_group(config["project_name"])
 		for _, r in enumerate(config["resources"]):
 			print "  project.add_file(%s, parent = group_Resources, create_build_files = True)" % os.path.join(rootPath, r)
 			project.add_file(os.path.join(rootPath, r), parent = group_Resources, create_build_files = True)
-	#embeded binaries
+	
+	# embeded binaries
 	if config.has_key("embeded"):
-		# for _, r in enumerate(config["embeded"]):
-		# 	project.add_embed_framework(r)
 		project.add_embed_binaries(config["embeded"], config["scheme"])
 
+	
+	# 修改包名 package_name
+	if config.has_key("package_name"):
+		project.remove_single_valued_flag("PRODUCT_BUNDLE_IDENTIFIER")
+		project.add_flags({"PRODUCT_BUNDLE_IDENTIFIER" : config["package_name"]})
+		print "package_name===", config["package_name"]
+
+	# 修改应用名 app_name
+	if config.has_key("app_name"):
+		project.remove_single_valued_flag("PRODUCT_NAME")
+		project.add_flags({"PRODUCT_NAME" : config["app_name"]})
+		print "app_name===", config["app_name"]
 
 	project.save()
 
 	# Info.plist
-	info_plist_filename = os.path.join(dst_project_path, "ulsdkgamedemo", "Info.plist")
+	info_plist_filename = os.path.join(dst_project_path, config["project_name"], "Info.plist")
 	# 3d特殊处理
 	if config.has_key("game_type") and config["game_type"] == "3d":
 		info_plist_filename = os.path.join(dst_project_path, "Info.plist")
@@ -181,6 +182,7 @@ def make_by_config(rootPath, config):
 	if info_data["CFBundleVersion"]:
 		info_data["CFBundleVersion"] = config["build_version"]
 
+	# 去掉UIMainStoryboardFile
 	if info_data["UIMainStoryboardFile"]:
 		del info_data["UIMainStoryboardFile"]
 
