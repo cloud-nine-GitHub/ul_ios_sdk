@@ -170,7 +170,7 @@ def make_by_config(rootPath, config):
 	project.save()
 
 	# Info.plist
-	info_plist_filename = os.path.join(dst_project_path, config["project_name"], "Info.plist")
+	info_plist_filename = os.path.join(dst_project_path, config["info_plist_path"], "Info.plist")
 	# 3d特殊处理
 	if config.has_key("game_type") and config["game_type"] == "3d":
 		info_plist_filename = os.path.join(dst_project_path, "Info.plist")
