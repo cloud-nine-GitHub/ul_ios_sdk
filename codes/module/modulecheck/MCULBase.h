@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableDictionary *)getModuleAdvTestDataWithType:(NSString *)advType withEditParam:(NSString *)advParam withLocalParamKey:(NSString *)key;
 - (NSMutableDictionary *)getBasePayTestData:(NSString *)editPayId;
 - (NSMutableDictionary *)getModulePayTestData:(NSString *)editPayId;
-
+- (BOOL)checkId:(NSString *)payId :(NSDictionary *)payInfo;
 @end
 
 NS_ASSUME_NONNULL_END

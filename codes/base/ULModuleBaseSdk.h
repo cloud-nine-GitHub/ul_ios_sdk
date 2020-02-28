@@ -41,6 +41,7 @@ static int PAY_PRIORITY_UNKNOW = 100;
 + (void)init;
 + (NSDictionary *)getBasePayInfo;
 + (int)getBasePayInfoPolicyWithPayId:(NSString *)payId;
++ (void)prePayResultCallBackWithCode:(int )code withMsg:(NSString *)msg withPayData:(NSDictionary *)payData;
 
 - (void)payResult:(PayState )payState :(NSDictionary *)payData :(float )price;
 - (void)onPayResult:(PayState) payState :(NSDictionary *)payData;

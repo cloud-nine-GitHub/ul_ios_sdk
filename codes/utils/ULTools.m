@@ -1031,6 +1031,39 @@
     return defaultParam;
 }
 
+
++ (NSDictionary *)mergeDictionary :(NSDictionary *)dicOne :(NSDictionary *)dicTwo :(BOOL)isCoverFlag
+{
+    NSMutableDictionary *nullDic = [NSMutableDictionary new];
+    if (!dicOne && !dicTwo) {
+        return nullDic;
+    }
+    if (!dicOne && dicTwo) {
+        return dicTwo;
+    }
+    if (dicOne && !dicTwo) {
+        return dicOne;
+    }
+    
+    NSArray *dicOneKeys = [dicOne allKeys];
+    for (NSString *key in dicOneKeys) {
+        id value = [dicOne objectForKey:key];
+        if (![dicTwo objectForKey:key]) {
+            [dicTwo setValue:value forKey:key];
+        }else{
+            if ([value isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *valueDic = (NSDictionary *)value;
+                [self mergeDictionary:valueDic :(NSDictionary *)[dicTwo objectForKey:key] :isCoverFlag];
+            }else{
+                if (isCoverFlag) {
+                    [dicTwo setValue:value forKey:key];
+                }
+            }
+        }
+    }
+    return dicTwo;
+}
+
 @end
 
 

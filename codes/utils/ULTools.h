@@ -61,6 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)getProvidersName;
 + (NSString *)platformString;
 + (NSString *)getRandomParamByCopOrConfigWithParamArray:(NSArray *)paramArray withProbabilityArray:(NSArray *)probabilityArray withParamKey:(NSString *)paramsKey withDefaultParam:(NSString *)defaultParam withSplitString:(NSString *)splitString;
++ (NSDictionary *)mergeDictionary :(NSDictionary *)dicOne :(NSDictionary *)dicTwo :(BOOL)isCoverFlag;
 
 @end
 

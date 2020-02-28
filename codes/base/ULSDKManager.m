@@ -417,6 +417,10 @@ static double currentVolume = 0.00;
 + (void)openPay:(NSDictionary *)data
 {
     NSLog(@"%s:%@",__func__,[ULTools DictionaryToString:data]);
+    //TODO 对于支付请求，在已有请求的情况下是考虑拦截还是加入队列？ 个人认为ios支付时间长，可直接拦截后续其他的支付请求
+    
+    
+    
     //目前只有iOS内购，需要按照android照来？
     NSString *payId = [data objectForKey:@"payId"];
     int payPolicy = [ULModuleBaseSdk getBasePayInfoPolicyWithPayId:payId];
