@@ -16,6 +16,7 @@
 #import "ULUserDefaults.h"
 
 static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://gamesres.ultralisk.cn/notice/gameIcon/";
+static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前缀
 
 @interface ULInnerPromotion ()<SKStoreProductViewControllerDelegate>
 
@@ -48,7 +49,7 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
     if (![type isEqualToString:@"reward"]) {
         //检测是否安装
         //测试scheme  yllmjmgame17
-        NSString *scheme = [@"game" stringByAppendingPathComponent:gameIndex];
+        NSString *scheme = [UL_APP_SCHEME_PRE stringByAppendingString:gameIndex];
         [self checkAppInstalled:scheme];
         //应该无论是否安装都会跳转。后续会有直接打开已安装应用吗？
         NSString *appleId = [ULTools GetStringFromDic:_gameIdWithAppleIdDic :gameIndex :@""];
@@ -56,7 +57,8 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
     }else{
         //检测是否安装
         //测试scheme  yllmjmgame17
-        NSString *scheme = [@"game" stringByAppendingPathComponent:gameIndex];
+        NSString *scheme = [UL_APP_SCHEME_PRE stringByAppendingString:gameIndex];
+        //scheme = @"xhxshtsgame31";
         NSString *appleId = [ULTools GetStringFromDic:_gameIdWithAppleIdDic :gameIndex :@""];
         BOOL isInstalled = [self checkAppInstalled:scheme];
         
@@ -69,6 +71,8 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
                 [self jumpOtherGameRewardResult:1 :@"发奖消息" :json];
                 //改变发奖状态
                 [self saveAppRewardStatusWithId:gameIndex :YES];
+            }else{
+                NSLog(@"%s:该互推应用已领取奖励",__func__);
             }
             [self jumpToAppstoreWithAppleId:appleId andData:json];
         }
@@ -82,9 +86,9 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
     NSDictionary * dic = @{SKStoreProductParameterITunesItemIdentifier:appleId};
     [_controller loadProductWithParameters:dic completionBlock:^(BOOL result, NSError * _Nullable error) {
         if (result) {
-            [self jumpOtherGameResult :1 :@"成功" :json];
+            [self jumpOtherGameResult :1 :@"跳转成功" :json];
         }else{
-            [self jumpOtherGameResult :0 :@"失败" :json];
+            [self jumpOtherGameResult :0 :@"跳转失败" :json];
         }
     }];
     [[ULTools getCurrentViewController] presentViewController:_controller animated:YES completion:nil];
