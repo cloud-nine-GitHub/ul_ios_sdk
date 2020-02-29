@@ -61,12 +61,24 @@
 
 
 + (void)startLogoView{
-    UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [UIApplication sharedApplication].delegate.window = window;
-    window.backgroundColor = [UIColor whiteColor];
-    [window makeKeyAndVisible];
-    ULLogoViewController *view = [[ULLogoViewController alloc] init];
-    [window setRootViewController:view];
+    
+    
+    
+    
+    //在这里手动创建新的window
+    if (@available(iOS 13.0, *)) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
+            @"data":@"ULLogoViewController"
+        }];
+        
+    }else{
+        UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        [UIApplication sharedApplication].delegate.window = window;
+        window.backgroundColor = [UIColor whiteColor];
+        [window makeKeyAndVisible];
+        ULLogoViewController *view = [[ULLogoViewController alloc] init];
+        [window setRootViewController:view];
+    }
 }
 
 

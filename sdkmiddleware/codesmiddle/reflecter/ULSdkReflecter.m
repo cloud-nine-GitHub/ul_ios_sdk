@@ -30,22 +30,43 @@ static NSString *const SDK_MANAGER_CLASS_METHOD_INIT = @"init";
 + (void)load{
     NSLog(@"%s",__func__);
     /**监听系统消息*/
+    //ios13如果使用分屏那么启动生命周期的函数将不是UIApplicationDidFinishLaunchingNotification而是UISceneWillConnectNotification
+    if (@available(iOS 13.0, *)) {
+        
+        __block id observerWillConnectNotification =
+        [[NSNotificationCenter defaultCenter] addObserverForName:UISceneWillConnectNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            
+            //这里先去处理sdk的初始化：
+            id sdkManagerClass = NSClassFromString(SDK_MANAGER_CLASS_NAME);
+            if(sdkManagerClass == nil){
+                //没有sdkmanager，直接启动游戏app
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"startGame" object:nil];
+            }else{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"startSdk" object:nil];
+            }
+            
+            /** 完成操作后销毁通知的监听 */
+            [[NSNotificationCenter defaultCenter] removeObserver:observerWillConnectNotification];
+        }];
+        
+    }else{
+        __block id observerDidFinishLaunching =
+        [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+            
+            //这里先去处理sdk的初始化：
+            id sdkManagerClass = NSClassFromString(SDK_MANAGER_CLASS_NAME);
+            if(sdkManagerClass == nil){
+                //没有sdkmanager，直接启动游戏app
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"startGame" object:nil];
+            }else{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"startSdk" object:nil];
+            }
+            
+            /** 完成操作后销毁通知的监听 */
+            [[NSNotificationCenter defaultCenter] removeObserver:observerDidFinishLaunching];
+        }];
+    }
     
-    __block id observerDidFinishLaunching =
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-        
-        //这里先去处理sdk的初始化：
-        id sdkManagerClass = NSClassFromString(SDK_MANAGER_CLASS_NAME);
-        if(sdkManagerClass == nil){
-            //没有sdkmanager，直接启动游戏app
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startGame" object:nil];
-        }else{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"startSdk" object:nil];
-        }
-        
-        /** 完成操作后销毁通知的监听 */
-        [[NSNotificationCenter defaultCenter] removeObserver:observerDidFinishLaunching];
-    }];
     
     //下列生命周期存在多次调用可能，所以未在调用后就移除消息
     [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {

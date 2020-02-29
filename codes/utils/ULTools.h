@@ -62,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)platformString;
 + (NSString *)getRandomParamByCopOrConfigWithParamArray:(NSArray *)paramArray withProbabilityArray:(NSArray *)probabilityArray withParamKey:(NSString *)paramsKey withDefaultParam:(NSString *)defaultParam withSplitString:(NSString *)splitString;
 + (NSDictionary *)mergeDictionary :(NSDictionary *)dicOne :(NSDictionary *)dicTwo :(BOOL)isCoverFlag;
++ (UIWindow *) getAppCurrentWindow;
 
 @end
 
