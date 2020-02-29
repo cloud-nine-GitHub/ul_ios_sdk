@@ -19,9 +19,6 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
 
 @interface ULInnerPromotion ()<SKStoreProductViewControllerDelegate>
 
-@property (nonatomic,strong)NSMutableDictionary *promotionDataDict;
-@property (nonatomic,strong)NSString *usingScheme;
-@property (nonatomic,assign)BOOL pushingFlag;
 @property (nonatomic,strong)NSMutableDictionary *gameIdWithAppleIdDic;
 @property (nonatomic,strong)ULSKStoreProductViewController *controller;
 @property (nonatomic,strong)NSMutableDictionary *gameIdWithRewardsDic;
@@ -46,7 +43,6 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
 {
     NSLog(@"%s",__func__);
     NSString *type = [ULTools GetStringFromDic:json :@"type" :@""];
-    NSString *userData = [ULTools GetStringFromDic:json :@"userData" :@""];
     NSString *gameIndex = [ULTools GetStringFromDic:json :@"gameIndex" :@""];
     
     if (![type isEqualToString:@"reward"]) {
@@ -90,7 +86,6 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
         }else{
             [self jumpOtherGameResult :0 :@"失败" :json];
         }
-        self->_pushingFlag = NO;
     }];
     [[ULTools getCurrentViewController] presentViewController:_controller animated:YES completion:nil];
 }
@@ -168,7 +163,7 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
 - (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController __TVOS_PROHIBITED NS_AVAILABLE_IOS(6_0)
 {
     [viewController dismissViewControllerAnimated:YES completion:nil];
-    NSLog(@"%s退出下载页面:%@",__func__,_promotionDataDict);
+    NSLog(@"%s退出下载页面",__func__);
     
 }
 
@@ -225,7 +220,6 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
      }
      */
     
-    _promotionDataDict = [NSMutableDictionary dictionary];
     NSArray *innerDataArray = [innerData componentsSeparatedByString:@"|"];
     
     NSMutableArray *jumpInfoArray = [NSMutableArray new];
@@ -242,7 +236,10 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
         
         NSString *gameId = itemDataArray[0];//游戏标识
         NSString *appleId = itemDataArray[1];//游戏苹果后台分配的id
-        [_gameIdWithAppleIdDic setValue:appleId forKey:gameId];
+        if (![[_gameIdWithAppleIdDic allKeys] containsObject:gameId]) {
+            [_gameIdWithAppleIdDic setValue:appleId forKey:gameId];
+        }
+        
         NSString *iconIndex = itemDataArray[2];//icon地址后缀。如果想要其他图片那么就是23_ohter
         NSString *appName = itemDataArray[3];//应用名称
         NSString *rewards = itemDataArray[4];
@@ -256,9 +253,11 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
             [itemRewardArray addObject:rewardCount];
             [jumpInfoItemRewardsArray addObject:itemRewardArray];
         }
+        if (![[_gameIdWithRewardsDic allKeys] containsObject:gameId]) {
+            [_gameIdWithRewardsDic setValue:jumpInfoItemRewardsArray forKey:gameId];
+        }
         
         
-        [_gameIdWithRewardsDic setValue:jumpInfoItemRewardsArray forKey:gameId];
         
         
         [jumpInfoItem setValue:gameId forKey:@"index"];
@@ -275,21 +274,23 @@ static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://games
         
         [jumpInfoArray addObject:jumpInfoItem];
         
-        if (count > 0) {
-            if (count < [jumpInfoArray count]) {//请求条数小于配置条数，则随机配置前面对应条数。其他情况全部返回
-                [jumpInfoArray removeObjectsInRange:NSMakeRange(count, [jumpInfoArray count])];
-            }
-        }
         
-        //返回
-        NSMutableDictionary *openJumpResultDic = [NSMutableDictionary new];
-        [openJumpResultDic setValue:jumpInfoArray forKey:@"jumpInfo"];
-        [openJumpResultDic setValue:type forKey:@"type"];
-        [openJumpResultDic setValue:[NSNumber numberWithInt:count] forKey:@"count"];
-        [openJumpResultDic setValue:userData forKey:@"userData"];
-        
-        [ULSDKManager JsonRpcCall:REMSG_CMD_OPEN_JUMP_RESULT :openJumpResultDic];
     }
+    
+    if (count > 0) {
+        if (count < [jumpInfoArray count]) {//请求条数小于配置条数，则随机配置前面对应条数。其他情况全部返回
+            [jumpInfoArray removeObjectsInRange:NSMakeRange(count, [jumpInfoArray count]-1)];
+        }
+    }
+    
+    //返回
+    NSMutableDictionary *openJumpResultDic = [NSMutableDictionary new];
+    [openJumpResultDic setValue:jumpInfoArray forKey:@"jumpInfo"];
+    [openJumpResultDic setValue:type forKey:@"type"];
+    [openJumpResultDic setValue:[NSNumber numberWithInt:count] forKey:@"count"];
+    [openJumpResultDic setValue:userData forKey:@"userData"];
+    
+    [ULSDKManager JsonRpcCall:REMSG_CMD_OPEN_JUMP_RESULT :openJumpResultDic];
     
 }
 
