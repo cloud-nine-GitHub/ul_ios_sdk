@@ -21,7 +21,6 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
 @interface ULInnerPromotion ()<SKStoreProductViewControllerDelegate>
 
 @property (nonatomic,strong)NSMutableDictionary *gameIdWithAppleIdDic;
-@property (nonatomic,strong)ULSKStoreProductViewController *controller;
 @property (nonatomic,strong)NSMutableDictionary *gameIdWithRewardsDic;
 @end
 
@@ -34,8 +33,7 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
     
     _gameIdWithAppleIdDic = [NSMutableDictionary new];
     _gameIdWithRewardsDic = [NSMutableDictionary new];
-    _controller = [[ULSKStoreProductViewController alloc] init];
-    _controller.delegate = self;
+    
     
 }
 
@@ -84,14 +82,20 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
 - (void)jumpToAppstoreWithAppleId:(NSString *)appleId andData:(NSDictionary *)json
 {
     NSDictionary * dic = @{SKStoreProductParameterITunesItemIdentifier:appleId};
-    [_controller loadProductWithParameters:dic completionBlock:^(BOOL result, NSError * _Nullable error) {
+    //这里只能每次都创建，苹果自身设定，该controller都只能是一次性的。否则会出现bug
+    ULSKStoreProductViewController *controller = [[ULSKStoreProductViewController alloc] init];
+    controller.delegate = self;
+    //ios13新特性 presentViewController出现折叠式图，用户下滑返回，需要屏蔽
+    controller.modalPresentationStyle = 0;
+    [controller loadProductWithParameters:dic completionBlock:^(BOOL result, NSError * _Nullable error) {
         if (result) {
             [self jumpOtherGameResult :1 :@"跳转成功" :json];
         }else{
             [self jumpOtherGameResult :0 :@"跳转失败" :json];
         }
     }];
-    [[ULTools getCurrentViewController] presentViewController:_controller animated:YES completion:nil];
+    
+    [[ULTools getCurrentViewController] presentViewController:controller animated:YES completion:nil];
 }
 
 
