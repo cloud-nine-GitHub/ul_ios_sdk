@@ -29,8 +29,9 @@ static NSString *const MSG_CMD_CALLPHONE = @"/c/callPhone";//拨打电话
 static NSString *const MSG_CMD_SAVEPICTOGALLERY = @"/c/savePicToGallery";//保存图片至相册
 static NSString *const MSG_CMD_MEGADATASERVER = @"/c/megadataServer";// 大数据统计
 static NSString *const MSG_CMD_INVITE_TO_COMMENT = @"/c/openInviteComment";// 邀评
-static NSString *const MSG_CMD_INNER_PROMOTION_DOWNLOAD_RESULT = @"/c/ulInnerPromotionDownloadResult";//互推下载结果
-static NSString *const MSG_CMD_INNER_PROMOTION_CHECK_RESULT = @"/c/ulInnerPromotionCheckResult";//互推检测结果
+static NSString *const MSG_CMD_OPEN_JUMP = @"/c/openJump";//请求互推数据
+static NSString *const MSG_CMD_JUMP_OTHER_GAME = @"/c/jumpOtherGame";//请求互推跳转
+
 //网游部分
 static NSString *const MSG_CMD_ONLINE_OPENPAY = @"/o/openPay";//支付
 static NSString *const MSG_CMD_ONLINE_LOGIN = @"/o/login";//登陆
@@ -60,10 +61,10 @@ static NSString *const REMSG_CMD_ONLINE_PAYRESULT = @"/o/payResult";//付款结�
 static NSString *const REMSG_CMD_ONLINE_LOGINRESULT = @"/o/loginResult";//登陆结果
 static NSString *const REMSG_CMD_ONLINE_SWITCH_ACCOUNT_RESULT = @"/o/switchAccountResult";//切换账号
 static NSString *const REMSG_CMD_ONLINE_LOGOUT_RESULT = @"/o/logoutResult";//登出
-static NSString *const REMSG_CMD_CLOSEALLADVBYTYPERESULT = @"/c/closeAllAdvByTypeResult";//广告关闭结果回
-
-
-
+static NSString *const REMSG_CMD_CLOSEALLADVBYTYPERESULT = @"/c/closeAllAdvByTypeResult";//广告关闭结果
+static NSString *const REMSG_CMD_OPEN_JUMP_RESULT = @"/c/openJumpResult";//互推数据返回结果
+static NSString *const REMSG_CMD_JUMP_OTHER_GAME_RESULT = @"/c/jumpOtherGameResult";//互推跳转返回结果
+static NSString *const REMSG_CMD_JUMP_OTHER_GAME_REWARD_RESULT = @"/c/jumpOtherGameRewardResult";//互推发奖返回结果
 
 @interface ULCmd : NSObject
 
