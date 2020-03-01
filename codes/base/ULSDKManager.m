@@ -179,7 +179,7 @@ static double currentVolume = 0.00;
         }
     }
     
-    NSLog(@"%s%@",__func__,moduleTypeParamsDic);
+    //NSLog(@"%s%@",__func__,moduleTypeParamsDic);
     
     //step3
     //step4

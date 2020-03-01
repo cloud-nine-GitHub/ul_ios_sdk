@@ -28,7 +28,7 @@
 #import "ULCop.h"
 
 static NSString *const UL_ACCOUNT_TASK_WRITE_THREAD = @"ul_account_task_write_thread";
-static NSString *const UL_ACCOUNT_TASK_READ_THREAD = @"ul_account_task_read_thread";
+static NSString *const UL_ACCOUNT_TASK_THREAD = @"ul_account_task_thread";
 static int const UL_ACCOUNT_DATA_THRESHOLD = 100;
 static int const UL_ACCOUNT_TIMER_LOOP_TIME = 20;
 static NSString *const UL_ACCOUNT_TIMER_NAME = @"ul_account_timer";
@@ -46,7 +46,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 @property(nonatomic,assign)BOOL isWriteThreadInitFinish,isReadThreadInitFinish;
 @property(nonatomic,strong)NSMutableArray *cacheList;
 @property(nonatomic,assign)BOOL isSaveDataToSqliteFirstCall;
-
+@property(nonatomic,strong)dispatch_queue_t writeQueue,readQueue;
 @end
 
 @implementation ULAccountTask
@@ -66,14 +66,23 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         _accountAddr = UL_ACCOUNT_AAR_DEFAULT_URL;
     }
     [self addListener];
-    //创建工作线程
-    [self createTaskThread];
+    
+    
+    
+    //打开数据库和表
+    [[ULAccountSQLiteManager getInstance]openDB];
+    [[ULAccountSQLiteManager getInstance]createTable];
+    
+    
+    
+    
     //应用启动统计
     NSMutableArray *array = [NSMutableArray new];
     [array addObject:[NSString stringWithFormat:@"%d",ULA_GAME_BASE_INFO]];
     [array addObject:@"gameStart"];
     [self upData:array];
     
+    //[self createTimer];
 }
 
 - (void)addListener
@@ -81,8 +90,109 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     NSLog(@"%s",__func__);
     //提供外部调用消息，外部数据通过统一入口处理后再做上报
     [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_UP_DATA withSelector:@selector(onUpData:) withPriority:PRIORITY_NONE];
+    //注册数据存储消息
+    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withSelector:@selector(saveDataToSqlite:) withPriority:PRIORITY_NONE];
+    //注册数据读取消息
+    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_READ_DATA withSelector:@selector(getDataFromSqlite:) withPriority:PRIORITY_NONE];
 }
 
+//数据存储消息回调
+- (void)saveDataToSqlite:(NSNotification *)notification
+{
+    NSLog(@"%s",__func__);
+    dispatch_queue_t writeQueue = dispatch_queue_create("ul_account_task_thread_write_queue", DISPATCH_QUEUE_SERIAL);
+    // 异步串行队列
+    dispatch_async(writeQueue, ^{
+        NSLog(@"%s",__func__);
+        NSDictionary *userInfo = notification.userInfo;
+        NSString *data = userInfo[@"data"];
+        
+        //TODO 数据存入失败的情况
+        [[ULAccountSQLiteManager getInstance] insertData:data];
+        
+
+        long dataCount = [[ULAccountSQLiteManager getInstance]getCountNumFromSqlite];
+        NSLog(@"%s:当前数据库中数据总条数:%ld",__func__,dataCount);
+        if (dataCount >= UL_ACCOUNT_DATA_THRESHOLD) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+            //超过指定数据量直接上报
+                [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_READ_DATA withData:nil];
+            });
+        }
+        [self createTimer];
+        
+    });
+    
+}
+
+
+- (void)createTimer
+{
+    NSLog(@"%s",__func__);
+    if (_accountTimer) {
+        return;
+    }
+    _accountTimer = [[ULTimer getInstance] createTimerWithName:UL_ACCOUNT_TIMER_NAME withTarget:self withTime:UL_ACCOUNT_TIMER_LOOP_TIME withSel:@selector(sendMsgToReadThread:) withUserInfo:nil withRepeat:YES];
+    //立即执行
+    [_accountTimer fire];
+    //线程中创建的timer需要添加到runloop中
+    NSRunLoop *runloop = [NSRunLoop currentRunLoop];
+    [runloop addTimer:_accountTimer forMode:NSRunLoopCommonModes];
+    [runloop run];
+}
+
+
+- (void)sendMsgToReadThread:(NSTimer *)timer
+{
+    NSLog(@"%s",__func__);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //定时上报数据
+        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_READ_DATA withData:nil];
+    });
+    
+}
+
+
+//数据读取消息回调
+- (void)getDataFromSqlite:(NSNotification *)notification
+{
+    NSLog(@"%s",__func__);
+    dispatch_queue_t readQueue = dispatch_queue_create("ul_account_task_thread_read_queue", DISPATCH_QUEUE_SERIAL);
+    // 异步串行队列
+    dispatch_async(readQueue, ^{
+        NSLog(@"%s",__func__);
+        //获取数据
+        //把数组对象转成json字符串存起来
+        NSMutableArray *upDataBeanList = [[ULAccountSQLiteManager getInstance] getCountUpData];
+        
+        if(upDataBeanList.count == 0){
+            NSLog(@"%s:数据库中暂无可上报数据",__func__);
+            return;
+        }
+        
+        NSMutableArray *jsonArray = [NSMutableArray new];
+        
+        for (ULAccountBean *bean in upDataBeanList) {
+            NSString *upDataStr = bean.upData;
+            NSLog(@"%s:bean.updata = %@",__func__,upDataStr);
+            [jsonArray addObject:upDataStr];
+            
+        }
+        
+
+        //删除某个id之前的全部数据
+        ULAccountBean *lastBean = [upDataBeanList lastObject];
+        long number = lastBean.upDataId;
+        [[ULAccountSQLiteManager getInstance]deleteData:number];
+
+        [self requestPost:jsonArray];
+    });
+
+    
+}
+
+
+//数据上报消息回调
 - (void)onUpData:(NSNotification *)notification
 {
     NSLog(@"%s",__func__);
@@ -95,18 +205,18 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 - (void)upData:(NSArray *)array
 {
     NSLog(@"%s",__func__);
-    if (!_isWriteThreadInitFinish) {//写入线程还未初始化完
-        [self cacheData:array];
-        return;
-    }
+//    if (!_isWriteThreadInitFinish) {//写入线程还未初始化完
+//        [self cacheData:array];
+//        return;
+//    }
     //检查缓存数据
-    if (_cacheList.count > 0) {
-        //缓存本次数据
-        [self cacheData:array];
-        //上报缓存数据
-        [self postCacheData:_cacheList];
-        return;
-    }
+//    if (_cacheList.count > 0) {
+//        //缓存本次数据
+//        [self cacheData:array];
+//        //上报缓存数据
+//        [self postCacheData:_cacheList];
+//        return;
+//    }
     
     NSMutableDictionary *json = [self assembleJsonData:array];
     NSLog(@"%s%@",__func__,[ULTools DictionaryToString:json]);
@@ -131,6 +241,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     }
     [_cacheList removeAllObjects];
 }
+
 
 
 //拼装json数据
@@ -220,145 +331,37 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 }
 
 
-- (void)createTaskThread
-{
-    NSLog(@"%s",__func__);
-    //创建线程
-    _upDataWriteThread = [[NSThread alloc]initWithTarget:self selector:@selector(upDataWrite:) object:nil];
-    _upDataWriteThread.name = UL_ACCOUNT_TASK_WRITE_THREAD;
-    _upDataWriteThread.qualityOfService = NSQualityOfServiceDefault;
-    [_upDataWriteThread start];
-    
-    
-    _upDataReadThread = [[NSThread alloc]initWithTarget:self selector:@selector(upDataRead:) object:nil];
-    _upDataReadThread.name = UL_ACCOUNT_TASK_READ_THREAD;
-    _upDataReadThread.qualityOfService = NSQualityOfServiceDefault;
-    [_upDataReadThread start];
-    
-    
-}
-
-//以写入第一条数据作为工作启动机制
-- (void)upDataWrite:(NSThread *)thread
-{
-    NSLog(@"%s",__func__);
-    
-    //判断数据库是否打开
-    if(!_isSqliteOpened){
-        _isSqliteOpened = [[ULAccountSQLiteManager getInstance]openDB];
-    }
-    //判断数据库相应的表是否已经创建
-    if (!_isTableCreated) {
-        _isTableCreated = [[ULAccountSQLiteManager getInstance]createTable];
-    }
-    
-    //注册数据存储消息
-    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withSelector:@selector(saveDataToSqlite:) withPriority:PRIORITY_NONE];
-    
-    _isWriteThreadInitFinish = YES;
-    
-    //创建一个timer,定时上报数据
-    [self createTimer];
-}
 
 
-- (void)saveDataToSqlite:(NSNotification *)notification
+
+
+
+
+
+
+
+
+
+
+- (void)requestPost :(NSArray *)jsonArray
 {
     
-    NSDictionary *userInfo = notification.userInfo;
-    NSString *data = userInfo[@"data"];
+    NSMutableArray *upArray = [NSMutableArray new];
     
-    //TODO 数据存入失败的情况
-    [[ULAccountSQLiteManager getInstance] insertData:data];
-    
-    //应该在本次启动第一条数据录入时启动timer进行上报
-    if(!_isSaveDataToSqliteFirstCall)
-    {
-        _isSaveDataToSqliteFirstCall = YES;
-        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_READ_DATA withData:nil];
-    }
-
-    long dataCount = [[ULAccountSQLiteManager getInstance]getCountNumFromSqlite];
-    NSLog(@"%s:当前数据库中数据总条数:%ld",__func__,dataCount);
-    if (dataCount >= UL_ACCOUNT_DATA_THRESHOLD) {
-        //超过指定数据量直接上报
-        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_READ_DATA withData:nil];
-    }
-}
-
-- (void)createTimer
-{
-    NSLog(@"%s",__func__);
-    if (_accountTimer) {
-        return;
-    }
-    _accountTimer = [[ULTimer getInstance] createTimerWithName:UL_ACCOUNT_TIMER_NAME withTarget:self withTime:UL_ACCOUNT_TIMER_LOOP_TIME withSel:@selector(sendMsgToReadThread:) withUserInfo:nil withRepeat:YES];
-    //立即执行  TODO timer在第一次启动执行时数据库中可能还未存储有数据
-    [_accountTimer fire];
-    //线程中创建的timer需要添加到runloop中
-    NSRunLoop *runloop = [NSRunLoop currentRunLoop];
-    [runloop addTimer:_accountTimer forMode:NSRunLoopCommonModes];
-    [runloop run];
-}
-
-
-- (void)sendMsgToReadThread:(NSTimer *)timer
-{
-    NSLog(@"%s",__func__);
-    [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_READ_DATA withData:nil];
-}
-
-
-- (void)upDataRead:(NSThread *)thread
-{
-    NSLog(@"%s",__func__);
-    //注册数据读取消息
-    [[ULNotificationDispatcher getInstance]addNotificationWithObserver:self withName:UL_NOTIFICATION_ACCOUNT_READ_DATA withSelector:@selector(getDataFromSqlite:) withPriority:PRIORITY_NONE];
-    
-    _isReadThreadInitFinish = YES;
-}
-
-
-- (void)getDataFromSqlite:(NSNotification *)notification
-{
-    NSLog(@"%s",__func__);
-    //获取数据
-    //把数组对象转成json字符串存起来
-    NSMutableArray *upDataBeanList = [[ULAccountSQLiteManager getInstance] getCountUpData];
-    
-    if(upDataBeanList.count == 0){
-        NSLog(@"%s:数据库中暂无可上报数据",__func__);
-        return;
-    }
-    
-    NSMutableArray *jsonArray = [NSMutableArray new];
-    
-    for (ULAccountBean *bean in upDataBeanList) {
-        NSDictionary *upDataJson = [ULTools StringToDictionary:bean.upData];
+    for (NSString *s in jsonArray) {
+        NSDictionary *upDataJson = [ULTools StringToDictionary:s];
         if (upDataJson) {
-            [jsonArray addObject:upDataJson];
+            [upArray addObject:upDataJson];
         }
+        
         
     }
     
-
     //将数据数组转为字符串
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonArray options:NSJSONWritingPrettyPrinted error:nil];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:upArray options:NSJSONWritingPrettyPrinted error:nil];
     NSString *jsonArrayStr = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
-
-    //删除某个id之前的全部数据
-    ULAccountBean *lastBean = [upDataBeanList lastObject];
-    long number = lastBean.upDataId;
-    [[ULAccountSQLiteManager getInstance]deleteData:number];
-
-    [self requestPost:jsonArrayStr];
     
-}
-
-
-- (void)requestPost :(NSString *)upDataStr
-{
-    NSLog(@"%s：上报数据:%@",__func__,upDataStr);
+    NSLog(@"%s：上报数据:%@",__func__,jsonArrayStr);
     //请求地址
     NSURL *url = [NSURL URLWithString:_accountAddr];
     //设置请求地址
@@ -368,14 +371,15 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     request.HTTPMethod = @"POST";
     
     NSDictionary * paramsDic = [[NSDictionary alloc]initWithObjectsAndKeys:
-                                upDataStr,@"updata",nil];
+                                jsonArrayStr,@"updata",nil];
     
     NSString *requestData = [self getRequestParams: paramsDic];
     //设置请求参数
     request.HTTPBody = [requestData dataUsingEncoding:NSUTF8StringEncoding];
     //关于parameters是NSDictionary拼接后的NSString.关于拼接看后面拼接方法说明
     
-    
+    //超时时长
+    request.timeoutInterval = 5;
     //设置请求session
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -383,12 +387,12 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     
     //设置网络请求的返回接收器
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
                 NSLog(@"%s 数据上报异常:error = %@",__func__,error);
                 //数据重新存储
-                NSArray *array = [ULTools stringToJsonArray:upDataStr];
-                for (NSString *str in array) {
+                for (NSString *str in jsonArray) {
+                    NSLog(@"%s:数据上报失败重新存入 = %@",__func__,str);
                     [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:str];
                 }
                 
@@ -398,8 +402,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
                 if(![result isEqualToString:@"Successful"]){
                     
                     //数据重新存储
-                    NSArray *array = [ULTools stringToJsonArray:upDataStr];
-                    for (NSString *str in array) {
+                    for (NSString *str in jsonArray) {
                         [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_WRITE_DATA withData:str];
                     }
                 }else{
@@ -407,6 +410,8 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
                 }
                     
             }
+        });
+            
         
     }];
     //开始请求
@@ -508,12 +513,12 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
         for (int i = 0; i < data.count; i++) {
             //TODO 需要验证ios这边传过来的数组字符串是否也是异常
-            @try {//传过来是字符类型，那么会""test""是这种的形式
-                strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
-            } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
-                [strArray addObject:data[i]];
-            }
-            //[strArray addObject:data[i]];
+//            @try {//传过来是字符类型，那么会""test""是这种的形式
+//                strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
+//            } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
+//                [strArray addObject:data[i]];
+//            }
+            [strArray addObject:data[i]];
         }
         [strArray addObject:[NSString stringWithFormat:@"%ld",complete]];
         [self upData:strArray];
@@ -522,11 +527,12 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
     for (int i = 0; i < data.count; i++) {
         //TODO 需要验证ios这边传过来的数组字符串是否也是异常
-        @try {//传过来是字符类型，那么会""test""是这种的形式
-            strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
-        } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
-            [strArray addObject:data[i]];
-        }
+//        @try {//传过来是字符类型，那么会""test""是这种的形式
+//            strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
+//        } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
+//            [strArray addObject:data[i]];
+//        }
+        [strArray addObject:data[i]];
     }
     [self upData:strArray];
 
