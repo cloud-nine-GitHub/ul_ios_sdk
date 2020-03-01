@@ -7,7 +7,6 @@
 //
 
 #import "ULInnerPromotion.h"
-#import "ULSKStoreProductViewController.h"
 #import "ULTools.h"
 #import "ULConfig.h"
 #import "ULCop.h"
