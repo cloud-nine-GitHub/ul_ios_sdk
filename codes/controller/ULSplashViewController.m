@@ -38,6 +38,7 @@ static ULSplashViewController* instance=nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSLog(@"%s",__func__);
 //    UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 //    [UIApplication sharedApplication].delegate.window = window;
 //    window.backgroundColor = [UIColor whiteColor];

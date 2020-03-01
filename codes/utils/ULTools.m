@@ -335,13 +335,8 @@
 + (UIViewController *)getCurrentViewController
 {
     UIViewController *result = nil;
-    if (@available(iOS 13.0, *)) {//13.0以后获取rootViewController。这个里的写法是根据我们自身都是通过设置rootVc来进行跳转的，并不通用。
-        UIWindow *window = [self getAppCurrentWindow];
-        result = window.rootViewController;
-        return result;
-    }
     // 获取默认的window
-    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    UIWindow * window = [self getAppCurrentWindow];
     // app默认windowLevel是UIWindowLevelNormal，如果不是，找到它。
     if (window.windowLevel != UIWindowLevelNormal) {
         NSArray *windows = [[UIApplication sharedApplication] windows];
@@ -1070,37 +1065,13 @@
 }
 
 
-#pragma mark - 获取当前window
+#pragma mark - 获取当前window：需确保当前只会创建一个窗口使用。
 + (UIWindow *) getAppCurrentWindow
 {
-    //    UIWindow *window = nil;
-    //    if ([[self getCurrentPhoneVersion] floatValue] >= 13.0) {
-    //        for (UIWindowScene* windowScene in [UIApplication sharedApplication].connectedScenes)
-    //        {
-    //            if (windowScene.activationState == UISceneActivationStateForegroundActive)
-    //            {
-    //                window = windowScene.windows.firstObject;
-    //
-    //                break;
-    //            }
-    //        }
-    //
-    //    }else{
-    //        window = [UIApplication sharedApplication].keyWindow;
-    //    }
-    //    return window;
     UIWindow *window = nil;
     
     if (@available(iOS 13.0, *)) {
-        for (UIWindowScene* windowScene in [UIApplication sharedApplication].connectedScenes)
-        {
-            if (windowScene.activationState == UISceneActivationStateForegroundActive)
-            {
-                window = windowScene.windows.firstObject;
-                
-                break;
-            }
-        }
+        window = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
     } else {
         window = [UIApplication sharedApplication].keyWindow;
     }
