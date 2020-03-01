@@ -14,6 +14,7 @@
 #import "ULSDKManager.h"
 #import "ULCmd.h"
 #import "ULUserDefaults.h"
+#import <StoreKit/StoreKit.h>
 
 static NSString *const UL_INTER_PROMOTION_ICON_DEFAULT_BASE_URL = @"http://gamesres.ultralisk.cn/notice/gameIcon/";
 static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前缀
@@ -83,19 +84,29 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
 {
     NSDictionary * dic = @{SKStoreProductParameterITunesItemIdentifier:appleId};
     //这里只能每次都创建，苹果自身设定，该controller都只能是一次性的。否则会出现bug
-    ULSKStoreProductViewController *controller = [[ULSKStoreProductViewController alloc] init];
-    controller.delegate = self;
-    //ios13新特性 presentViewController出现折叠式图，用户下滑返回，需要屏蔽
-    controller.modalPresentationStyle = 0;
-    [controller loadProductWithParameters:dic completionBlock:^(BOOL result, NSError * _Nullable error) {
-        if (result) {
-            [self jumpOtherGameResult :1 :@"跳转成功" :json];
+    SKStoreProductViewController *storeProductViewContorller = [[SKStoreProductViewController alloc] init];
+    storeProductViewContorller.delegate = self;
+    //加载一个新的视图展示
+    [storeProductViewContorller loadProductWithParameters: dic completionBlock:^(BOOL result, NSError *error) {
+        //回调
+        if(error){
+             NSLog(@"%s%@",__func__,error);
+             [self jumpOtherGameResult :0 :@"跳转失败" :json];
         }else{
-            [self jumpOtherGameResult :0 :@"跳转失败" :json];
+            [self jumpOtherGameResult :1 :@"跳转成功" :json];
+            [[ULTools getCurrentViewController] presentViewController:storeProductViewContorller animated:YES completion:nil];
         }
     }];
     
-    [[ULTools getCurrentViewController] presentViewController:controller animated:YES completion:nil];
+    
+}
+
+// Sent if the user requests that the page be dismissed
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController __TVOS_PROHIBITED NS_AVAILABLE_IOS(6_0)
+{
+    [viewController dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"%s退出下载页面",__func__);
+    
 }
 
 
@@ -163,17 +174,6 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
 
 
 
-
-
-
-
-// Sent if the user requests that the page be dismissed
-- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController __TVOS_PROHIBITED NS_AVAILABLE_IOS(6_0)
-{
-    [viewController dismissViewControllerAnimated:YES completion:nil];
-    NSLog(@"%s退出下载页面",__func__);
-    
-}
 
 
 
