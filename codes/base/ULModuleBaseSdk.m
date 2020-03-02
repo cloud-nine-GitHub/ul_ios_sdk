@@ -169,6 +169,20 @@
     [ULSDKManager JsonRpcCall:REMSG_CMD_PAYRESULT :data];
 }
 
++ (void)prePayResultCallBackWithCode:(int )code withMsg:(NSString *)msg withPayData:(NSDictionary *)payData
+{
+    
+    NSDictionary *gamePayData = [ULTools GetNSDictionaryFromDic:payData :@"gamePayData" :nil];
+    NSString *payId = [gamePayData objectForKey:@"payId"];
+    NSString *userData = [gamePayData objectForKey:@"userData"];
+    NSMutableDictionary *data = [NSMutableDictionary new];
+    [data setValue:[NSNumber numberWithInt:code] forKey:@"code"];
+    [data setValue:msg forKey:@"msg"];
+    [data setValue:payId forKey:@"payId"];
+    [data setValue:userData forKey:@"userData"];
+    [ULSDKManager JsonRpcCall:REMSG_CMD_PREPAYRESULT :data];
+}
+
 // ios 没有退出的嘛
 -(void)exitGameResult{}
 

@@ -61,6 +61,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)getProvidersName;
 + (NSString *)platformString;
 + (NSString *)getRandomParamByCopOrConfigWithParamArray:(NSArray *)paramArray withProbabilityArray:(NSArray *)probabilityArray withParamKey:(NSString *)paramsKey withDefaultParam:(NSString *)defaultParam withSplitString:(NSString *)splitString;
++ (NSDictionary *)mergeDictionary :(NSDictionary *)dicOne :(NSDictionary *)dicTwo :(BOOL)isCoverFlag;
+//TODO 对于ios13及以上包版本，sdk目前只支持单场景和单窗口，window会默认获取第一个窗口，当前展示vc也是在相应的基础上获取，如果是多场景使用，可能会导致sdk运行异常
++ (UIWindow *) getAppCurrentWindow;
 
 @end
 

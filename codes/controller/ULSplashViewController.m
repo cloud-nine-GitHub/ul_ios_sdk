@@ -38,6 +38,7 @@ static ULSplashViewController* instance=nil;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSLog(@"%s",__func__);
 //    UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 //    [UIApplication sharedApplication].delegate.window = window;
 //    window.backgroundColor = [UIColor whiteColor];
@@ -81,13 +82,22 @@ static ULSplashViewController* instance=nil;
             return;
         }
         //这里需要重新设置游戏所在的viewControoler
-        [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
-        UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        [UIApplication sharedApplication].delegate.window = window;
-        window.backgroundColor = [UIColor whiteColor];
-        [window makeKeyAndVisible];
-        id controller = [[NSClassFromString(mainController) alloc]init];
-        [window setRootViewController:controller];
+        if (@available(iOS 13.0, *)) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
+                @"data":mainController
+            }];
+            
+        }else{
+            [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
+            UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            [UIApplication sharedApplication].delegate.window = window;
+            window.backgroundColor = [UIColor whiteColor];
+            [window makeKeyAndVisible];
+            id controller = [[NSClassFromString(mainController) alloc]init];
+            [window setRootViewController:controller];
+        }
+        
     });
 }
 

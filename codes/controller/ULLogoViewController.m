@@ -57,12 +57,21 @@
             //            [self presentViewController:splashViewController animated:false completion:nil];
             
             //这里需要重新设置游戏所在的viewControoler
-            UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-            [UIApplication sharedApplication].delegate.window = window;
-            window.backgroundColor = [UIColor whiteColor];
-            [window makeKeyAndVisible];
-            ULSplashViewController* splashViewController = [[ULSplashViewController alloc] init];
-            [window setRootViewController:splashViewController];
+            if (@available(iOS 13.0, *)) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
+                    @"data":@"ULSplashViewController"
+                }];
+                
+            }else{
+                UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+                [UIApplication sharedApplication].delegate.window = window;
+                window.backgroundColor = [UIColor whiteColor];
+                [window makeKeyAndVisible];
+                ULSplashViewController* splashViewController = [[ULSplashViewController alloc] init];
+                [window setRootViewController:splashViewController];
+            }
+            //这里需要重新设置游戏所在的viewControoler
+            
             
             
         }];

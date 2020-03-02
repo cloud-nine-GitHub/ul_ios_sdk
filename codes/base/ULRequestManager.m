@@ -29,7 +29,7 @@ static NSMutableDictionary *requestTaskingMap = nil;
     if ([cmd isEqualToString:MSG_CMD_OPENADV]) {
         [self createAdvRequestTask:cmd :data];
     }else if([cmd isEqualToString:MSG_CMD_OPENPAY]){
-        //TODO
+        
     }
 }
 
@@ -56,6 +56,8 @@ static NSMutableDictionary *requestTaskingMap = nil;
         [advRequestList addObject:advRequestSerialNumStr];
     }
 }
+
+
 
 //获取当前请求任务的状态
 + (BOOL)getRequestTaskState:(NSString *)taskNameCmd :(NSDictionary *)data

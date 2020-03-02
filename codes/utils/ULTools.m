@@ -336,7 +336,7 @@
 {
     UIViewController *result = nil;
     // 获取默认的window
-    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    UIWindow * window = [self getAppCurrentWindow];
     // app默认windowLevel是UIWindowLevelNormal，如果不是，找到它。
     if (window.windowLevel != UIWindowLevelNormal) {
         NSArray *windows = [[UIApplication sharedApplication] windows];
@@ -1029,6 +1029,55 @@
         return param[idx];
     }
     return defaultParam;
+}
+
+
++ (NSDictionary *)mergeDictionary :(NSDictionary *)dicOne :(NSDictionary *)dicTwo :(BOOL)isCoverFlag
+{
+    NSMutableDictionary *nullDic = [NSMutableDictionary new];
+    if (!dicOne && !dicTwo) {
+        return nullDic;
+    }
+    if (!dicOne && dicTwo) {
+        return dicTwo;
+    }
+    if (dicOne && !dicTwo) {
+        return dicOne;
+    }
+    
+    NSArray *dicOneKeys = [dicOne allKeys];
+    for (NSString *key in dicOneKeys) {
+        id value = [dicOne objectForKey:key];
+        if (![dicTwo objectForKey:key]) {
+            [dicTwo setValue:value forKey:key];
+        }else{
+            if ([value isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *valueDic = (NSDictionary *)value;
+                [self mergeDictionary:valueDic :(NSDictionary *)[dicTwo objectForKey:key] :isCoverFlag];
+            }else{
+                if (isCoverFlag) {
+                    [dicTwo setValue:value forKey:key];
+                }
+            }
+        }
+    }
+    return dicTwo;
+}
+
+
+#pragma mark - 获取当前window：需确保当前只会创建一个窗口使用。
++ (UIWindow *) getAppCurrentWindow
+{
+    UIWindow *window = nil;
+    
+    if (@available(iOS 13.0, *)) {
+        window = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
+    } else {
+        window = [UIApplication sharedApplication].keyWindow;
+    }
+    
+    
+    return window;
 }
 
 @end

@@ -238,9 +238,9 @@ static NSString *upCopInfoString = @"";
     //是否显示互推按钮
     NSString *inner = [ULTools GetStringFromDic:cop :@"s_sdk_inner_promotion_data" :@""];
     if (inner && ![inner isEqualToString:@""]) {
-        [json setValue:[NSNumber numberWithBool:true] forKey:@"isShowUlInnerPromotionIcon"];
+        [json setValue:[NSNumber numberWithBool:true] forKey:@"isSupportJumpList"];
     }else{
-        [json setValue:[NSNumber numberWithBool:false] forKey:@"isShowUlInnerPromotionIcon"];
+        [json setValue:[NSNumber numberWithBool:false] forKey:@"isSupportJumpList"];
     }
     [ULSDKManager JsonRpcCall:REMSG_CMD_COPINFO :json];
 }

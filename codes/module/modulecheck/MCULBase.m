@@ -112,6 +112,19 @@
     return payData;
 }
 
+- (BOOL)checkId:(NSString *)payId :(NSDictionary *)payInfo
+{
+    
+    if(!payInfo){
+        return NO;
+    }
+    NSDictionary *idObj = [ULTools GetNSDictionaryFromDic:payInfo :payId :nil];
+    if (!idObj) {
+        return NO;
+    }
+    return YES;
+}
+
 
 
 @end

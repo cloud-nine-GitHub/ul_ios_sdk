@@ -55,7 +55,10 @@ static ULAccountSQLiteManager *instance = nil;
     NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *DBPath = [documentPath stringByAppendingPathComponent:ULA_SQLITE_NAME];
     //打开数据库，不存在的情况下自动创建
-    if (sqlite3_open(DBPath.UTF8String, &_db) != SQLITE_OK) {
+    //sqlite3_open(DBPath.UTF8String, &_db)
+    //sqlite3_open_v2(DBPath.UTF8String, &_db,SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX, nil)
+    //处理多线程访问数据库
+    if (sqlite3_open_v2(DBPath.UTF8String, &_db,SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX, nil) != SQLITE_OK) {
         //数据库打开失败
         NSLog(@"%s:数据库打开失败",__func__);
         return NO;

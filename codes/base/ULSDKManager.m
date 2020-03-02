@@ -42,6 +42,7 @@
 #import "ULWebView.h"
 #import "ULMoreGame.h"
 #import "ULAccountType.h"
+#import "ULGetDeviceId.h"
 
 @interface ULSDKManager ()
 
@@ -178,7 +179,7 @@ static double currentVolume = 0.00;
         }
     }
     
-    NSLog(@"%s%@",__func__,moduleTypeParamsDic);
+    //NSLog(@"%s%@",__func__,moduleTypeParamsDic);
     
     //step3
     //step4
@@ -372,6 +373,9 @@ static double currentVolume = 0.00;
     //返回ulsdk版本
     [channeInfoDic setValue:[ULConfig getUlsdkVersion] forKey:@"ulsdkVersion"];
     
+    //返回用户唯一标识
+    [channeInfoDic setValue:[ULGetDeviceId getUniqueDeviceId] forKey:@"udid"];
+    
     NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
     if ([isCloseCop isEqualToString:@"1"]) {
         //对于不使用cop而使用本地配置的情况，下列配置依然需要返回
@@ -413,6 +417,10 @@ static double currentVolume = 0.00;
 + (void)openPay:(NSDictionary *)data
 {
     NSLog(@"%s:%@",__func__,[ULTools DictionaryToString:data]);
+    //TODO 对于支付请求，在已有请求的情况下是考虑拦截还是加入队列？ 个人认为ios支付时间长，可直接拦截后续其他的支付请求
+    
+    
+    
     //目前只有iOS内购，需要按照android照来？
     NSString *payId = [data objectForKey:@"payId"];
     int payPolicy = [ULModuleBaseSdk getBasePayInfoPolicyWithPayId:payId];
@@ -505,35 +513,52 @@ static double currentVolume = 0.00;
 + (void)applicationWillResignActive {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_RESIGN_ACTIVE withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationWillResignActive" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 + (void)applicationDidEnterBackground {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_ENTER_BACKGROUND withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationDidEnterBackground" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 
 + (void)applicationWillEnterForeground {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationWillEnterForeground" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 
-//TODO 此生命周期在第一个viewController展示出来之后就会立即被触发，此时sdk各模块并未初始化，无法监听此消息
 + (void)applicationDidBecomeActive {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationDidBecomeActive" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 
 + (void)applicationWillTerminate {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_WILL_TERMINATE withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationWillTerminate" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 + (void)applicationDidReceiveMemoryWarning {
     NSLog(@"%s",__func__);
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"applicationDidReceiveMemoryWarning" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
 + (void)volumeDidChange:(NSNotification *)notification

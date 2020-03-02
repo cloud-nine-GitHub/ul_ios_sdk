@@ -93,37 +93,37 @@
 
 - (void)onApplicationWillResignActive:(NSNotification *)notification
 {
-    id<ULILifeCycle> lifeCycle = self;
+    id<ULILifeCycle> lifeCycle = (id)self;
     [lifeCycle applicationWillResignActive];
 }
 
 - (void)onApplicationDidEnterBackground:(NSNotification *)notification
 {
-    id<ULILifeCycle> lifeCycle = self;
+    id<ULILifeCycle> lifeCycle = (id)self;
     [lifeCycle applicationDidEnterBackground];
 }
 
 - (void)onApplicationWillEnterForeground:(NSNotification *)notification
 {
-    id<ULILifeCycle> lifeCycle = self;
+    id<ULILifeCycle> lifeCycle = (id)self;
     [lifeCycle applicationWillEnterForeground];
 }
 
 - (void)onApplicationDidBecomeActive:(NSNotification *)notification
 {
-    id<ULILifeCycle> lifeCycle = self;
+    id<ULILifeCycle> lifeCycle = (id)self;
     [lifeCycle applicationDidBecomeActive];
 }
 
 - (void)onApplicationWillTerminate:(NSNotification *)notification
 {
-    id<ULILifeCycle> lifeCycle = self;
+    id<ULILifeCycle> lifeCycle = (id)self;
     [lifeCycle applicationWillTerminate];
 }
 
 - (void)onApplicationDidReceiveMemoryWarning:(NSNotification *)notification
 {
-    id<ULILifeCycle> lifeCycle = self;
+    id<ULILifeCycle> lifeCycle = (id)self;
     [lifeCycle applicationDidReceiveMemoryWarning];
 }
 
