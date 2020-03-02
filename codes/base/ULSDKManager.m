@@ -320,6 +320,7 @@ static double currentVolume = 0.00;
         [rpcCallJsonObj setValue:dataDic forKey:@"data"];
         NSString *rpcCallJsonObjStr = [ULTools DictionaryToString:rpcCallJsonObj];
         NSLog(@"%s%@",__func__,rpcCallJsonObjStr);
+        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ONJSONRPCCALL withData:rpcCallJsonObjStr];
         //结束超时任务
         [ULTimeOut stopTimeOutTask:rpcCallJsonObj];
         //结束请求任务
