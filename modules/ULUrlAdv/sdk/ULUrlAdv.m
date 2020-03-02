@@ -183,5 +183,10 @@
     
 }
 
+- (void)viewDidLoad
+{
+    NSLog(@"%s",__func__);
+}
+
 @end
 

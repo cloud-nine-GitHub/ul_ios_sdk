@@ -255,5 +255,10 @@
     NSLog(@"%s",__func__);
 }
 
+- (void)viewDidLoad
+{
+    NSLog(@"%s",__func__);
+}
+
 
 @end

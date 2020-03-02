@@ -1080,6 +1080,29 @@
     return window;
 }
 
+#pragma mark - 判断横竖屏
++ (BOOL) isLandscapeScreen
+{
+    BOOL isLandscapeScreen = NO;
+    if(([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationPortrait) || ([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationPortraitUpsideDown)){//竖屏
+        NSLog(@"竖屏");
+        isLandscapeScreen = NO;
+    }else{//横屏
+        NSLog(@"横屏");
+        isLandscapeScreen = YES;
+    }
+    return isLandscapeScreen;
+}
+
+
+#pragma mark - 让子控件在父控件中水平居中
++ (void) adjustCenterH:(UIView *)childView :(UIView *)parentView
+{
+    CGPoint center = parentView.center;
+    center.y = childView.frame.origin.y + childView.frame.size.height/2;
+    childView.center = center;
+}
+
 @end
 
 

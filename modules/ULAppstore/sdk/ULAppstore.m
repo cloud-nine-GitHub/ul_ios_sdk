@@ -500,6 +500,11 @@
     NSLog(@"%s",__func__);
 }
 
+- (void)viewDidLoad
+{
+    NSLog(@"%s",__func__);
+}
+
 - (void)onPayResult:(PayState )payState :(NSDictionary *)payData
 {
     NSLog(@"%s",__func__);

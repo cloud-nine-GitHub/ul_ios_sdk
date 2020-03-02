@@ -15,7 +15,7 @@
 
 @protocol ULILifeCycle <NSObject>
 
-
+@optional
 - (void)applicationWillResignActive;
 
 - (void)applicationDidEnterBackground;
@@ -27,5 +27,7 @@
 - (void)applicationWillTerminate;
 
 - (void)applicationDidReceiveMemoryWarning;
+
+- (void)viewDidLoad;
 
 @end

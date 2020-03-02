@@ -614,5 +614,10 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     NSLog(@"%s",__func__);
 }
 
+- (void)viewDidLoad
+{
+    NSLog(@"%s",__func__);
+}
+
 
 @end

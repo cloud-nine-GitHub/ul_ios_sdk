@@ -23,6 +23,7 @@ static NSString *const APPLICATION_DID_RECEIVE_MEMORY_WARNING = @"applicationDid
 static NSString *const APPLICATION_WILL_TERMINATE = @"applicationWillTerminate";
 static NSString *const SDK_MANAGER_CLASS_METHOD_JSONAPI = @"JsonAPI:";//有参数需要添加：不然无法判断是否存在该方法
 static NSString *const SDK_MANAGER_CLASS_METHOD_INIT = @"init";
+static NSString *const VIEWCONTROLLER_LIFECYCLE_VIEWDIDLOAD = @"viewDidLoad";
 
 @implementation ULSdkReflecter
 
@@ -104,10 +105,16 @@ static NSString *const SDK_MANAGER_CLASS_METHOD_INIT = @"init";
         
     }];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidLoad:) name:@"main_vc_viewDidLoad" object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(request:) name:@"request" object:nil];
     
 }
 
++ (void)viewDidLoad :(NSNotification *)notification{
+    NSLog(@"%s",__func__);
+    [self invokeMethod:VIEWCONTROLLER_LIFECYCLE_VIEWDIDLOAD];
+}
 
 + (void)request :(NSNotification *)notification{
     NSLog(@"%s",__func__);

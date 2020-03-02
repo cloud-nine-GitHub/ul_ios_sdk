@@ -562,6 +562,14 @@ static double currentVolume = 0.00;
     [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
++ (void)viewDidLoad {
+    NSLog(@"%s",__func__);
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_VC_VIEWDIDLOAD withData:nil];
+    NSMutableDictionary *json = [NSMutableDictionary new];
+    [json setValue:@"viewDidLoad" forKey:@"lifeCycle"];
+    [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
+}
+
 + (void)volumeDidChange:(NSNotification *)notification
 
 {

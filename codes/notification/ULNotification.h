@@ -22,6 +22,7 @@ static NSString *const UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND = @"app
 static NSString *const UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE = @"applicationDidBecomeActive";
 static NSString *const UL_NOTIFICATION_APPLICATION_WILL_TERMINATE = @"applicationWillTerminate";
 static NSString *const UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING = @"applicationDidReceiveMemoryWarning";
+static NSString *const UL_NOTIFICATION_VC_VIEWDIDLOAD = @"viewDidLoad";
 
 static NSString *const UL_NOTIFICATION_ULSDKMANAGER_INIT = @"ulsdkManagerInit";
 static NSString *const UL_NOTIFICATION_ONJSONAPI = @"onJsonAPI";
@@ -39,6 +40,11 @@ static NSString *const UL_NOTIFICATION_MANAGER_INIT_ADV = @"ulNotificationManage
 static NSString *const UL_NOTIFICATION_ACCOUNT_WRITE_DATA = @"ulNotificationAccountWriteData";
 static NSString *const UL_NOTIFICATION_ACCOUNT_READ_DATA = @"ulNotificationAccountReadData";
 static NSString *const UL_NOTIFICATION_ACCOUNT_UP_DATA = @"ulNotificationAccountUpData";
+
+static NSString *const UL_NOTIFICATION_PRIVACY_POLICY_AGREE_LISTENER = @"ulNotificationPrivacyPolicyAgree";
+static NSString *const UL_NOTIFICATION_PRIVACY_POLICY_REFUSE_LISTENER = @"ulNotificationPrivacyPolicyRefuse";
+
+
 
 
 //测试界面消息
