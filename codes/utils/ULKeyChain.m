@@ -36,13 +36,13 @@
 }
 
 
-+ (void)saveDataToKeyChainWithKey: (NSString *)key withValue:(id)value
++ (void)saveDataToKeyChainWithKey: (NSString *)key withValue:(NSString *)value
 {
     //删除之前存储的数据
     NSDictionary *deleteQuery = @{
                                           (__bridge id)kSecClass : (__bridge id)kSecClassGenericPassword,
-                                          (__bridge id)kSecAttrService : @"key",
-                                          (__bridge id)kSecAttrAccount : @"key"
+                                          (__bridge id)kSecAttrService : key,
+                                          (__bridge id)kSecAttrAccount : key
                                           };
     
     OSStatus deleteStatus = SecItemDelete((__bridge CFDictionaryRef)deleteQuery);
@@ -55,9 +55,9 @@
     //存储数据
     NSDictionary *addQuery = @{(__bridge id)kSecAttrAccessible : (__bridge id)kSecAttrAccessibleWhenUnlocked,
                                        (__bridge id)kSecClass : (__bridge id)kSecClassGenericPassword,
-                                       (__bridge id)kSecValueData : (NSData *)value,
-                                       (__bridge id)kSecAttrAccount : @"key",
-                                       (__bridge id)kSecAttrService : @"key",
+                                       (__bridge id)kSecValueData : [value dataUsingEncoding:NSUTF8StringEncoding],
+                                       (__bridge id)kSecAttrAccount : key,
+                                       (__bridge id)kSecAttrService : key,
                                        };
     
     

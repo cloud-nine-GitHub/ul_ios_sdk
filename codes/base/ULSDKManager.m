@@ -374,7 +374,7 @@ static double currentVolume = 0.00;
     [channeInfoDic setValue:[ULConfig getUlsdkVersion] forKey:@"ulsdkVersion"];
     
     //返回用户唯一标识
-    [channeInfoDic setValue:[ULGetDeviceId getUniqueDeviceId] forKey:@"udid"];
+    [channeInfoDic setValue:[ULGetDeviceId getUniqueDeviceId] forKey:@"uuid"];
     
     NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
     if ([isCloseCop isEqualToString:@"1"]) {

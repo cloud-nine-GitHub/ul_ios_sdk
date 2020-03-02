@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 + (NSData *)getDataFromKeyChainWithKey:(NSString *)key;
-+ (void)saveDataToKeyChainWithKey: (NSString *)key withValue:(id)value;
++ (void)saveDataToKeyChainWithKey: (NSString *)key withValue:(NSString *)value;
 @end
 
 NS_ASSUME_NONNULL_END
