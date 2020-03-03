@@ -54,7 +54,7 @@
     [ULTools getCurrentViewController].automaticallyAdjustsScrollViewInsets = NO;//这个属性设置textView文本吸顶显示，TODO是否会产生其他因素待定。这个属性貌似禁用了滑动属性，具体的还需要验证
     
     UILabel *advLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,100,100,30)];
-    advLabel.text = @"穿山甲广告:";
+    advLabel.text = @"sigmob广告:";
     advLabel.textColor = [UIColor whiteColor];
     advLabel.font = [UIFont systemFontOfSize:12];
     advLabel.textAlignment = NSTextAlignmentCenter;
@@ -132,7 +132,7 @@
 {
     _advType = @"";
     _advParam = @"";
-    _advTypeArray = @[UL_ADV_SPLAH,UL_ADV_INTERSTITIAL,UL_ADV_FULLSCREEN,UL_ADV_VIDEO,UL_ADV_BANNER];
+    _advTypeArray = @[UL_ADV_SPLAH,UL_ADV_FULLSCREEN,UL_ADV_VIDEO];
 }
 
 
