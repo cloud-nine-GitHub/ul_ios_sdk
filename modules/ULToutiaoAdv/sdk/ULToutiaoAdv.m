@@ -57,16 +57,7 @@
 - (void)onInitModule
 {
     NSLog(@"%s",__func__);
-    //获取banner的轮播时间间隔，单位s
-    NSString *bannerRefreshTimeStr = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_toutiao_banner_refresh_time" withDefaultString:@""];
-    if (bannerRefreshTimeStr != nil && ![bannerRefreshTimeStr isEqualToString:@""]) {
-        
-        _bannerRefreshTime = [bannerRefreshTimeStr intValue];
-        
-        
-    }else{//默认值
-        _bannerRefreshTime = 30;
-    }
+    
 }
 
 
@@ -187,6 +178,17 @@
     [BUAdSDKManager setAppID:appId];
     [BUAdSDKManager setIsPaidApp:NO];
     [BUAdSDKManager setLoglevel:BUAdSDKLogLevelNone];
+    
+    //获取banner的轮播时间间隔，单位s
+    NSString *bannerRefreshTimeStr = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_toutiao_banner_refresh_time" withDefaultString:@""];
+    if (bannerRefreshTimeStr != nil && ![bannerRefreshTimeStr isEqualToString:@""]) {
+        
+        _bannerRefreshTime = [bannerRefreshTimeStr intValue];
+        
+        
+    }else{//默认值
+        _bannerRefreshTime = 30;
+    }
 }
 
 - (void)onConstructorAdv
@@ -211,7 +213,7 @@
     
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     _splashId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_splashid" withDefaultParam:@"" withSplitString:@"|"];
     
     CGRect frame = [UIScreen mainScreen].bounds;
@@ -228,7 +230,7 @@
     
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     _splashId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_splashid" withDefaultParam:@"" withSplitString:@"|"];
     
     CGRect frame = [UIScreen mainScreen].bounds;
@@ -245,7 +247,7 @@
     _interJson = json;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     _interId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_interid" withDefaultParam:@"" withSplitString:@"|"];
     self.expressInterAd = [[BUNativeExpressInterstitialAd alloc] initWithSlotID:_interId adSize:CGSizeMake(300, 300)];
     self.expressInterAd.delegate = self;
@@ -263,7 +265,7 @@
     videoModel.userId = @"123";
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     _videoId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_videoid" withDefaultParam:@"" withSplitString:@"|"];
     self.expressRewardedVideoAd = [[BUNativeExpressRewardedVideoAd alloc] initWithSlotID:_videoId rewardedVideoModel:videoModel];
     self.expressRewardedVideoAd.delegate = self;
@@ -281,7 +283,7 @@
     _fullscreenJson = json;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     _fullscreenId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_fullscreenid" withDefaultParam:@"" withSplitString:@"|"];
     self.expressFullscreenVideoAd = [[BUNativeExpressFullscreenVideoAd alloc] initWithSlotID: _fullscreenId];
     self.expressFullscreenVideoAd.delegate = self;
@@ -303,7 +305,7 @@
 //
 //    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
 //    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-//    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+//    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
 //    _bannerId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_toutiao_bannerid" withDefaultParam:@"" withSplitString:@"|"];
 //
 //    self.expressBannerAd = [[BUNativeExpressBannerView alloc] initWithSlotID:_bannerId rootViewController:[ULTools getCurrentViewController] adSize:CGSizeMake(screenSize.width, bannerHeight) IsSupportDeepLink:YES interval:_bannerRefreshTime];
@@ -366,7 +368,7 @@
     NSLog(@"%s%@",__func__,error);
     NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
     [splashAd removeFromSuperview];
-    [self showNextAdv:_splashJson :_splashId :errorMsg];
+    [self showNextAdv:_splashJson :splashAd.slotID :errorMsg];
 }
 
 /**
@@ -375,7 +377,7 @@
 - (void)splashAdWillVisible:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
-    [self showAdv:_splashJson :_splashId];
+    [self showAdv:_splashJson :splashAd.slotID];
 }
 
 /**
@@ -385,7 +387,7 @@
 {
     NSLog(@"%s",__func__);
     _isSplashClicked = YES;
-    [self showClicked:_splashJson :_splashId];
+    [self showClicked:_splashJson :splashAd.slotID];
 }
 
 /**

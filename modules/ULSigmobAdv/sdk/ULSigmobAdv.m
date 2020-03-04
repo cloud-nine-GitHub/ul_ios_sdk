@@ -155,7 +155,7 @@
     _splashJson = json;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *splashId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_sigmob_splashid" withDefaultParam:@"" withSplitString:@"|"];
     _splashAd = [[WindSplashAd alloc] initWithPlacementId:splashId];
     _splashAd.delegate = self;
@@ -178,7 +178,7 @@
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *videoId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_sigmob_videoid" withDefaultParam:@"" withSplitString:@"|"];
     
     //获取该参数对应已创建的广告对象
@@ -221,7 +221,7 @@
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
-    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilitys" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *fullscreenId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_sigmob_fullscreenid" withDefaultParam:@"" withSplitString:@"|"];
     
     //获取该参数对应已创建的广告对象
@@ -308,6 +308,7 @@
 {
     NSLog(@"%s", __func__);
     [self showClicked:_splashJson :splashAd.placementId];
+    //sigmob开屏点击后也会回调关闭函数，但并未影响跳转。
 }
 
 /**
@@ -316,7 +317,10 @@
 - (void)onSplashAdWillClosed:(WindSplashAd *)splashAd
 {
     NSLog(@"%s", __func__);
-    
+    //释放广告对象
+    splashAd.delegate = nil;
+    splashAd = nil;
+    [[ULSplashViewController getInstance]removeSplashView];
 }
 
 /**
@@ -324,11 +328,11 @@
  */
 - (void)onSplashAdClosed:(WindSplashAd *)splashAd
 {
-    NSLog(@"%s", __func__);
+    NSLog(@"%s", __func__);//测试未回调
     //释放广告对象
-    splashAd.delegate = nil;
-    splashAd = nil;
-    [[ULSplashViewController getInstance]removeSplashView];
+//    splashAd.delegate = nil;
+//    splashAd = nil;
+//    [[ULSplashViewController getInstance]removeSplashView];
 }
 
 
