@@ -1,0 +1,6 @@
+framework module MGAdBaseAdapter {
+  umbrella header "MGAdBaseAdapter.h"
+
+  export *
+  module * { export * }
+}

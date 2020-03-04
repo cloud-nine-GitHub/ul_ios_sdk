@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation
+END
+GADMediationAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 175
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationAd.h
+END
+GADMediatedUnifiedNativeAdNotificationSource.h
+K 25
+svn:wc:ra_dav:version-url
+V 205
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediatedUnifiedNativeAdNotificationSource.h
+END
+GADMediationNativeAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 181
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationNativeAd.h
+END
+GADMediationAdRequest.h
+K 25
+svn:wc:ra_dav:version-url
+V 182
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdRequest.h
+END
+GADMediationServerConfiguration.h
+K 25
+svn:wc:ra_dav:version-url
+V 192
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationServerConfiguration.h
+END
+GADMRewardBasedVideoAdNetworkAdapterProtocol.h
+K 25
+svn:wc:ra_dav:version-url
+V 205
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMRewardBasedVideoAdNetworkAdapterProtocol.h
+END
+GADMediationRewardedAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 183
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationRewardedAd.h
+END
+GADMediatedUnifiedNativeAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 187
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediatedUnifiedNativeAd.h
+END
+GADVersionNumber.h
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADVersionNumber.h
+END
+GADMAdNetworkAdapterProtocol.h
+K 25
+svn:wc:ra_dav:version-url
+V 189
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMAdNetworkAdapterProtocol.h
+END
+GADMRewardBasedVideoAdNetworkConnectorProtocol.h
+K 25
+svn:wc:ra_dav:version-url
+V 207
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMRewardBasedVideoAdNetworkConnectorProtocol.h
+END
+GADMediationBannerAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 181
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationBannerAd.h
+END
+GADMEnums.h
+K 25
+svn:wc:ra_dav:version-url
+V 170
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMEnums.h
+END
+GADMediationAdConfiguration.h
+K 25
+svn:wc:ra_dav:version-url
+V 188
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdConfiguration.h
+END
+GADMAdNetworkConnectorProtocol.h
+K 25
+svn:wc:ra_dav:version-url
+V 191
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMAdNetworkConnectorProtocol.h
+END
+GADMediationAdSize.h
+K 25
+svn:wc:ra_dav:version-url
+V 179
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdSize.h
+END
+GADMediationInterstitialAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 187
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationInterstitialAd.h
+END
+GADMediationAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 180
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdapter.h
+END
+GADMediationAdEventDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 188
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Admob/7.53.1/GoogleMobileAds.framework/Headers/Mediation/GADMediationAdEventDelegate.h
+END

@@ -1,0 +1,173 @@
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers
+END
+FBSDKAppLinkReturnToRefererController.h
+K 25
+svn:wc:ra_dav:version-url
+V 187
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkReturnToRefererController.h
+END
+FBSDKAppLinkResolver.h
+K 25
+svn:wc:ra_dav:version-url
+V 170
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkResolver.h
+END
+FBSDKMutableCopying.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKMutableCopying.h
+END
+FBSDKAppLinkUtility.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkUtility.h
+END
+FBSDKProfilePictureView.h
+K 25
+svn:wc:ra_dav:version-url
+V 173
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKProfilePictureView.h
+END
+FBSDKMeasurementEvent.h
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKMeasurementEvent.h
+END
+FBSDKAppLinkResolving.h
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkResolving.h
+END
+FBSDKGraphRequestConnection.h
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKGraphRequestConnection.h
+END
+FBSDKGraphErrorRecoveryProcessor.h
+K 25
+svn:wc:ra_dav:version-url
+V 182
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKGraphErrorRecoveryProcessor.h
+END
+FBSDKTestUsersManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKTestUsersManager.h
+END
+FBSDKApplicationDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 174
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKApplicationDelegate.h
+END
+FBSDKAppLink.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLink.h
+END
+FBSDKCoreKit.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKCoreKit.h
+END
+FBSDKProfile.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKProfile.h
+END
+FBSDKSettings.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKSettings.h
+END
+FBSDKURL.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKURL.h
+END
+FBSDKAccessToken.h
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAccessToken.h
+END
+FBSDKUtility.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKUtility.h
+END
+FBSDKAppEvents.h
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppEvents.h
+END
+FBSDKAppLinkTarget.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkTarget.h
+END
+FBSDKAppLinkReturnToRefererView.h
+K 25
+svn:wc:ra_dav:version-url
+V 181
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkReturnToRefererView.h
+END
+FBSDKCopying.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKCopying.h
+END
+FBSDKWebViewAppLinkResolver.h
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKWebViewAppLinkResolver.h
+END
+FBSDKGraphRequest.h
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKGraphRequest.h
+END
+FBSDKButton.h
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKButton.h
+END
+FBSDKConstants.h
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKConstants.h
+END
+FBSDKGraphRequestDataAttachment.h
+K 25
+svn:wc:ra_dav:version-url
+V 181
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKGraphRequestDataAttachment.h
+END
+FBSDKAppLinkNavigation.h
+K 25
+svn:wc:ra_dav:version-url
+V 172
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Facebook/5.6.0/FBSDKCoreKit.framework/Headers/FBSDKAppLinkNavigation.h
+END

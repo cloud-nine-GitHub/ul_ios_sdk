@@ -1,0 +1,1 @@
+#import <MobGiNativeAd/NativeAdDetailsInfo.h>

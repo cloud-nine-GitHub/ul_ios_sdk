@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers
+END
+MTGSDK.h
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGSDK.h
+END
+MTGNativeAdManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGNativeAdManager.h
+END
+MTGUserInfo.h
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGUserInfo.h
+END
+MTGFrame.h
+K 25
+svn:wc:ra_dav:version-url
+V 152
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGFrame.h
+END
+MTGNativeAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGNativeAd.h
+END
+MTGBool.h
+K 25
+svn:wc:ra_dav:version-url
+V 151
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGBool.h
+END
+MTGErrorCodeConstant.h
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGErrorCodeConstant.h
+END
+MTGNativeScrollView.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGNativeScrollView.h
+END
+MTGRewardAdInfo.h
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGRewardAdInfo.h
+END
+MTGBidNativeAdManager.h
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGBidNativeAdManager.h
+END
+MTGMediaView.h
+K 25
+svn:wc:ra_dav:version-url
+V 156
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGMediaView.h
+END
+MTGTemplate.h
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGTemplate.h
+END
+MTGAdChoicesView.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGAdChoicesView.h
+END
+MTGCampaign.h
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGCampaign.h
+END
+MTGAdSize.h
+K 25
+svn:wc:ra_dav:version-url
+V 153
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/5.8.4/MTGSDK.framework/Headers/MTGAdSize.h
+END

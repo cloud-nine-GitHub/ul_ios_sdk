@@ -1,0 +1,143 @@
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers
+END
+ISSegmentDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISSegmentDelegate.h
+END
+ISEventsReporting.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISEventsReporting.h
+END
+ISBannerSize.h
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISBannerSize.h
+END
+ISBannerDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISBannerDelegate.h
+END
+ISBannerView.h
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISBannerView.h
+END
+ISProductSettings.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISProductSettings.h
+END
+ISServerResponseParser.h
+K 25
+svn:wc:ra_dav:version-url
+V 174
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISServerResponseParser.h
+END
+ISSegment.h
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISSegment.h
+END
+ISGender.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISGender.h
+END
+ISInterstitialDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 174
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISInterstitialDelegate.h
+END
+ISSupersonicAdsConfiguration.h
+K 25
+svn:wc:ra_dav:version-url
+V 180
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISSupersonicAdsConfiguration.h
+END
+ISOfferwallDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISOfferwallDelegate.h
+END
+ISLogDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISLogDelegate.h
+END
+ISRewardedVideoDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 175
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISRewardedVideoDelegate.h
+END
+ISDemandOnlyInterstitialDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 184
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISDemandOnlyInterstitialDelegate.h
+END
+ISIntegrationHelper.h
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISIntegrationHelper.h
+END
+ISLoggersSettings.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISLoggersSettings.h
+END
+ISRewardedInterstitialDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 182
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISRewardedInterstitialDelegate.h
+END
+ISPlacementInfo.h
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISPlacementInfo.h
+END
+ISEventsSettings.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISEventsSettings.h
+END
+ISConfigurations.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISConfigurations.h
+END
+ISDemandOnlyRewardedVideoDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 185
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/ISDemandOnlyRewardedVideoDelegate.h
+END
+IronSource.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/ironSource/6.8.7.0/IronSource.framework/Headers/IronSource.h
+END

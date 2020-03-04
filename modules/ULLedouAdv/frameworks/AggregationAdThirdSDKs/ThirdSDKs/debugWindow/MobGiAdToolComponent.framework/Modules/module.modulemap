@@ -1,0 +1,6 @@
+framework module MobGiAdToolComponent {
+  umbrella header "MobGiAdToolComponent.h"
+
+  export *
+  module * { export * }
+}

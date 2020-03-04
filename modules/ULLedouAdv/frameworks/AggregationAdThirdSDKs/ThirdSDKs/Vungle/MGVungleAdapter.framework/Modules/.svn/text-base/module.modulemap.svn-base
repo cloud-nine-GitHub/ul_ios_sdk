@@ -1,0 +1,6 @@
+framework module MGVungleAdapter {
+  umbrella header "MGVungleAdapter.h"
+
+  export *
+  module * { export * }
+}

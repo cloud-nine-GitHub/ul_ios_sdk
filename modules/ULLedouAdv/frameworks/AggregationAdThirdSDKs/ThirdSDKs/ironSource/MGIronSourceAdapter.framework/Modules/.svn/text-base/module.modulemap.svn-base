@@ -1,0 +1,6 @@
+framework module MGIronSourceAdapter {
+  umbrella header "MGIronSourceAdapter.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,1 @@
+#import <MobGiInterstitialAd/InterstitialPolymerizationSDK.h>

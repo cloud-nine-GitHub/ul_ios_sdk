@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers
+END
+MGGDTBannerAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 157
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTBannerAdapter.h
+END
+MGGDTTwoInterstitialAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTTwoInterstitialAdapter.h
+END
+MGGDTNativeAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 157
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTNativeAdapter.h
+END
+MGGDTSplashAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 157
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTSplashAdapter.h
+END
+MGGDTInterstitialAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTInterstitialAdapter.h
+END
+MGGDTRewardVideoAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTRewardVideoAdapter.h
+END
+MGGDTAdapterSetting.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTAdapterSetting.h
+END
+MGGDTTwoBannerAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTTwoBannerAdapter.h
+END
+MGGDTTwoNativeAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/GDT/MGGDTAdapter.framework/Headers/MGGDTTwoNativeAdapter.h
+END

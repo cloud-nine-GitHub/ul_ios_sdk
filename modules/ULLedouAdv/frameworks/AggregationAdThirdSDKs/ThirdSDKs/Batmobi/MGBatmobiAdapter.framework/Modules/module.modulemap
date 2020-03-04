@@ -1,0 +1,6 @@
+framework module MGBatmobiAdapter {
+  umbrella header "MGBatmobiAdapter.h"
+
+  export *
+  module * { export * }
+}

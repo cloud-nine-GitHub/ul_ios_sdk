@@ -1,0 +1,281 @@
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers
+END
+ALAdSize.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdSize.h
+END
+ALAdView.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdView.h
+END
+ALCEntity.h
+K 25
+svn:wc:ra_dav:version-url
+V 159
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALCEntity.h
+END
+MAAdViewAdDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAAdViewAdDelegate.h
+END
+MAAdView.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAAdView.h
+END
+ALInterstitialAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALInterstitialAd.h
+END
+MAAdDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAAdDelegate.h
+END
+MAInterstitialAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAInterstitialAd.h
+END
+ALNativeAdPrecacheDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 176
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALNativeAdPrecacheDelegate.h
+END
+ALSdk.h
+K 25
+svn:wc:ra_dav:version-url
+V 155
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALSdk.h
+END
+ALAdUpdateDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdUpdateDelegate.h
+END
+ALAdRewardDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdRewardDelegate.h
+END
+ALAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAd.h
+END
+ALMediationProvider.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALMediationProvider.h
+END
+MAReward.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAReward.h
+END
+MAAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 154
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAAd.h
+END
+ALNativeAdLoadDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 172
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALNativeAdLoadDelegate.h
+END
+ALCMessage.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALCMessage.h
+END
+ALPostbackService.h
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALPostbackService.h
+END
+ALIncentivizedInterstitialAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 178
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALIncentivizedInterstitialAd.h
+END
+MAAdFormat.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAAdFormat.h
+END
+ALPrivacySettings.h
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALPrivacySettings.h
+END
+ALEventService.h
+K 25
+svn:wc:ra_dav:version-url
+V 164
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALEventService.h
+END
+ALCCommunicator.h
+K 25
+svn:wc:ra_dav:version-url
+V 165
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALCCommunicator.h
+END
+ALAdService.h
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdService.h
+END
+ALAdDisplayDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdDisplayDelegate.h
+END
+ALEventTypes.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALEventTypes.h
+END
+ALErrorCodes.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALErrorCodes.h
+END
+MAErrorCodes.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MAErrorCodes.h
+END
+ALSdkConfiguration.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALSdkConfiguration.h
+END
+ALAdViewEventDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 171
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdViewEventDelegate.h
+END
+ALNativeAdService.h
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALNativeAdService.h
+END
+AppLovinSDK.h
+K 25
+svn:wc:ra_dav:version-url
+V 161
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/AppLovinSDK.h
+END
+ALAdVideoPlaybackDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 175
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdVideoPlaybackDelegate.h
+END
+ALAdLoadDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 166
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdLoadDelegate.h
+END
+ALAdType.h
+K 25
+svn:wc:ra_dav:version-url
+V 158
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALAdType.h
+END
+ALNativeAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 160
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALNativeAd.h
+END
+MARewardedAdDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 170
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MARewardedAdDelegate.h
+END
+ALUserService.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALUserService.h
+END
+ALCPublisher.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALCPublisher.h
+END
+ALPostbackDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 168
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALPostbackDelegate.h
+END
+ALCMessagingService.h
+K 25
+svn:wc:ra_dav:version-url
+V 169
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALCMessagingService.h
+END
+ALSdkSettings.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALSdkSettings.h
+END
+MARewardedAd.h
+K 25
+svn:wc:ra_dav:version-url
+V 162
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/MARewardedAd.h
+END
+ALCSubscriber.h
+K 25
+svn:wc:ra_dav:version-url
+V 163
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALCSubscriber.h
+END
+ALVariableService.h
+K 25
+svn:wc:ra_dav:version-url
+V 167
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Applovin/6.10.1/AppLovinSDK.framework/Headers/ALVariableService.h
+END

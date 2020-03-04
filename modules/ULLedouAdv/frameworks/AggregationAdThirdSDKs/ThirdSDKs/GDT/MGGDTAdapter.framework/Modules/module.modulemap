@@ -1,0 +1,6 @@
+framework module MGGDTAdapter {
+  umbrella header "MGGDTAdapter.h"
+
+  export *
+  module * { export * }
+}
