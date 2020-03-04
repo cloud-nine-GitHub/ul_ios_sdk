@@ -8,7 +8,9 @@
 /**
  
  广告会自动加载
- 
+ 存在问题：
+        1.插屏、视频无点击回调。对方反馈存在部分平台没有点击回调，正常
+        2.插屏预加载已经在初始化成功回调函数中调用，还是回调加载失败：需在初始化完成后再加载广告。对方反馈初始化回调函数存在时间长的问题，正常，建议延迟2s左右再预加载广告。
  */
 #import "ULLedouAdv.h"
 #import "ULConfig.h"
@@ -18,6 +20,7 @@
 #import "ULNotificationDispatcher.h"
 #import "ULSplashViewController.h"
 #import "ULGetDeviceId.h"
+#import "ULTimer.h"
 #import "VideoPolymerizationSDK.h"
 #import "InterstitialPolymerizationSDK.h"
 #import "SplashPolymerizationSDK.h"
@@ -168,7 +171,7 @@
     NSString *splashId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_ledou_splashid" withDefaultParam:@"" withSplitString:@"|"];
     
     [[SplashPolymerizationSDK sharedInstance]setSplashAdDelegate:self];
-    [SplashPolymerizationSDK sharedInstance].debug = true;
+//    [SplashPolymerizationSDK sharedInstance].debug = true;
     [SplashPolymerizationSDK sharedInstance].fetchDelay = 3;
     NSString *appKey = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_ledou_appkey" :@""];
     [[SplashPolymerizationSDK sharedInstance] showSplash:appKey withWindow:[ULTools getAppCurrentWindow] blockid:splashId];
@@ -349,33 +352,39 @@
 - (void)interstitialAdInitializeSuccess
 {
     NSLog(@"%s",__func__);
+    //在初始化成功回调中调用预加载接口，依然会导致存在加载失败回调（需在初始化完成后再进行预加载），已反馈给对面，对方反馈初始化存在相应的回调问题，提供方案是可以延时两秒左右进行再预加载
     dispatch_async(dispatch_get_main_queue(), ^{
-        //获取本地配置的参数
-        NSString *interParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_ledou_interid" :@""];
-        NSArray *localInterParams = [interParamsStr componentsSeparatedByString:@"|"];
-        NSArray *interParamsArray = [self getParamArrayWithModule:@"ULLedouAdv" withType:@"interstitial" withDefaultValue:localInterParams];
-        //这里需要参数去重，避免重复加载
-        NSMutableDictionary *interDict = [NSMutableDictionary dictionary];
-        for (NSString * str in interParamsArray) {
-            if (![interDict objectForKey:str]) {
-                [interDict setValue:str forKey:str];
-            }
-            
-        }
-        NSMutableArray * interArr = [NSMutableArray new];
-        for (NSString *value in [interDict allValues]) {
-            [interArr addObject:value];
-        }
+        [[ULTimer getInstance]startTimerWithName:@"ul_ledou_inter_preload_delay_timer" withTarget:self withTime:2.0 withSel:@selector(delay) withUserInfo:nil withRepeat:NO];
         
-        for (NSString *param in interArr) {
-            //预加载插屏，只加载一次
-            [[InterstitialPolymerizationSDK sharedInstance] preloadInterstitialAd:param delegate:self];
-        }
     });
     
 }
 
-
+- (void)delay
+{
+    NSLog(@"%s",__func__);
+    //获取本地配置的参数
+    NSString *interParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_ledou_interid" :@""];
+    NSArray *localInterParams = [interParamsStr componentsSeparatedByString:@"|"];
+    NSArray *interParamsArray = [self getParamArrayWithModule:@"ULLedouAdv" withType:@"interstitial" withDefaultValue:localInterParams];
+    //这里需要参数去重，避免重复加载
+    NSMutableDictionary *interDict = [NSMutableDictionary dictionary];
+    for (NSString * str in interParamsArray) {
+        if (![interDict objectForKey:str]) {
+            [interDict setValue:str forKey:str];
+        }
+        
+    }
+    NSMutableArray * interArr = [NSMutableArray new];
+    for (NSString *value in [interDict allValues]) {
+        [interArr addObject:value];
+    }
+    
+    for (NSString *param in interArr) {
+        //预加载插屏，只加载一次
+        [[InterstitialPolymerizationSDK sharedInstance] preloadInterstitialAd:param delegate:self];
+    }
+}
 
 #pragma marks - PreloadInterstitialAdDelegate
 
