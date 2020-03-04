@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong)NSDictionary *splashJson,*videoJson,*fullscreenJson;
 @property (nonatomic,strong) WindSplashAd *splashAd;
+@property (nonatomic, strong)NSString *videoLoadFailMsg,*fullscreenLoadFailMsg;
 
 //TODO
 @property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
@@ -87,6 +88,8 @@
 - (void)initModuleAdv
 {
     NSLog(@"%s",__func__);
+    _videoLoadFailMsg = @"";
+    _fullscreenLoadFailMsg = @"";
     [self addListener];
     
     NSString *appId = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_sigmob_appid" :@""];
@@ -192,8 +195,8 @@
             }else {
                 //调用广告对象的load函数为下次加载
                 NSLog(@"%s,%@",__func__,@"广告未准备好或者已过期");
-                [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_SIGMOB_ADV_CALLBACK withData:@"adv not ready"];
-                [self showNextAdv:json :videoId :@"adv not ready"];
+                [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_SIGMOB_ADV_CALLBACK withData:_videoLoadFailMsg];
+                [self showNextAdv:json :videoId :_videoLoadFailMsg];
                 [[WindRewardedVideoAd sharedInstance] loadRequest:windAdRequest withPlacementId:videoId];
             }
     }else{
@@ -235,8 +238,8 @@
             }else {
                 //调用广告对象的load函数为下次加载
                 NSLog(@"%s,%@",__func__,@"广告未准备好或者已过期");
-                [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_SIGMOB_ADV_CALLBACK withData:@"adv not ready"];
-                [self showNextAdv:json :fullscreenId :@"adv not ready"];
+                [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_SIGMOB_ADV_CALLBACK withData:_fullscreenLoadFailMsg];
+                [self showNextAdv:json :fullscreenId :_fullscreenLoadFailMsg];
                 [[WindFullscreenVideoAd sharedInstance] loadRequest:windAdRequest withPlacementId:fullscreenId];
             }
     }else{
@@ -337,28 +340,46 @@
 
 
 
-#pragma mark - WindRewardedVideoAdDelegate   激励视频和全屏视频使用同一回调
+#pragma mark - WindRewardedVideoAdDelegate
 
-//激励视频广告AdServer返回广告
+/**
+激励视频广告AdServer返回广告(表示渠道有广告填充)
+
+@param placementId 广告位Id
+*/
 - (void)onVideoAdServerDidSuccess:(NSString *)placementId
 {
     NSLog(@"%s", __func__);
 }
 
-//激励视频广告AdServer无广告返回  表示无广告填充
+/**
+激励视频广告AdServer无广告返回(表示渠道无广告填充)
+
+@param placementId 广告位Id
+*/
 - (void)onVideoAdServerDidFail:(NSString *)placementId
 {
     NSLog(@"%s:no ad return",__func__);
+    _videoLoadFailMsg = @"无广告填充";
 }
 
-//物料加载成功  此时isReady=YES
+/**
+激励视频广告物料加载成功（此时isReady=YES）
+广告是否ready请以当前回调为准
+
+@param placementId 广告位Id
+*/
 -(void)onVideoAdLoadSuccess:(NSString * _Nullable)placementId
 {
     NSLog(@"%s", __func__);
     
 }
 
-//开始播放
+/**
+激励视频广告开始播放
+
+@param placementId 广告位Id
+*/
 -(void)onVideoAdPlayStart:(NSString * _Nullable)placementId
 {
     NSLog(@"%s", __func__);
@@ -369,21 +390,34 @@
     
 }
 
-//激励视频广告播放完毕
+/**
+激励视频广告视频播关闭
+
+@param placementId 广告位Id
+*/
 - (void)onVideoAdPlayEnd:(NSString *)placementId
 {
     NSLog(@"%s", __func__);
 }
 
 
-//点击
+/**
+激励视频广告发生点击
+
+@param placementId 广告位Id
+*/
 -(void)onVideoAdClicked:(NSString * _Nullable)placementId
 {
     NSLog(@"%s", __func__);
     [self showClicked:_videoJson :placementId];
 }
 
-//完成（奖励）  windRewardInfo包含是否完整观看等参数
+/**
+激励视频广告关闭
+
+@param info WindRewardInfo里面包含一次广告关闭中的是否完整观看等参数
+@param placementId 广告位Id
+*/
 - (void)onVideoAdClosedWithInfo:(WindRewardInfo * _Nullable)info placementId:(NSString *_Nullable)placementId
 {
     NSLog(@"%s", __func__);
@@ -399,19 +433,29 @@
     [[WindRewardedVideoAd sharedInstance] loadRequest:[_advLoadObjByParamDic objectForKey:placementId] withPlacementId:placementId];
 }
 
-//错误
+/**
+激励视频广告加载时发生错误
+
+@param error 发生错误时会有相应的code和message
+@param placementId 广告位Id
+*/
 -(void)onVideoError:(NSError *)error placementId:(NSString * _Nullable)placementId
 {
     
-    
+    //[self resumeSound];
     NSLog(@"%s%@", __func__,error);
-    
+    _videoLoadFailMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     
     
 }
 
 
-//视频调用播放时发生错误
+/**
+激励视频广告调用播放时发生错误
+
+@param error 发生错误时会有相应的code和message
+@param placementId 广告位Id
+*/
 - (void)onVideoAdPlayError:(NSError *)error placementId:(NSString * _Nullable)placementId
 {
     //这里处理播放出错的逻辑
@@ -452,6 +496,7 @@
 - (void)onFullscreenVideoAdError:(NSError *)error placementId:(NSString *)placementId
 {
     NSLog(@"%s%@",__func__,error);
+    _fullscreenLoadFailMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
 }
 
 
@@ -507,6 +552,7 @@
 - (void)onFullscreenVideoAdPlayError:(NSError *)error placementId:(NSString *)placementId
 {
     NSLog(@"%s%@",__func__,error);
+    [self resumeSound];
     NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_SIGMOB_ADV_CALLBACK withData:errorMsg];
     [self showNextAdv:_fullscreenJson :placementId :errorMsg];
