@@ -1,0 +1,6 @@
+framework module MGApplovinAdapter {
+  umbrella header "MGApplovinAdapter.h"
+
+  export *
+  module * { export * }
+}

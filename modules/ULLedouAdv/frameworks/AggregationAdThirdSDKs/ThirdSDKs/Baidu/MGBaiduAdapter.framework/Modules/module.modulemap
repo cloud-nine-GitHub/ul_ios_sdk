@@ -1,0 +1,6 @@
+framework module MGBaiduAdapter {
+  umbrella header "MGBaiduAdapter.h"
+
+  export *
+  module * { export * }
+}

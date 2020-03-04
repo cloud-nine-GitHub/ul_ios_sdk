@@ -1,0 +1,6 @@
+framework module MobGiBannerAd {
+  umbrella header "MobGiBannerAd.h"
+
+  export *
+  module * { export * }
+}

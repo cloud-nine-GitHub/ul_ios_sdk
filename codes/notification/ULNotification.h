@@ -72,7 +72,9 @@ static NSString *const UL_NOTIFICATION_MC_SHOW_HUILIANG_INTER_ADV = @"ulNotifica
 static NSString *const UL_NOTIFICATION_MC_SHOW_HUILIANG_FULLSCREEN_ADV = @"ulNotificationMcShowHuiliangFullscreenAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_HUILIANG_VIDEO_ADV = @"ulNotificationMcShowHuiliangVideoAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_HUILIANG_ADV_CALLBACK = @"ulNotificationMcShowHuiliangAdvCallback";
-
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_INTER_ADV = @"ulNotificationMcShowLedouInterAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_VIDEO_ADV = @"ulNotificationMcShowLedouVideoAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_ADV_CALLBACK = @"ulNotificationMcShowLedouAdvCallback";
 
 
 

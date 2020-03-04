@@ -1,0 +1,6 @@
+framework module MGSigmobAdapter {
+  umbrella header "MGSigmobAdapter.h"
+
+  export *
+  module * { export * }
+}

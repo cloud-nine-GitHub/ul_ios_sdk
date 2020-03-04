@@ -1,0 +1,6 @@
+framework module MGMobvistaAdapter {
+  umbrella header "MGMobvistaAdapter.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module MGAdcolonyAdapter {
+  umbrella header "MGAdcolonyAdapter.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module MGChartboostAdapter {
+  umbrella header "MGChartboostAdapter.h"
+
+  export *
+  module * { export * }
+}

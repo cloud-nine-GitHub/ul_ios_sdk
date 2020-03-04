@@ -1,0 +1,6 @@
+framework module MGFacebookAdapter {
+  umbrella header "MGFacebookAdapter.h"
+
+  export *
+  module * { export * }
+}

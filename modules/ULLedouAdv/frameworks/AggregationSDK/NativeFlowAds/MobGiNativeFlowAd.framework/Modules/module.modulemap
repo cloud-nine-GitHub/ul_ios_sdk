@@ -1,0 +1,6 @@
+framework module MobGiNativeFlowAd {
+  umbrella header "MobGiNativeFlowAd.h"
+
+  export *
+  module * { export * }
+}

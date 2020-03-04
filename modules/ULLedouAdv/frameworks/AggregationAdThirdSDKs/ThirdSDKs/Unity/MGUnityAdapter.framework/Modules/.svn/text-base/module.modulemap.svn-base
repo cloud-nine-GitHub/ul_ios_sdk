@@ -1,0 +1,6 @@
+framework module MGUnityAdapter {
+  umbrella header "MGUnityAdapter.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/MGMobvistaAdapter.framework/Headers
+END
+MGMobvistaInterstitialVideoAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 183
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/MGMobvistaAdapter.framework/Headers/MGMobvistaInterstitialVideoAdapter.h
+END
+MGMobvistaNativeAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 172
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/MGMobvistaAdapter.framework/Headers/MGMobvistaNativeAdapter.h
+END
+MGMobvistaRewardVideoAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/MGMobvistaAdapter.framework/Headers/MGMobvistaRewardVideoAdapter.h
+END
+MGMobvistaAdapterSetting.h
+K 25
+svn:wc:ra_dav:version-url
+V 173
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/MGMobvistaAdapter.framework/Headers/MGMobvistaAdapterSetting.h
+END
+MGMobvistaInteractiveAdapter.h
+K 25
+svn:wc:ra_dav:version-url
+V 177
+/dgc/!svn/ver/323146/dgc_ios_sdk/program/ads_sdk/Adx/tags/release_5.3.0/Output/AggregationAdThirdSDKs/Mobvista/MGMobvistaAdapter.framework/Headers/MGMobvistaInteractiveAdapter.h
+END
