@@ -145,7 +145,8 @@ def make_by_config(rootPath, config):
 
 	# resources
 	if config.has_key("resources"):
-		group_Resources = project.get_or_create_group(config["project_name"])
+		# group_Resources = project.get_or_create_group(config["project_name"])
+		group_Resources = project.get_or_create_group("Resources")
 		for _, r in enumerate(config["resources"]):
 			print "  project.add_file(%s, parent = group_Resources, create_build_files = True)" % os.path.join(rootPath, r)
 			project.add_file(os.path.join(rootPath, r), parent = group_Resources, create_build_files = True)
@@ -183,7 +184,7 @@ def make_by_config(rootPath, config):
 		info_data["CFBundleVersion"] = config["build_version"]
 
 	# 去掉UIMainStoryboardFile
-	if info_data["UIMainStoryboardFile"]:
+	if info_data.has_key("UIMainStoryboardFile"):
 		del info_data["UIMainStoryboardFile"]
 
 	# 打上mod
