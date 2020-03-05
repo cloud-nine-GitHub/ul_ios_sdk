@@ -145,6 +145,7 @@ def make_by_config(rootPath, config):
 
 	# resources
 	if config.has_key("resources"):
+		project.remove_group_by_name("Resources")
 		# group_Resources = project.get_or_create_group(config["project_name"])
 		group_Resources = project.get_or_create_group("Resources")
 		for _, r in enumerate(config["resources"]):
