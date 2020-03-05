@@ -76,6 +76,7 @@ static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_INTER_ADV = @"ulNotificatio
 static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_VIDEO_ADV = @"ulNotificationMcShowLedouVideoAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_ADV_CALLBACK = @"ulNotificationMcShowLedouAdvCallback";
 static NSString *const UL_NOTIFICATION_MC_SHOW_GDT_INTER_ADV = @"ulNotificationMcShowGdtInterAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_GDT_FULLSCREEN_ADV = @"ulNotificationMcShowGdtFullscreenAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_GDT_VIDEO_ADV = @"ulNotificationMcShowGdtVideoAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_GDT_ADV_CALLBACK = @"ulNotificationMcShowGdtAdvCallback";
 

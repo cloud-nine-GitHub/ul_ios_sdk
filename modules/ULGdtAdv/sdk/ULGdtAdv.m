@@ -15,14 +15,23 @@
 #import "ULNotificationDispatcher.h"
 #import "ULSplashViewController.h"
 #import "ULGetDeviceId.h"
+#import "GDTSDKConfig.h"
+#import "GDTSplashAd.h"
+#import "GDTUnifiedInterstitialAd.h"
+#import "GDTRewardVideoAd.h"
 
-@interface ULGdtAdv ()
+@interface ULGdtAdv ()<GDTSplashAdDelegate,GDTUnifiedInterstitialAdDelegate,GDTRewardedVideoAdDelegate>
 
 @property (nonatomic, strong)NSDictionary *splashJson,*videoJson,*interJson;
 @property (nonatomic, strong)NSString *videoLoadFailMsg,*interLoadFailMsg;
 
 //TODO
 @property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
+
+
+
+@property (nonatomic, strong)GDTSplashAd *splashAd;//开屏必须以属性的形式声明，否则无回调
+@property (nonatomic, strong)NSString *splashId;
 @end
 
 
@@ -45,7 +54,7 @@
     
     [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_MC_SHOW_GDT_INTER_ADV withSelector:@selector(onShowInterAdv:) withPriority:PRIORITY_NONE];
     
-    
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_MC_SHOW_GDT_FULLSCREEN_ADV withSelector:@selector(onShowFullscreenAdv:) withPriority:PRIORITY_NONE];
 }
 
 
@@ -64,6 +73,14 @@
     ULNotification *n = notification.userInfo[@"notification"];
     [n stopDispatchNotification];
     [self showInterstitialAdv:data];
+}
+
+- (void)onShowFullscreenAdv:(NSNotification *)notification
+{
+    NSDictionary *data = notification.userInfo[@"data"];
+    ULNotification *n = notification.userInfo[@"notification"];
+    [n stopDispatchNotification];
+    [self showFullscreenAdv:data];
 }
 
 
@@ -93,14 +110,17 @@
     
     [self addListener];
     
-    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
-
+    NSLog(@"%s:当前sdk版本 = %@",__func__,GDTSDKConfig.sdkVersion);
+    [GDTSDKConfig enableGPS:YES]; // 获取用户的GPS信息，默认值为NO
+    [GDTSDKConfig setChannel:14];//设置渠道号,有助提升收益
+//    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
+//
+//
+//    //获取本地配置的参数
+//    NSString *videoParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_gdt_videoid" :@""];
+//    NSArray *localVideoParams = [videoParamsStr componentsSeparatedByString:@"|"];
+//    NSArray *videoParamsArray = [self getParamArrayWithModule:@"ULGdtAdv" withType:@"video" withDefaultValue:localVideoParams];
     
-    //获取本地配置的参数
-    NSString *videoParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_ledou_videoid" :@""];
-    NSArray *localVideoParams = [videoParamsStr componentsSeparatedByString:@"|"];
-    NSArray *videoParamsArray = [self getParamArrayWithModule:@"ULLedouAdv" withType:@"video" withDefaultValue:localVideoParams];
-
     
 }
 
@@ -113,7 +133,7 @@
 - (void)onConstructorAdv
 {
     NSLog(@"%s",__func__);
-    [self setDisableAdvPriorityByArray:@[UL_ADV_FULLSCREEN,UL_ADV_URL,UL_ADV_GIFT,UL_ADV_ICON,UL_ADV_BANNER,UL_ADV_EMBEDDED]];
+    [self setDisableAdvPriorityByArray:@[UL_ADV_URL,UL_ADV_GIFT,UL_ADV_ICON,UL_ADV_BANNER,UL_ADV_EMBEDDED]];
 }
 
 - (void)showSplashAdv:(NSDictionary *)json
@@ -124,6 +144,13 @@
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *splashId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_splashid" withDefaultParam:@"" withSplitString:@"|"];
+    _splashId = splashId;
+    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
+    _splashAd = [[GDTSplashAd alloc] initWithAppId:appid placementId:splashId];
+    _splashAd.delegate = self; //设置代理
+    _splashAd.fetchDelay = 3; //开发者可以设置开屏拉取时间，超时则放弃展示
+    //［可选］拉取并展示全屏开屏广告
+    [_splashAd loadAdAndShowInWindow:[ULTools getAppCurrentWindow]];
     
 }
 
@@ -137,7 +164,16 @@
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *interId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_interid" withDefaultParam:@"" withSplitString:@"|"];
-
+    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
+    GDTUnifiedInterstitialAd *interstitialAd = [[GDTUnifiedInterstitialAd alloc] initWithAppId:appid placementId:interId];
+    interstitialAd.delegate = self;
+    interstitialAd.videoMuted = NO; // 设置视频是否Mute
+    interstitialAd.videoAutoPlayOnWWAN = NO; // 设置视频是否在非 WiFi 网络自动播放
+    //interstitialAd.maxVideoDuration = (NSInteger)self.maxVideoDurationSlider.value;  // 如果需要设置视频最大时长，可以通过这个参数来进行设置
+    
+    [interstitialAd loadAd];
+    
+    
 }
 
 
@@ -150,8 +186,11 @@
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *videoId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_videoid" withDefaultParam:@"" withSplitString:@"|"];
-
-    
+    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
+    GDTRewardVideoAd *rewardVideoAd = [[GDTRewardVideoAd alloc] initWithAppId:appid placementId:videoId];
+    rewardVideoAd.delegate = self;
+    rewardVideoAd.videoMuted = NO; // 设置激励视频是否静音
+    [rewardVideoAd loadAd];
 }
 
 
@@ -159,7 +198,16 @@
 
 - (void)showFullscreenAdv:(NSDictionary *)json{
     NSLog(@"%s",__func__);
-    
+    //解析json获取参数类表,获取当前需要请求的广告参数
+    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
+    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
+    NSString *fullscreenId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_fullscreenid" withDefaultParam:@"" withSplitString:@"|"];
+    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
+    GDTUnifiedInterstitialAd *interstitialAd = [[GDTUnifiedInterstitialAd alloc] initWithAppId:appid placementId:fullscreenId];
+    interstitialAd.delegate = self;
+    interstitialAd.videoMuted = NO; // 设置自动播放时是否静音
+    [interstitialAd loadFullScreenAd]; // 加载插屏2.0全屏视频广告
 }
 
 - (void)showBannerAdv:(NSDictionary *)json{
@@ -183,53 +231,414 @@
 
 
 
+#pragma mark - GDTSplashAdDelegate
+/**
+ *  开屏广告成功展示
+ */
+- (void)splashAdSuccessPresentScreen:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+    [self showAdv:_splashJson :_splashId];
+}
+
+/**
+ *  开屏广告素材加载成功
+ */
+- (void)splashAdDidLoad:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  开屏广告展示失败
+ */
+- (void)splashAdFailToPresent:(GDTSplashAd *)splashAd withError:(NSError *)error
+{
+    NSLog(@"%s%@",__func__,error);
+    _splashAd.delegate = nil;
+    _splashAd = nil;
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
+    [self showNextAdv:_splashJson :_splashId :errorMsg];
+}
+
+/**
+ *  应用进入后台时回调
+ *  详解: 当点击下载应用时会调用系统程序打开，应用切换到后台
+ */
+- (void)splashAdApplicationWillEnterBackground:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  开屏广告曝光回调
+ */
+- (void)splashAdExposured:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  开屏广告点击回调
+ */
+- (void)splashAdClicked:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+    [self showClicked:_splashJson :_splashId];
+}
+
+/**
+ *  开屏广告将要关闭回调
+ */
+- (void)splashAdWillClosed:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  开屏广告关闭回调
+ */
+- (void)splashAdClosed:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+    _splashAd.delegate = nil;
+    _splashAd = nil;
+    [[ULSplashViewController getInstance] removeSplashView];
+}
+
+/**
+ *  开屏广告点击以后即将弹出全屏广告页
+ */
+- (void)splashAdWillPresentFullScreenModal:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  开屏广告点击以后弹出全屏广告页
+ */
+- (void)splashAdDidPresentFullScreenModal:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  点击以后全屏广告页将要关闭
+ */
+- (void)splashAdWillDismissFullScreenModal:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  点击以后全屏广告页已经关闭
+ */
+- (void)splashAdDidDismissFullScreenModal:(GDTSplashAd *)splashAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ * 开屏广告剩余时间回调
+ */
+- (void)splashAdLifeTime:(NSUInteger)time
+{
+    //NSLog(@"%s",__func__,time);
+}
 
 
+#pragma mark - GDTUnifiedInterstitialAdDelegate
+/**
+ *  插屏2.0广告预加载成功回调
+ *  当接收服务器返回的广告数据成功且预加载后调用该函数
+ */
+- (void)unifiedInterstitialSuccessToLoadAd:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+    [unifiedInterstitial presentFullScreenAdFromRootViewController:[ULTools getCurrentViewController]]; // 展示插屏2.0全屏视频广告
+}
 
+/**
+ *  插屏2.0广告预加载失败回调
+ *  当接收服务器返回的广告数据失败后调用该函数
+ */
+- (void)unifiedInterstitialFailToLoadAd:(GDTUnifiedInterstitialAd *)unifiedInterstitial error:(NSError *)error
+{
+    NSLog(@"%s%@",__func__,error);
+}
+
+/**
+ *  插屏2.0广告将要展示回调
+ *  插屏2.0广告即将展示回调该函数
+ */
+- (void)unifiedInterstitialWillPresentScreen:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  插屏2.0广告视图展示成功回调
+ *  插屏2.0广告展示成功回调该函数
+ */
+- (void)unifiedInterstitialDidPresentScreen:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  插屏2.0广告视图展示失败回调
+ *  插屏2.0广告展示失败回调该函数
+ */
+- (void)unifiedInterstitialFailToPresent:(GDTUnifiedInterstitialAd *)unifiedInterstitial error:(NSError *)error
+{
+    NSLog(@"%s%@",__func__,error);
+}
+
+/**
+ *  插屏2.0广告展示结束回调
+ *  插屏2.0广告展示结束回调该函数
+ */
+- (void)unifiedInterstitialDidDismissScreen:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  当点击下载应用时会调用系统程序打开其它App或者Appstore时回调
+ */
+- (void)unifiedInterstitialWillLeaveApplication:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  插屏2.0广告曝光回调
+ */
+- (void)unifiedInterstitialWillExposure:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  插屏2.0广告点击回调
+ */
+- (void)unifiedInterstitialClicked:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  点击插屏2.0广告以后即将弹出全屏广告页
+ */
+- (void)unifiedInterstitialAdWillPresentFullScreenModal:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  点击插屏2.0广告以后弹出全屏广告页
+ */
+- (void)unifiedInterstitialAdDidPresentFullScreenModal:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  全屏广告页将要关闭
+ */
+- (void)unifiedInterstitialAdWillDismissFullScreenModal:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  全屏广告页被关闭
+ */
+- (void)unifiedInterstitialAdDidDismissFullScreenModal:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ * 插屏2.0视频广告 player 播放状态更新回调
+ */
+- (void)unifiedInterstitialAd:(GDTUnifiedInterstitialAd *)unifiedInterstitial playerStatusChanged:(GDTMediaPlayerStatus)status
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ * 插屏2.0视频广告详情页 WillPresent 回调
+ */
+- (void)unifiedInterstitialAdViewWillPresentVideoVC:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ * 插屏2.0视频广告详情页 DidPresent 回调
+ */
+- (void)unifiedInterstitialAdViewDidPresentVideoVC:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ * 插屏2.0视频广告详情页 WillDismiss 回调
+ */
+- (void)unifiedInterstitialAdViewWillDismissVideoVC:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ * 插屏2.0视频广告详情页 DidDismiss 回调
+ */
+- (void)unifiedInterstitialAdViewDidDismissVideoVC:(GDTUnifiedInterstitialAd *)unifiedInterstitial
+{
+    NSLog(@"%s",__func__);
+}
+
+
+#pragma mark - GDTRewardedVideoAdDelegate
+/**
+ 广告数据加载成功回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdDidLoad:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ 视频数据下载成功回调，已经下载过的视频会直接回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdVideoDidLoad:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+    if (rewardedVideoAd.isAdValid) {
+        [rewardedVideoAd showAdFromRootViewController:[ULTools getCurrentViewController]];
+    }
+    
+}
+
+/**
+ 视频播放页即将展示回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdWillVisible:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ 视频广告曝光回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdDidExposed:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ 视频播放页关闭回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdDidClose:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ 视频广告信息点击回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdDidClicked:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ 视频广告各种错误信息回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ @param error 具体错误信息
+ */
+- (void)gdt_rewardVideoAd:(GDTRewardVideoAd *)rewardedVideoAd didFailWithError:(NSError *)error
+{
+    NSLog(@"%s%@",__func__,error);
+}
+
+/**
+ 视频广告播放达到激励条件回调
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdDidRewardEffective:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ 视频广告视频播放完成
+ 
+ @param rewardedVideoAd GDTRewardVideoAd 实例
+ */
+- (void)gdt_rewardVideoAdDidPlayFinish:(GDTRewardVideoAd *)rewardedVideoAd
+{
+    NSLog(@"%s",__func__);
+}
 
 
 
 - (NSString *)getAdFailMsgWithCode:(NSString *)code
 {
-//3001    网络错误
-//3003    手机无网络
-//4001    初始化错误, 包括广告位为空、AppKey为空、ViewController
-//为空
-//4003    广告位错误
-//4006    广告未曝光
-//4007    设备不支持
-//4008    设备方向不支持
-//4009    开屏跳过按钮定义非法
-//4010    开屏bottomView设置非法
-//4011    请求广告超时
-//4013    系统不支持，原生视频模板广告只支持 iOS 9 及以上系统
-//4014    广告数据返回前尝试展示广告, 例如激励视频拉到广告后才可以调用展示接口
-//4015    广告已经曝光过，不允许二次展示，请重新拉取
-//4016    应用横竖方向与广告位支持方向不匹配
-//4017    外部传入的VC无效
-//4018    缓存文件在流程中被意外删除
-//4019    开屏广告 rootViewController presentVC 被占用
-//5001    后台数据错误
-//5002    视频素材下载错误
-//5003    视频素材播放错误
-//5004    没匹配的广告，禁止重试，否则影响流量变现效果
-//5005    广告请求量或者消耗等超过日限额，请第二天再请求广告
-//5006    包名校验非法
-//5009    广告请求量或者消耗等超过小时限额，请一小时后再请求广告
-//5010    广告样式校验失败，请检查广告位与接口使用是否一致
-//5012    广告过期，请重新拉取
-//5013    广告拉取过于频繁，请稍后再试
-//5014    视频广告视频和图片素材都下载错误
-//5015    当前版本不出广告
-//5016    JSON数据解析失败
-//5017    adCount参数非法
-//5018    广告位下线
-//5019    视频时长超过设定时长
-//5020    视频URL为空
-//5021    广告已下线
-//5022    VAST接入错误
-//5024    接口组合错误
-//6000    未知错误，联系腾讯广告商务同事协助排查
+    //3001    网络错误
+    //3003    手机无网络
+    //4001    初始化错误, 包括广告位为空、AppKey为空、ViewController
+    //为空
+    //4003    广告位错误
+    //4006    广告未曝光
+    //4007    设备不支持
+    //4008    设备方向不支持
+    //4009    开屏跳过按钮定义非法
+    //4010    开屏bottomView设置非法
+    //4011    请求广告超时
+    //4013    系统不支持，原生视频模板广告只支持 iOS 9 及以上系统
+    //4014    广告数据返回前尝试展示广告, 例如激励视频拉到广告后才可以调用展示接口
+    //4015    广告已经曝光过，不允许二次展示，请重新拉取
+    //4016    应用横竖方向与广告位支持方向不匹配
+    //4017    外部传入的VC无效
+    //4018    缓存文件在流程中被意外删除
+    //4019    开屏广告 rootViewController presentVC 被占用
+    //5001    后台数据错误
+    //5002    视频素材下载错误
+    //5003    视频素材播放错误
+    //5004    没匹配的广告，禁止重试，否则影响流量变现效果
+    //5005    广告请求量或者消耗等超过日限额，请第二天再请求广告
+    //5006    包名校验非法
+    //5009    广告请求量或者消耗等超过小时限额，请一小时后再请求广告
+    //5010    广告样式校验失败，请检查广告位与接口使用是否一致
+    //5012    广告过期，请重新拉取
+    //5013    广告拉取过于频繁，请稍后再试
+    //5014    视频广告视频和图片素材都下载错误
+    //5015    当前版本不出广告
+    //5016    JSON数据解析失败
+    //5017    adCount参数非法
+    //5018    广告位下线
+    //5019    视频时长超过设定时长
+    //5020    视频URL为空
+    //5021    广告已下线
+    //5022    VAST接入错误
+    //5024    接口组合错误
+    //6000    未知错误，联系腾讯广告商务同事协助排查
     NSString *errorMsg = @"";
     if ([code isEqualToString:@"3001"]) {
         errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"网络错误"];
