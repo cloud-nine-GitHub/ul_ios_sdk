@@ -368,7 +368,7 @@
     NSLog(@"%s%@",__func__,error);
     NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
     [splashAd removeFromSuperview];
-    [self showNextAdv:_splashJson :splashAd.slotID :errorMsg];
+    [self showNextAdv:_splashJson :_splashId :errorMsg];
 }
 
 /**
@@ -377,7 +377,7 @@
 - (void)splashAdWillVisible:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
-    [self showAdv:_splashJson :splashAd.slotID];
+    [self showAdv:_splashJson :_splashId];
 }
 
 /**
@@ -387,7 +387,7 @@
 {
     NSLog(@"%s",__func__);
     _isSplashClicked = YES;
-    [self showClicked:_splashJson :splashAd.slotID];
+    [self showClicked:_splashJson :_splashId];
 }
 
 /**
