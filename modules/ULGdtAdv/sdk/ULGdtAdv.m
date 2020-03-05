@@ -22,16 +22,18 @@
 
 @interface ULGdtAdv ()<GDTSplashAdDelegate,GDTUnifiedInterstitialAdDelegate,GDTRewardedVideoAdDelegate>
 
-@property (nonatomic, strong)NSDictionary *splashJson,*videoJson,*interJson;
-@property (nonatomic, strong)NSString *videoLoadFailMsg,*interLoadFailMsg;
-
-//TODO
-@property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
+@property (nonatomic, strong)NSDictionary *splashJson,*videoJson,*interJson,*fullscreenJson;
 
 
 
-@property (nonatomic, strong)GDTSplashAd *splashAd;//开屏必须以属性的形式声明，否则无回调
-@property (nonatomic, strong)NSString *splashId;
+//必须以属性的形式声明，否则无回调
+@property (nonatomic, strong)GDTSplashAd *splashAd;
+@property (nonatomic, strong)GDTUnifiedInterstitialAd *interstitialAd;
+@property (nonatomic, strong)GDTRewardVideoAd *rewardVideoAd;
+@property (nonatomic, strong)GDTUnifiedInterstitialAd *fullscreenAd;
+
+@property (nonatomic, strong)NSString *splashId,*interId,*fullscreenId,*videoId;
+@property (nonatomic, assign)BOOL isVideoPlayComplete;
 @end
 
 
@@ -104,23 +106,13 @@
 - (void)initModuleAdv
 {
     NSLog(@"%s",__func__);
-    _videoLoadFailMsg = @"";
-    _interLoadFailMsg = @"";
-    _advLoadObjByParamDic = [NSMutableDictionary new];
-    
+
     [self addListener];
     
     NSLog(@"%s:当前sdk版本 = %@",__func__,GDTSDKConfig.sdkVersion);
     [GDTSDKConfig enableGPS:YES]; // 获取用户的GPS信息，默认值为NO
     [GDTSDKConfig setChannel:14];//设置渠道号,有助提升收益
-//    NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
-//
-//
-//    //获取本地配置的参数
-//    NSString *videoParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_gdt_videoid" :@""];
-//    NSArray *localVideoParams = [videoParamsStr componentsSeparatedByString:@"|"];
-//    NSArray *videoParamsArray = [self getParamArrayWithModule:@"ULGdtAdv" withType:@"video" withDefaultValue:localVideoParams];
-    
+
     
 }
 
@@ -156,7 +148,8 @@
 
 
 
-- (void)showInterstitialAdv:(NSDictionary *)json{
+- (void)showInterstitialAdv:(NSDictionary *)json
+{
     NSLog(@"%s",__func__);
     _interJson = json;
     //解析json获取参数类表,获取当前需要请求的广告参数
@@ -164,50 +157,57 @@
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *interId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_interid" withDefaultParam:@"" withSplitString:@"|"];
+    _interId = interId;
     NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
-    GDTUnifiedInterstitialAd *interstitialAd = [[GDTUnifiedInterstitialAd alloc] initWithAppId:appid placementId:interId];
-    interstitialAd.delegate = self;
-    interstitialAd.videoMuted = NO; // 设置视频是否Mute
-    interstitialAd.videoAutoPlayOnWWAN = NO; // 设置视频是否在非 WiFi 网络自动播放
+    _interstitialAd = [[GDTUnifiedInterstitialAd alloc] initWithAppId:appid placementId:interId];
+    _interstitialAd.delegate = self;
+    _interstitialAd.videoMuted = NO; // 设置视频是否Mute
+    _interstitialAd.videoAutoPlayOnWWAN = NO; // 设置视频是否在非 WiFi 网络自动播放
     //interstitialAd.maxVideoDuration = (NSInteger)self.maxVideoDurationSlider.value;  // 如果需要设置视频最大时长，可以通过这个参数来进行设置
     
-    [interstitialAd loadAd];
+    [_interstitialAd loadAd];
     
     
 }
 
 
-- (void)showVideoAdv:(NSDictionary *)json{
+- (void)showVideoAdv:(NSDictionary *)json
+{
     NSLog(@"%s",__func__);
     
     _videoJson = json;
+    _isVideoPlayComplete = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *videoId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_videoid" withDefaultParam:@"" withSplitString:@"|"];
+    _videoId = videoId;
     NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
-    GDTRewardVideoAd *rewardVideoAd = [[GDTRewardVideoAd alloc] initWithAppId:appid placementId:videoId];
-    rewardVideoAd.delegate = self;
-    rewardVideoAd.videoMuted = NO; // 设置激励视频是否静音
-    [rewardVideoAd loadAd];
+    _rewardVideoAd = [[GDTRewardVideoAd alloc] initWithAppId:appid placementId:videoId];
+    _rewardVideoAd.delegate = self;
+    _rewardVideoAd.videoMuted = NO; // 设置激励视频是否静音
+    [_rewardVideoAd loadAd];
 }
 
 
 
 
-- (void)showFullscreenAdv:(NSDictionary *)json{
+- (void)showFullscreenAdv:(NSDictionary *)json
+{
     NSLog(@"%s",__func__);
+    _fullscreenJson = json;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *fullscreenId = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_gdt_fullscreenid" withDefaultParam:@"" withSplitString:@"|"];
+    _fullscreenId = fullscreenId;
     NSString *appid = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_gdt_appid" :@""];
-    GDTUnifiedInterstitialAd *interstitialAd = [[GDTUnifiedInterstitialAd alloc] initWithAppId:appid placementId:fullscreenId];
-    interstitialAd.delegate = self;
-    interstitialAd.videoMuted = NO; // 设置自动播放时是否静音
-    [interstitialAd loadFullScreenAd]; // 加载插屏2.0全屏视频广告
+    _fullscreenAd = [[GDTUnifiedInterstitialAd alloc] initWithAppId:appid placementId:fullscreenId];
+    _fullscreenAd.delegate = self;
+    _fullscreenAd.videoMuted = NO; // 设置自动播放时是否静音
+    [_fullscreenAd loadFullScreenAd]; // 加载插屏2.0全屏视频广告
 }
 
 - (void)showBannerAdv:(NSDictionary *)json{
@@ -355,7 +355,14 @@
 - (void)unifiedInterstitialSuccessToLoadAd:(GDTUnifiedInterstitialAd *)unifiedInterstitial
 {
     NSLog(@"%s",__func__);
-    [unifiedInterstitial presentFullScreenAdFromRootViewController:[ULTools getCurrentViewController]]; // 展示插屏2.0全屏视频广告
+    NSString *placementId = unifiedInterstitial.placementId;
+    if ([placementId isEqualToString:_interId]) {//插屏回调
+        [unifiedInterstitial presentAdFromRootViewController:[ULTools getCurrentViewController]];
+    }else if([placementId isEqualToString:_fullscreenId]){//全屏视频回调
+        [unifiedInterstitial presentFullScreenAdFromRootViewController:[ULTools getCurrentViewController]]; // 展示插屏2.0全屏视频广告
+    }
+    
+    
 }
 
 /**
@@ -365,6 +372,14 @@
 - (void)unifiedInterstitialFailToLoadAd:(GDTUnifiedInterstitialAd *)unifiedInterstitial error:(NSError *)error
 {
     NSLog(@"%s%@",__func__,error);
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_GDT_ADV_CALLBACK withData:errorMsg];
+    NSString *placementId = unifiedInterstitial.placementId;
+    if ([placementId isEqualToString:_interId]) {//插屏回调
+        [self showNextAdv:_interJson :placementId :errorMsg];
+    }else if([placementId isEqualToString:_fullscreenId]){//全屏视频回调
+        [self showNextAdv:_fullscreenJson :placementId :errorMsg];
+    }
 }
 
 /**
@@ -383,6 +398,13 @@
 - (void)unifiedInterstitialDidPresentScreen:(GDTUnifiedInterstitialAd *)unifiedInterstitial
 {
     NSLog(@"%s",__func__);
+    NSString *placementId = unifiedInterstitial.placementId;
+    [self pauseSound];
+    if ([placementId isEqualToString:_interId]) {//插屏回调
+        [self showAdv:_interJson :placementId];
+    }else if([placementId isEqualToString:_fullscreenId]){//全屏视频回调
+        [self showAdv:_fullscreenJson :placementId];
+    }
 }
 
 /**
@@ -392,6 +414,15 @@
 - (void)unifiedInterstitialFailToPresent:(GDTUnifiedInterstitialAd *)unifiedInterstitial error:(NSError *)error
 {
     NSLog(@"%s%@",__func__,error);
+    [self resumeSound];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_GDT_ADV_CALLBACK withData:errorMsg];
+    NSString *placementId = unifiedInterstitial.placementId;
+    if ([placementId isEqualToString:_interId]) {//插屏回调
+        [self showNextAdv:_interJson :placementId :errorMsg];
+    }else if([placementId isEqualToString:_fullscreenId]){//全屏视频回调
+        [self showNextAdv:_fullscreenJson :placementId :errorMsg];
+    }
 }
 
 /**
@@ -401,6 +432,7 @@
 - (void)unifiedInterstitialDidDismissScreen:(GDTUnifiedInterstitialAd *)unifiedInterstitial
 {
     NSLog(@"%s",__func__);
+    [self resumeSound];
 }
 
 /**
@@ -425,6 +457,12 @@
 - (void)unifiedInterstitialClicked:(GDTUnifiedInterstitialAd *)unifiedInterstitial
 {
     NSLog(@"%s",__func__);
+    NSString *placementId = unifiedInterstitial.placementId;
+    if ([placementId isEqualToString:_interId]) {//插屏回调
+        [self showClicked:_interJson :placementId];
+    }else if([placementId isEqualToString:_fullscreenId]){//全屏视频回调
+        [self showClicked:_fullscreenJson :placementId];
+    }
 }
 
 /**
@@ -533,6 +571,8 @@
 - (void)gdt_rewardVideoAdWillVisible:(GDTRewardVideoAd *)rewardedVideoAd
 {
     NSLog(@"%s",__func__);
+    [self pauseSound];
+    
 }
 
 /**
@@ -543,6 +583,7 @@
 - (void)gdt_rewardVideoAdDidExposed:(GDTRewardVideoAd *)rewardedVideoAd
 {
     NSLog(@"%s",__func__);
+    [self showAdv:_videoJson :_videoId];
 }
 
 /**
@@ -553,6 +594,13 @@
 - (void)gdt_rewardVideoAdDidClose:(GDTRewardVideoAd *)rewardedVideoAd
 {
     NSLog(@"%s",__func__);
+    [self resumeSound];
+    if (_isVideoPlayComplete) {
+        [self showClose:_videoJson :_videoId];
+    }else{
+        [self showFailed:_videoJson :_videoId :@"adv don't play complete"];
+        [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_MC_SHOW_GDT_ADV_CALLBACK withData:@"adv don't play complete"];
+    }
 }
 
 /**
@@ -563,6 +611,7 @@
 - (void)gdt_rewardVideoAdDidClicked:(GDTRewardVideoAd *)rewardedVideoAd
 {
     NSLog(@"%s",__func__);
+    [self showClicked:_videoJson :_videoId];
 }
 
 /**
@@ -574,6 +623,10 @@
 - (void)gdt_rewardVideoAd:(GDTRewardVideoAd *)rewardedVideoAd didFailWithError:(NSError *)error
 {
     NSLog(@"%s%@",__func__,error);
+    [self resumeSound];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",(long)error.code]];
+    [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_MC_SHOW_GDT_ADV_CALLBACK withData:errorMsg];
+    [self showNextAdv:_videoJson :_videoId :errorMsg];
 }
 
 /**
@@ -594,6 +647,7 @@
 - (void)gdt_rewardVideoAdDidPlayFinish:(GDTRewardVideoAd *)rewardedVideoAd
 {
     NSLog(@"%s",__func__);
+    _isVideoPlayComplete = YES;
 }
 
 
