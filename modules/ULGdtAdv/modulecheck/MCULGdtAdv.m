@@ -133,7 +133,7 @@
 {
     _advType = @"";
     _advParam = @"";
-    _advTypeArray = @[UL_ADV_SPLAH,UL_ADV_INTERSTITIAL,UL_ADV_VIDEO];
+    _advTypeArray = @[UL_ADV_SPLAH,UL_ADV_INTERSTITIAL,UL_ADV_FULLSCREEN,UL_ADV_VIDEO];
 }
 
 
@@ -153,6 +153,8 @@
         key = @"s_sdk_adv_gdt_interid";
     }else if([_advType isEqualToString:UL_ADV_VIDEO]){
         key = @"s_sdk_adv_gdt_videoid";
+    }else if([_advType isEqualToString:UL_ADV_FULLSCREEN]){
+        key = @"s_sdk_adv_gdt_fullscreenid";
     }
     //未输入参数则使用本地默认的参数
     NSMutableDictionary *advData = [self getModuleAdvTestDataWithType:_advType withEditParam:_advParam withLocalParamKey:key];
@@ -190,6 +192,15 @@
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
         
         if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_GDT_VIDEO_ADV withData:advData]) {
+            [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
+        }
+    }else if([type isEqualToString:UL_ADV_FULLSCREEN]){
+        
+        //广告请求统计 对于多参数来说并不知道本次请求的是哪一个参数
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"ULGdtAdv",UL_ADV_VIDEO,@"branchAdvRequest",@"",@"",S_CONST_ADV_MC_ADVID_DES,S_CONST_ADV_MC_ADVID_DES,@"",@""];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+        
+        if (![[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_GDT_FULLSCREEN_ADV withData:advData]) {
             [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
         }
     }
