@@ -28,6 +28,7 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
 @property (nonatomic,strong) UIWebView *webView;
 @property (nonatomic,strong) NSString *mPrizeFlag;
 @property (nonatomic,strong) NSDictionary *urlJson;
+@property (nonatomic,assign) BOOL isReward;
 @end
 
 @implementation ULTuiaAdv
@@ -46,6 +47,16 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
 - (void)addListener
 {
     NSLog(@"%s",__func__);
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_MC_SHOW_TUIA_URL_ADV withSelector:@selector(onShowUrlAdv:) withPriority:PRIORITY_NONE];
+}
+
+
+- (void)onShowUrlAdv :(NSNotification *)notification
+{
+    NSDictionary *data = notification.userInfo[@"data"];
+    ULNotification *n = notification.userInfo[@"notification"];
+    [n stopDispatchNotification];
+    [self showUrlAdv:data];
 }
 
 
@@ -113,7 +124,7 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
     NSLog(@"%s",__func__);
     _urlJson = json;
     
-    
+    _isReward = NO;
     NSString *deviceId = [ULGetDeviceId getUniqueDeviceId];
     NSString *url = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_h5_url" withDefaultString:@""];
     url = [NSString stringWithFormat:@"%@%@%@%@%@",url,@"&device_id=",deviceId,@"&userId=",deviceId];
@@ -178,6 +189,10 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
     }else{
         [_webView removeFromSuperview];
         _webView = nil;
+        if (!_isReward) {
+            [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TUIA_ADV_CALLBACK withData:@"未达到获奖条件"];
+            [self showNextAdv:_urlJson :@"" :@"未达到获奖条件"];
+        }
     }
 
 }
@@ -214,6 +229,7 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
     NSLog(@"%s",__func__);
     NSString *errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@" errorMsg = ",error.localizedDescription];
     [self showNextAdv:_urlJson :@"" :errorMsg];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TUIA_ADV_CALLBACK withData:errorMsg];
 }
 
 
@@ -280,7 +296,8 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
     if(_mPrizeFlag != nil && [_mPrizeFlag isEqualToString:appleId]){
         [self showAdv:_urlJson :@""];
     }else{
-        [self showNextAdv:_urlJson :@"" :@""];
+        [self showNextAdv:_urlJson :@"" :@"未达到获奖条件"];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TUIA_ADV_CALLBACK withData:@"未达到获奖条件"];
     }
 }
 
