@@ -366,7 +366,7 @@
 - (void)splashAd:(BUSplashAdView *)splashAd didFailWithError:(NSError *)error
 {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [splashAd removeFromSuperview];
     [self showNextAdv:_splashJson :_splashId :errorMsg];
 }
@@ -468,7 +468,7 @@
 
 - (void)nativeExpressSplashView:(nonnull BUNativeExpressSplashView *)splashAdView didFailWithError:(NSError * _Nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [splashAdView removeSplashView];
     [splashAdView removeFromSuperview];
     [self showNextAdv:_splashJson :_splashId :errorMsg];
@@ -482,7 +482,7 @@
 
 - (void)nativeExpressSplashViewRenderFail:(nonnull BUNativeExpressSplashView *)splashAdView error:(NSError * _Nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [splashAdView removeSplashView];
     [splashAdView removeFromSuperview];
     [self showNextAdv:_splashJson :_splashId :errorMsg];
@@ -533,7 +533,7 @@
 
 - (void)nativeExpresInterstitialAd:(BUNativeExpressInterstitialAd *)interstitialAd didFailWithError:(NSError *__nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [self showNextAdv:_interJson :_interId :errorMsg];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
@@ -553,7 +553,7 @@
 
 - (void)nativeExpresInterstitialAdRenderFail:(BUNativeExpressInterstitialAd *)interstitialAd error:(NSError *__nullable)error {
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [self showNextAdv:_interJson :_interId :errorMsg];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
     
@@ -590,7 +590,7 @@
 - (void)nativeExpressRewardedVideoAd:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd didFailWithError:(NSError *_Nullable)error{
     
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [self showNextAdv:_videoJson :_videoId :errorMsg];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
     
@@ -624,7 +624,7 @@
 
 - (void)nativeExpressRewardedVideoAdViewRenderFail:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd error:(NSError *_Nullable)error{
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [self showNextAdv:_videoJson :_videoId :errorMsg];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
@@ -730,7 +730,7 @@
 - (void)nativeExpressFullscreenVideoAd:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd didFailWithError:(NSError *_Nullable)error{
     
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
 }
@@ -748,7 +748,7 @@
 - (void)nativeExpressFullscreenVideoAdViewRenderFail:(BUNativeExpressFullscreenVideoAd *)rewardedVideoAd error:(NSError *_Nullable)error{
     
     NSLog(@"%s%@",__func__,error);
-    NSString *errorMsg = [[NSString alloc]initWithFormat:@"%@%@%@%@",@"errorCode = ",[NSString stringWithFormat:@"%ld",(long)error.code],@"; errorMsg = ",error.localizedFailureReason];
+    NSString *errorMsg = [self getAdFailMsgWithCode:[NSString stringWithFormat:@"%ld",error.code]];
     [self showNextAdv:_fullscreenJson :_fullscreenId :errorMsg];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_TOUTIAO_ADV_CALLBACK withData:errorMsg];
     
@@ -805,6 +805,161 @@
 {
     NSLog(@"%s",__func__);
 }
+
+
+
+- (NSString *)getAdFailMsgWithCode:(NSString *)code
+{
+//BUErrorCodeTempError        = -6,       // native template is invalid
+//BUErrorCodeTempAddationError= -5,       // native template addation is invalid
+//BUErrorCodeOpenAPPStoreFail = -4,       // failed to open appstore
+//BUErrorCodeNOAdError        = -3,       // parsed data has no ads
+//BUErrorCodeNetError         = -2,       // network request failed
+//BUErrorCodeParseError       = -1,       // parsing failed
+//
+//BUErrorCodeNERenderResultError= 101,    // native Express ad, render result parse fail
+//BUErrorCodeNETempError        = 102,    // native Express ad, template is invalid
+//BUErrorCodeNETempPluginError  = 103,    // native Express ad, template plugin is invalid
+//BUErrorCodeNEDataError        = 104,    // native Express ad, data is invalid
+//BUErrorCodeNEParseError       = 105,    // native Express ad, parse fail
+//BUErrorCodeNERenderError      = 106,    // native Express ad, render fail
+//BUErrorCodeNERenderTimoutError= 107,    // native Express ad, render timeout
+//
+//BUErrorCodeSDKStop          = 1000,     // SDK stop forcely
+//
+//BUErrorCodeParamError       = 10001,    // parameter error
+//BUErrorCodeTimeout          = 10002,
+//
+//BUErrorCodeSuccess          = 20000,
+//BUErrorCodeNOAD             = 20001,    // no ads
+//
+//BUErrorCodeContentType      = 40000,    // http conent_type error
+//BUErrorCodeRequestPBError   = 40001,    // http request pb error
+//BUErrorCodeAppEmpty         = 40002,    // request app can't be empty
+//BUErrorCodeWapEMpty         = 40003,    // request wap can't be empty
+//BUErrorCodeAdSlotEmpty      = 40004,    // missing ad slot description
+//BUErrorCodeAdSlotSizeEmpty  = 40005,    // the ad slot size is invalid
+//BUErrorCodeAdSlotIDError    = 40006,    // the ad slot ID is invalid
+//BUErrorCodeAdCountError     = 40007,    // request the wrong number of ads
+//BUUnionAdImageSizeError     = 40008,    // wrong image size
+//BUUnionAdSiteIdError        = 40009,    // Media ID is illegal
+//BUUnionAdSiteMeiaTypeError  = 40010,    // Media type is illegal
+//BUUnionAdSiteAdTypeError    = 40011,    // Ad type is illegal
+//BUUnionAdSiteAccessMethodError  = 40012,// Media access type is illegal and has been deprecated
+//BUUnionSplashAdTypeError    = 40013,    // Code bit id is less than 900 million, but adType is not splash ad
+//BUUnionRedirectError        = 40014,    // The redirect parameter is incorrect
+//BUUnionRequestInvalidError  = 40015,    // Media rectification exceeds deadline, request illegal
+//BUUnionAppSiteRelError      = 40016,    // The relationship between slot_id and app_id is invalid.
+//BUUnionAccessMethodError    = 40017,    // Media access type is not legal API/SDK
+//BUUnionPackageNameError     = 40018,    // Media package name is inconsistent with entry
+//BUUnionConfigurationError   = 40019,    // Media configuration ad type is inconsistent with request
+//BUUnionRequestLimitError    = 40020,    // The ad space registered by developers exceeds daily request limit
+//BUUnionSignatureError       = 40021,    // Apk signature sha1 value is inconsistent with media platform entry
+//BUUnionIncompleteError      = 40022,    // Whether the media request material is inconsistent with the media platform entry
+//BUUnionOSError              = 40023,    // The OS field is incorrectly filled
+//BUUnionLowVersion           = 40024,    // The SDK version is too low to return ads
+//BUErrorCodeAdPackageIncomplete  = 40025,// the SDK package is incomplete. It is recommended to verify the integrity of SDK package or contact technical support.
+//BUUnionMedialCheckError     = 40026,    // Non-international account request for overseas delivery system
+//
+//BUErrorCodeSysError         = 50001     // ad server error
+    NSString *errorMsg = @"";
+    if ([code isEqualToString:@"-6"]) {
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native template is invalid"];
+    }else if ([code isEqualToString:@"-5"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native template addation is invalid"];
+    }else if ([code isEqualToString:@"-4"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"failed to open appstore"];
+    }else if ([code isEqualToString:@"-3"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"parsed data has no ads"];
+    }else if ([code isEqualToString:@"-2"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"network request failed"];
+    }else if ([code isEqualToString:@"-1"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"parsing failed"];
+    }else if ([code isEqualToString:@"101"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, render result parse fail"];
+    }else if ([code isEqualToString:@"102"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, template is invalid"];
+    }else if ([code isEqualToString:@"103"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, template plugin is invalid"];
+    }else if ([code isEqualToString:@"104"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, data is invalid"];
+    }else if ([code isEqualToString:@"105"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, parse fail"];
+    }else if ([code isEqualToString:@"106"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, render fail"];
+    }else if ([code isEqualToString:@"107"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"native Express ad, render timeout"];
+    }else if ([code isEqualToString:@"1000"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"SDK stop forcely"];
+    }else if ([code isEqualToString:@"10001"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"parameter error"];
+    }else if ([code isEqualToString:@"10002"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@""];
+    }else if ([code isEqualToString:@"20000"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@""];
+    }else if ([code isEqualToString:@"20001"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"no ads"];
+    }else if ([code isEqualToString:@"40000"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"http conent_type error"];
+    }else if ([code isEqualToString:@"40001"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"http request pb error"];
+    }else if ([code isEqualToString:@"40002"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"request app can't be empty"];
+    }else if ([code isEqualToString:@"40003"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"request wap can't be empty"];
+    }else if ([code isEqualToString:@"40004"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"missing ad slot description"];
+    }else if ([code isEqualToString:@"40005"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"the ad slot size is invalid"];
+    }else if ([code isEqualToString:@"40006"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"the ad slot ID is invalid"];
+    }else if ([code isEqualToString:@"40007"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"request the wrong number of ads"];
+    }else if ([code isEqualToString:@"40008"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"wrong image size"];
+    }else if ([code isEqualToString:@"40009"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media ID is illegal"];
+    }else if ([code isEqualToString:@"40010"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media type is illegal"];
+    }else if ([code isEqualToString:@"40011"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Ad type is illegal"];
+    }else if ([code isEqualToString:@"40012"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media access type is illegal and has been deprecated"];
+    }else if ([code isEqualToString:@"40013"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Code bit id is less than 900 million, but adType is not splash ad"];
+    }else if ([code isEqualToString:@"40014"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"The redirect parameter is incorrect"];
+    }else if ([code isEqualToString:@"40015"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media rectification exceeds deadline, request illegal"];
+    }else if ([code isEqualToString:@"40016"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"The relationship between slot_id and app_id is invalid."];
+    }else if ([code isEqualToString:@"40017"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media access type is not legal API/SDK"];
+    }else if ([code isEqualToString:@"40018"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media package name is inconsistent with entry"];
+    }else if ([code isEqualToString:@"40019"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Media configuration ad type is inconsistent with request"];
+    }else if ([code isEqualToString:@"40020"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"The ad space registered by developers exceeds daily request limit"];
+    }else if ([code isEqualToString:@"40021"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Apk signature sha1 value is inconsistent with media platform entry"];
+    }else if ([code isEqualToString:@"40022"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Whether the media request material is inconsistent with the media platform entry"];
+    }else if ([code isEqualToString:@"40023"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"The OS field is incorrectly filled"];
+    }else if ([code isEqualToString:@"40024"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"The SDK version is too low to return ads"];
+    }else if ([code isEqualToString:@"40025"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"the SDK package is incomplete. It is recommended to verify the integrity of SDK package or contact technical support."];
+    }else if ([code isEqualToString:@"40026"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"Non-international account request for overseas delivery system"];
+    }else if ([code isEqualToString:@"50001"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"ad server error"];
+    }
+    return errorMsg;
+}
+
+
 
 @end
 
