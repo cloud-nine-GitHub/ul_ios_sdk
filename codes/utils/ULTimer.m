@@ -71,7 +71,8 @@ static ULTimer* instance = nil;
 - (void)destroyTimerWithName:(NSString *)timerLogo
 {
     NSTimer *timer = [timerMap objectForKey:timerLogo];
-    if (timer && [timer isValid]) {
+    if (timer) {
+        [timerMap removeObjectForKey:timerLogo];
         [timer invalidate];
         timer = nil;
     }
