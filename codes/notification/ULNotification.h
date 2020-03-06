@@ -81,7 +81,8 @@ static NSString *const UL_NOTIFICATION_MC_SHOW_GDT_VIDEO_ADV = @"ulNotificationM
 static NSString *const UL_NOTIFICATION_MC_SHOW_GDT_ADV_CALLBACK = @"ulNotificationMcShowGdtAdvCallback";
 static NSString *const UL_NOTIFICATION_MC_SHOW_TUIA_URL_ADV = @"ulNotificationMcShowTuiaUrlAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_TUIA_ADV_CALLBACK = @"ulNotificationMcShowTuiaAdvCallback";
-
+static NSString *const UL_NOTIFICATION_MC_SHOW_YOMOB_VIDEO_ADV = @"ulNotificationMcShowYomobVideoAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_YOMOB_ADV_CALLBACK = @"ulNotificationMcShowYomobAdvCallback";
 
 
 
