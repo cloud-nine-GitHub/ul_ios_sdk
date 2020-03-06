@@ -1,16 +1,16 @@
 //
-//  MCULHuiliangAdv.h
+//  ULHuiLiangAdv.h
 //  ulsdkgamedemo
 //
 //  Created by 一号机雷兽 on 2020/3/4.
 //  Copyright © 2020 一号机雷兽. All rights reserved.
 //
 
-#import "MCULBase.h"
+#import "ULModuleBaseAdv.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MCULHuiliangAdv : MCULBase
+@interface ULHuiLiangAdv : ULModuleBaseAdv
 
 @end
 

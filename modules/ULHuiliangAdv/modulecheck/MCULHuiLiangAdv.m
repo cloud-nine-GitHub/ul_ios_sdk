@@ -1,5 +1,5 @@
 //
-//  MCULHuiliangAdv.m
+//  MCULHuiLiangAdv.m
 //  ulsdkgamedemo
 //
 //  Created by 一号机雷兽 on 2020/3/4.
@@ -7,7 +7,7 @@
 //
 
 
-#import "MCULHuiliangAdv.h"
+#import "MCULHuiLiangAdv.h"
 #import "ULTools.h"
 #import "MCULModuleLayoutCreater.h"
 #import "ULCop.h"
@@ -21,7 +21,7 @@
 #import "ULModuleBaseAdv.h"
 #import "ULAccountType.h"
 
-@interface MCULHuiliangAdv ()<UITextFieldDelegate>
+@interface MCULHuiLiangAdv ()<UITextFieldDelegate>
 
 @property(nonatomic,strong)UIView *view;
 @property(nonatomic,assign)int y;
@@ -31,7 +31,7 @@
 @property(nonatomic,strong)UITextField* paramTextField;
 @end
 
-@implementation MCULHuiliangAdv
+@implementation MCULHuiLiangAdv
 
 
 -(BOOL)hasNativeAdv

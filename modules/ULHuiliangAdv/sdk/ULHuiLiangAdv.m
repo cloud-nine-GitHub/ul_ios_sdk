@@ -1,5 +1,5 @@
 //
-//  ULHuiliangAdv.m
+//  ULHuiLiangAdv.m
 //  ulsdkgamedemo
 //
 //  Created by 一号机雷兽 on 2020/3/4.
@@ -11,7 +11,7 @@
  注：汇量原本会在加载失败时自动帮我们进行下次加载，目前是要对方关闭了自动加载的功能，有我们自行进行加载逻辑处理
  
  */
-#import "ULHuiliangAdv.h"
+#import "ULHuiLiangAdv.h"
 #import "ULConfig.h"
 #import "ULCop.h"
 #import "ULTools.h"
@@ -24,7 +24,7 @@
 #import <MTGSDKReward/MTGRewardAdManager.h>
 #import <MTGSDKInterstitialVideo/MTGInterstitialVideoAdManager.h>
 
-@interface ULHuiliangAdv ()<MTGInterstitialAdLoadDelegate,MTGInterstitialAdShowDelegate,MTGRewardAdLoadDelegate,MTGRewardAdShowDelegate,MTGInterstitialVideoDelegate>
+@interface ULHuiLiangAdv ()<MTGInterstitialAdLoadDelegate,MTGInterstitialAdShowDelegate,MTGRewardAdLoadDelegate,MTGRewardAdShowDelegate,MTGInterstitialVideoDelegate>
 
 @property (nonatomic, strong)NSDictionary *interJson,*videoJson,*fullscreenJson;
 @property (nonatomic, strong)NSString *videoLoadFailMsg,*fullscreenLoadFailMsg;
@@ -35,7 +35,7 @@
 @end
 
 
-@implementation ULHuiliangAdv
+@implementation ULHuiLiangAdv
 
 - (void)onInitModule
 {
@@ -122,7 +122,7 @@
     //获取本地配置的参数
     NSString *videoParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_huiliang_videoid" :@""];
     NSArray *localVideoParams = [videoParamsStr componentsSeparatedByString:@"|"];
-    NSArray *videoParamsArray = [self getParamArrayWithModule:@"ULHuiliangAdv" withType:@"video" withDefaultValue:localVideoParams];
+    NSArray *videoParamsArray = [self getParamArrayWithModule:@"ULHuiLiangAdv" withType:@"video" withDefaultValue:localVideoParams];
     //这里需要参数去重，避免重复加载
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     for (NSString * str in videoParamsArray) {
@@ -144,7 +144,7 @@
     
     NSString *fullscreenParamsStr = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_sdk_adv_huiliang_fullscreenid" :@""];
     NSArray *localFullscreenParams = [fullscreenParamsStr componentsSeparatedByString:@"|"];
-    NSArray *fullscreenParamsArray = [self getParamArrayWithModule:@"ULHuiliangAdv" withType:@"fullscreen" withDefaultValue:localFullscreenParams];
+    NSArray *fullscreenParamsArray = [self getParamArrayWithModule:@"ULHuiLiangAdv" withType:@"fullscreen" withDefaultValue:localFullscreenParams];
     for (NSString *param in fullscreenParamsArray) {
         //应该有个参数和广告对象存储的map
         if (![_advLoadObjByParamDic objectForKey:param]) {//该参数已创建对象则无需再次创建
