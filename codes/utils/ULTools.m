@@ -257,7 +257,7 @@
 #pragma mark - 从cop或者config获取指定NSString值
 + (NSString *)getCopOrConfigStringWithKey:(NSString *)key withDefaultString:(NSString *)defaultString
 {
-    NSString *p = nil;
+    id p = nil;
     NSDictionary *dic = [ULCop getCopInfo];
     if (dic) {
         p = [dic objectForKey:key];
@@ -279,14 +279,14 @@
         return defaultString;
     }
     
-    return @"";
+    return defaultString;
 }
 
 
 #pragma mark - 从cop或者config获取指定NSDictionary值
 + (NSDictionary *)getCopOrConfigDictionaryWithKey:(NSString *)key withDefaultString:(NSDictionary * _Nullable)defValue
 {
-    NSDictionary *p = nil;
+    id p = nil;
     NSDictionary *dic = [ULCop getCopInfo];
     if (dic) {
         p = [dic objectForKey:key];
@@ -304,9 +304,12 @@
     if ([p isKindOfClass:[NSDictionary class]]) {
         return p;
     }else{
-        NSLog(@"%s%@",__func__,@"value is not dictionary,retrun default!");
-        return defValue;
+        if ([p isKindOfClass:[NSString class]]) {
+            NSDictionary *value = [self StringToDictionary:p];
+            return value;
+        }
     }
+    return defValue;
 }
 
 
