@@ -19,10 +19,11 @@
 @interface ULPrivacyPolicy ()<ULILifeCycle>
 
 @property (nonatomic,strong) PrivacyPolicyControllerViewController *controller;
-
 @end
 
 @implementation ULPrivacyPolicy
+
+static NSString *privacyPolicyUrl = UL_PRIVACY_POLICY_DEFAULT_URL;
 
 - (void)onInitModule
 {
@@ -107,6 +108,16 @@
 - (void)showPrivacyPolicy
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSString *isClosePrivacyPolicy = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_privacy_policy_switch" :@""];
+        if ([isClosePrivacyPolicy isEqualToString:@"1"]) {
+            NSLog(@"%s%@",__func__,@"隐私政策功能关闭");
+            return;
+        }
+        
+        NSString *url =[ULTools getCopOrConfigStringWithKey:@"s_sdk_privacy_policy_url" withDefaultString:UL_PRIVACY_POLICY_DEFAULT_URL];
+        [[self class] setPrivacyPolicyUrl:url];
+        
         if (![self getPrivacyPolicyState]) {
             [self presentToController];
         }else{
@@ -114,6 +125,18 @@
         }
         
     });
+}
+
++ (NSString *)getPrivacyPolicyUrl
+{
+    return privacyPolicyUrl;
+}
+
++ (void)setPrivacyPolicyUrl:(NSString *)url
+{
+    if (url && ![url isEqualToString:@""]) {
+        privacyPolicyUrl = url;
+    }
 }
 
 
