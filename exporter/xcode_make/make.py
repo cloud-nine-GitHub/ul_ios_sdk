@@ -50,17 +50,12 @@ def make_by_config(rootPath, config):
 	print "  XcodeProject.Load(%s)" % pbxproj_filename
 	project = XcodeProject.Load(pbxproj_filename)
 
-	# codes
-	if config.has_key("codes"):
-		group_codes = project.get_or_create_group("codes")
-		for _, f in enumerate(config["codes"]):
-			project.add_folder(os.path.join(codes_path, f), parent = group_codes)
-
-	# 3rdparts
+	# 3rdparts  ulsdk
+	ulsdk_group = project.get_or_create_group("ulsdk")
 	if config.has_key("3rdparts"):
 		for _, f in enumerate(config["3rdparts"]):
 			print "  project.add_folder(%s, parent = group_3rdparts)" % os.path.join(sdk_path, f)
-			project.add_folder(os.path.join(sdk_path, f), parent = "")
+			project.add_folder(os.path.join(sdk_path, f), parent = ulsdk_group)
 			# 3d特殊处理
 			if config.has_key("game_type") and config["game_type"] == "3d":
 				# 添加-fno-objc-arc
@@ -89,6 +84,13 @@ def make_by_config(rootPath, config):
 				    			files1 = project.get_build_files(fileId1)
 				    			for file1 in files1:
 				    				file1.add_compiler_flag("-fno-objc-arc")
+
+	# codes
+	if config.has_key("codes"):
+		# 在ulsdk目录下再创建codes目录
+		group_codes = project.get_or_create_group("codes", parent = ulsdk_group)
+		for _, f in enumerate(config["codes"]):
+			project.add_folder(os.path.join(codes_path, f), parent = group_codes)
 
 	# preprocessors
 	if config.has_key("preprocessors"):
@@ -152,6 +154,18 @@ def make_by_config(rootPath, config):
 			print "  project.add_file(%s, parent = group_Resources, create_build_files = True)" % os.path.join(rootPath, r)
 			project.add_file(os.path.join(rootPath, r), parent = group_Resources, create_build_files = True)
 	
+	# C Language Dialect  gcc_c_language_standard
+	if config.has_key("gcc_c_language_standard"):
+		# 先删除本身的，再添加配置里面的
+		project.remove_single_valued_flag("GCC_C_LANGUAGE_STANDARD")
+		project.add_flags({"GCC_C_LANGUAGE_STANDARD" : config["gcc_c_language_standard"]})
+
+	# Objective-C Automatic Reference Counting CLANG_ENABLE_OBJC_ARC
+	if config.has_key("clang_enable_objc_arc"):
+		# 先删除本身的，再添加配置里面的
+		project.remove_single_valued_flag("CLANG_ENABLE_OBJC_ARC")
+		project.add_flags({"CLANG_ENABLE_OBJC_ARC" : config["clang_enable_objc_arc"]})
+
 	# embeded binaries
 	if config.has_key("embeded"):
 		project.add_embed_binaries(config["embeded"], config["scheme"])
