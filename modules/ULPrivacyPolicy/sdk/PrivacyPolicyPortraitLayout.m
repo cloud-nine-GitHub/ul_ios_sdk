@@ -105,7 +105,7 @@ static PrivacyPolicyPortraitLayout *instance = nil;
     webView.backgroundColor = [UIColor clearColor];
     
     //加载网页
-    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:UL_PRIVACY_POLICY_URL]];
+    NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:[ULPrivacyPolicy getPrivacyPolicyUrl]]];
     [webView loadRequest:request];
     [relativeTwo addSubview:webView];
     /*底部按钮相对布局*/

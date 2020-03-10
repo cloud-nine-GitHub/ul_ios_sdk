@@ -9,11 +9,13 @@
 #import "ULModuleBase.h"
 
 NS_ASSUME_NONNULL_BEGIN
-#define UL_PRIVACY_POLICY_URL @"http://gamesres.ultralisk.cn/notice/leishoupolicy/"
+#define UL_PRIVACY_POLICY_DEFAULT_URL @"http://gamesres.ultralisk.cn/notice/leishoupolicy/"
 
 @interface ULPrivacyPolicy : ULModuleBase
 
 + (void) savePrivacyPolicyState :(BOOL) isAgreePrivacyPolicy;
++ (NSString *)getPrivacyPolicyUrl;
++ (void)setPrivacyPolicyUrl:(NSString *)url;
 @end
 
 NS_ASSUME_NONNULL_END
