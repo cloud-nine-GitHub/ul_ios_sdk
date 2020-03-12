@@ -39,11 +39,11 @@ static ULSplashViewController* instance=nil;
     [super viewDidLoad];
     
     NSLog(@"%s",__func__);
-//    UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-//    [UIApplication sharedApplication].delegate.window = window;
-//    window.backgroundColor = [UIColor whiteColor];
-//    [window makeKeyAndVisible];
-//    [window setRootViewController:self];
+    //    UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    //    [UIApplication sharedApplication].delegate.window = window;
+    //    window.backgroundColor = [UIColor whiteColor];
+    //    [window makeKeyAndVisible];
+    //    [window setRootViewController:self];
     
     //TODO 开屏横转竖功能是否保留
     
@@ -83,22 +83,28 @@ static ULSplashViewController* instance=nil;
         }
         //这里需要重新设置游戏所在的viewControoler
         if (@available(iOS 13.0, *)) {
+            //解析工程info.plist文件，判断是否使用分屏特性
+            NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+            NSMutableDictionary *infoDict = [NSMutableDictionary dictionaryWithContentsOfFile:bundlePath];
+            NSString *string = [infoDict objectForKey:@"UIApplicationSceneManifest"];
+            if (string) {//使用分屏特性
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
+                    @"data":mainController
+                }];
+                [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
+                return;
+            }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
-                @"data":mainController
-            }];
-            [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
-            
-        }else{
-            
-            UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-            [UIApplication sharedApplication].delegate.window = window;
-            window.backgroundColor = [UIColor whiteColor];
-            [window makeKeyAndVisible];
-            id controller = [[NSClassFromString(mainController) alloc]init];
-            [window setRootViewController:controller];
-            [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
         }
+        
+        UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        [UIApplication sharedApplication].delegate.window = window;
+        window.backgroundColor = [UIColor whiteColor];
+        [window makeKeyAndVisible];
+        id controller = [[NSClassFromString(mainController) alloc]init];
+        [window setRootViewController:controller];
+        [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
+        
         
     });
 }

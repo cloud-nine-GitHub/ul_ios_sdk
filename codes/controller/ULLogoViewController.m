@@ -57,19 +57,31 @@
             //            [self presentViewController:splashViewController animated:false completion:nil];
             
             //这里需要重新设置游戏所在的viewControoler
+            
             if (@available(iOS 13.0, *)) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
-                    @"data":@"ULSplashViewController"
-                }];
+                //解析工程info.plist文件，判断是否使用分屏特性
+                NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+                NSMutableDictionary *infoDict = [NSMutableDictionary dictionaryWithContentsOfFile:bundlePath];
+                NSString *string = [infoDict objectForKey:@"UIApplicationSceneManifest"];
+                if (string) {//使用分屏特性
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
+                        @"data":@"ULSplashViewController"
+                    }];
+                    return;
+                }
                 
-            }else{
-                UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-                [UIApplication sharedApplication].delegate.window = window;
-                window.backgroundColor = [UIColor whiteColor];
-                [window makeKeyAndVisible];
-                ULSplashViewController* splashViewController = [[ULSplashViewController alloc] init];
-                [window setRootViewController:splashViewController];
+                
             }
+            
+            
+            
+            UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+            [UIApplication sharedApplication].delegate.window = window;
+            window.backgroundColor = [UIColor whiteColor];
+            [window makeKeyAndVisible];
+            ULSplashViewController* splashViewController = [[ULSplashViewController alloc] init];
+            [window setRootViewController:splashViewController];
+            
             //这里需要重新设置游戏所在的viewControoler
             
             
@@ -81,13 +93,13 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
