@@ -377,26 +377,7 @@ static double currentVolume = 0.00;
     
     //返回用户唯一标识
     [channeInfoDic setValue:[ULGetDeviceId getUniqueDeviceId] forKey:@"uuid"];
-    
-    NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
-    if ([isCloseCop isEqualToString:@"1"]) {
-        //对于不使用cop而使用本地配置的情况，下列配置依然需要返回
-        
-        //是否显示互动广告按钮
-        NSString *url = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_h5_url" :@""];
-        if (![url isEqualToString:@""]) {
-            [channeInfoDic setValue:[NSNumber numberWithBool:true] forKey:@"isShowUrlAdIcon"];
-        }else{
-            [channeInfoDic setValue:[NSNumber numberWithBool:false] forKey:@"isShowUrlAdIcon"];
-        }
-        //是否显示互推更多游戏按钮
-        NSString *urlMoreGame = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_ul_more_game_url" :@""];
-        if (![urlMoreGame isEqualToString:@""]) {
-            [channeInfoDic setValue:[NSNumber numberWithBool:true] forKey:@"isULMoreGame"];
-        }else{
-            [channeInfoDic setValue:[NSNumber numberWithBool:false] forKey:@"isULMoreGame"];
-        }
-    }
+
     return channeInfoDic;
 }
 

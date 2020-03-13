@@ -352,18 +352,6 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
 - (NSMutableDictionary *)onResultChannelInfo:(NSMutableDictionary *)baseChannelInfo
 {
     NSLog(@"%s",__func__);
-    NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
-    if ([isCloseCop isEqualToString:@"1"]) {
-        //对于不使用cop而使用本地配置的情况，下列配置依然需要返回
-        //是否显示互推按钮
-        NSString *inner = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_inner_promotion_data" :@""];
-        if (inner && ![inner isEqualToString:@""]) {
-            [baseChannelInfo setValue:[NSNumber numberWithBool:true] forKey:@"isSupportJumpList"];
-        }else{
-            [baseChannelInfo setValue:[NSNumber numberWithBool:false] forKey:@"isSupportJumpList"];
-        }
-    }
-    [ULSDKManager setBaseChannelInfo:baseChannelInfo];
     return nil;
 }
 
