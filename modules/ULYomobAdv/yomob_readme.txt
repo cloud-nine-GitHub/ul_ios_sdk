@@ -1,6 +1,6 @@
 ÃÌº”“¿¿µ£∫
 	libc++.tbd
-	libresolv.9.tdb
+	libresolv.9.tbd
 	libsqlite3.tbd
 	libxml2.tbd
 	libz.tbd
