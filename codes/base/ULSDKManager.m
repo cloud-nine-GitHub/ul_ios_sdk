@@ -97,11 +97,12 @@ static double currentVolume = 0.00;
 + (void)initAdv
 {
     NSLog(@"%s",__func__);
-    NSDictionary *showListObject = [ULTools GetNSDictionaryFromDic:[ULCop getCopInfo] :@"o_sdk_adv_show_list" :nil];
-    if (!showListObject) {
+    NSString *showListStr = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"o_sdk_adv_show_list" :@""];
+    if ([showListStr isEqualToString:@""]) {
         NSLog(@"%s%@",__func__,@"adv show list is null,请检查cop配置");
         return;
     }
+    NSDictionary *showListObject = [ULTools StringToDictionary: showListStr];
     
     //广告买点tags对象
     NSDictionary *advTagsObject = [ULTools GetNSDictionaryFromDic:showListObject :@"advTags" :nil];
