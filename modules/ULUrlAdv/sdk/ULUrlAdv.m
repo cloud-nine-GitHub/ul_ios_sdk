@@ -156,7 +156,7 @@
     NSString *url = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_h5_url" withDefaultString:@""];
     NSMutableDictionary *jsonData = [NSMutableDictionary new];
     [jsonData setValue:url forKey:@"url"];
-    [ULWebView showWebView:jsonData];
+    [[ULWebView getInstance] showWebView:jsonData]
     [self showAdv:json :@""];
     //});
 }

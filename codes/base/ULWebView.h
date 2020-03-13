@@ -12,7 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ULWebView : NSObject
 
-+ (void)showWebView:(NSDictionary*)json;
++ (instancetype)getInstance;
+- (void)showWebView:(NSDictionary*)json;
 @end
 
 NS_ASSUME_NONNULL_END

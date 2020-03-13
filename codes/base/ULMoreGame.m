@@ -30,7 +30,7 @@
     }
     [jsonData setValue:url forKey:@"url"];
     
-    [ULWebView showWebView:jsonData];
+    [[ULWebView getInstance] showWebView:jsonData];
 
 }
 

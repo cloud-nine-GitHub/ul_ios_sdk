@@ -297,7 +297,7 @@ static double currentVolume = 0.00;
     }else if([cmd isEqualToString:MSG_CMD_EXITGAME]){
         //ios应该没有退出一说。do nothing
     }else if([cmd isEqualToString:MSG_CMD_OPENWEBVIEW]){
-        [ULWebView showWebView:data];
+        [[ULWebView getInstance] showWebView:data];
     }else if([cmd isEqualToString:MSG_CMD_OPENULMOREGAME]){
         [ULMoreGame showMoreGame];
     }else if([cmd isEqualToString:MSG_CMD_OPENSHARE]){
