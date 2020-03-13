@@ -434,7 +434,8 @@
 - (void)splashAdDidClickSkip:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
-    [[ULSplashViewController getInstance]removeSplashView];
+    //[splashAd removeFromSuperview];
+    //[[ULSplashViewController getInstance]removeSplashView];
 }
 
 /**
