@@ -1071,16 +1071,7 @@
 #pragma mark - 获取当前window：需确保当前只会创建一个窗口使用。
 + (UIWindow *) getAppCurrentWindow
 {
-    UIWindow *window = nil;
-    
-    if (@available(iOS 13.0, *)) {
-        window = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
-    } else {
-        window = [UIApplication sharedApplication].keyWindow;
-    }
-    
-    
-    return window;
+    return [UIApplication sharedApplication].keyWindow;
 }
 
 #pragma mark - 判断横竖屏

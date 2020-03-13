@@ -82,20 +82,6 @@ static ULSplashViewController* instance=nil;
             return;
         }
         //这里需要重新设置游戏所在的viewControoler
-        if (@available(iOS 13.0, *)) {
-            //解析工程info.plist文件，判断是否使用分屏特性
-            NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-            NSMutableDictionary *infoDict = [NSMutableDictionary dictionaryWithContentsOfFile:bundlePath];
-            NSString *string = [infoDict objectForKey:@"UIApplicationSceneManifest"];
-            if (string) {//使用分屏特性
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
-                    @"data":mainController
-                }];
-                [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
-                return;
-            }
-            
-        }
         
         UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         [UIApplication sharedApplication].delegate.window = window;

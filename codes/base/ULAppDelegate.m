@@ -66,20 +66,6 @@
     
     
     //在这里手动创建新的window
-    if (@available(iOS 13.0, *)) {
-        //解析工程info.plist文件，判断是否使用分屏特性
-        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-        NSMutableDictionary *infoDict = [NSMutableDictionary dictionaryWithContentsOfFile:bundlePath];
-        NSString *string = [infoDict objectForKey:@"UIApplicationSceneManifest"];
-        if (string) {//使用分屏特性
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"setRootViewController" object:nil userInfo:@{
-                @"data":@"ULLogoViewController"
-            }];
-            return;
-        }
-        
-        
-    }
     UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [UIApplication sharedApplication].delegate.window = window;
     window.backgroundColor = [UIColor whiteColor];
