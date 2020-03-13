@@ -115,7 +115,7 @@ static NSString *privacyPolicyUrl = UL_PRIVACY_POLICY_DEFAULT_URL;
             return;
         }
         
-        NSString *url =[ULTools getCopOrConfigStringWithKey:@"s_sdk_privacy_policy_url" withDefaultString:UL_PRIVACY_POLICY_DEFAULT_URL];
+        NSString *url = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_privacy_policy_url" :UL_PRIVACY_POLICY_DEFAULT_URL];
         [[self class] setPrivacyPolicyUrl:url];
         
         if (![self getPrivacyPolicyState]) {

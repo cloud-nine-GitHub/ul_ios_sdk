@@ -180,7 +180,7 @@
     [BUAdSDKManager setLoglevel:BUAdSDKLogLevelNone];
     
     //获取banner的轮播时间间隔，单位s
-    NSString *bannerRefreshTimeStr = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_toutiao_banner_refresh_time" withDefaultString:@""];
+    NSString *bannerRefreshTimeStr = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_toutiao_banner_refresh_time" :@""];
     if (bannerRefreshTimeStr != nil && ![bannerRefreshTimeStr isEqualToString:@""]) {
         
         _bannerRefreshTime = [bannerRefreshTimeStr intValue];

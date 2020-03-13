@@ -53,7 +53,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 - (void)onInitModule {
     NSLog(@"%s",__func__);
-    _isCloseAccount = [ULTools getCopOrConfigStringWithKey:@"s_sdk_close_account_system" withDefaultString:@"0"];
+    _isCloseAccount = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_close_account_system" :@"0"];
     if([_isCloseAccount isEqualToString:@"1"]){
         NSLog(@"%s:统计功能关闭",__func__);
         return;

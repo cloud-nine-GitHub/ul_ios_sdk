@@ -126,7 +126,7 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
     
     _isReward = NO;
     NSString *deviceId = [ULGetDeviceId getUniqueDeviceId];
-    NSString *url = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_h5_url" withDefaultString:@""];
+    NSString *url = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_h5_url" :@""];
     url = [NSString stringWithFormat:@"%@%@%@%@%@",url,@"&device_id=",deviceId,@"&userId=",deviceId];
     _webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     NSURLRequest *request =[NSURLRequest requestWithURL:[NSURL URLWithString:url]];
@@ -146,7 +146,7 @@ static NSString * const kDuibaJSH5CloseProtocolTest = @"TAHandlerClose"; // rewa
     UIInterfaceOrientation orien = controller.interfaceOrientation;
 
     //默认竖屏展示
-    NSString *isForcePortrait = [ULTools getCopOrConfigStringWithKey:@"s_sdk_webview_force_portrait" withDefaultString:@"1"];
+    NSString *isForcePortrait = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_webview_force_portrait" :@"1"];
     if([isForcePortrait isEqualToString:@"1"]){
         if(orien == UIInterfaceOrientationLandscapeLeft || orien == UIInterfaceOrientationLandscapeRight){
             [self landscapeExecute];

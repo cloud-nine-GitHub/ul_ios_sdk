@@ -61,7 +61,7 @@ static ULSplashViewController* instance=nil;
 
 - (void)showSplashAdv
 {
-    NSString *splashSwitch = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_close_splash" withDefaultString:@"1"];
+    NSString *splashSwitch = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_close_splash" :@"1"];
     if ([splashSwitch isEqualToString:@"1"]) {
         [self removeSplashView];
     }else{

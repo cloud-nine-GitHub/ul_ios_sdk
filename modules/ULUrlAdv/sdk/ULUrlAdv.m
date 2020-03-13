@@ -12,6 +12,7 @@
 #import "ULNotificationDispatcher.h"
 #import "ULNotification.h"
 #import "ULWebView.h"
+#import "ULCop.h"
 
 @interface ULUrlAdv()<ULILifeCycle>
 
@@ -153,7 +154,7 @@
 {
     NSLog(@"%s",__func__);
     //dispatch_async(dispatch_get_main_queue(), ^{
-    NSString *url = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_h5_url" withDefaultString:@""];
+    NSString *url = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_h5_url" :@""];
     NSMutableDictionary *jsonData = [NSMutableDictionary new];
     [jsonData setValue:url forKey:@"url"];
     [[ULWebView getInstance] showWebView:jsonData];

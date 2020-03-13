@@ -205,7 +205,7 @@ static NSString *const UL_APP_SCHEME_PRE = @"ultralisk_game";//scheme固定前�
     NSString *type = [ULTools GetStringFromDic:data :@"type" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     int count = [ULTools GetIntFromDic:data :@"count" :0];//默认返回全部条数
-    NSString *innerData = [ULTools getCopOrConfigStringWithKey:@"s_sdk_inner_promotion_data" withDefaultString:@""];
+    NSString *innerData = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_inner_promotion_data" :@""];
     //游戏标识；苹果id；icon地址后标；应用名称；物品id-物品数量，物品id-物品数量
     //"23;1285648562;23;叶罗丽精灵梦;1-50,2-100|31;1293648542;31;小花仙守护天使;1-50,2-100|34;1285648562;34;小花仙精灵之翼;1-50,2-100"
     /**

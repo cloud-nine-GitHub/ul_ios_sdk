@@ -105,7 +105,7 @@
 {
     NSString *payResult = @"";
     //支付取消是否继续走支付流程，交由控制
-    NSString *isDispatchWhenCancel = [ULTools getCopOrConfigStringWithKey:@"s_sdk_pay_dispatch_when_cancel" withDefaultString:@"0"];
+    NSString *isDispatchWhenCancel = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_pay_dispatch_when_cancel" :@"0"];
     if (payState == paySuccess) {
         [self payResultCallBackWithCode:1 withMsg:@"支付成功" withPayData:payData];
         payResult = @"success";

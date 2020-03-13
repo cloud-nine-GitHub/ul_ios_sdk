@@ -10,6 +10,7 @@
 #import "ULICheck.h"
 #import "ULCountTool.h"
 #import "ULTools.h"
+#import "ULCop.h"
 
 
 @interface ULCountCheck ()<ULICheck>
@@ -43,7 +44,7 @@ static ULCountCheck *instance = nil;
 {
     //设置次数上限
     NSString *defaultString = @"0";
-    NSString *interClickMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_interstitial_click_num" withDefaultString:defaultString];
+    NSString *interClickMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_interstitial_click_num" :defaultString];
     int interClickMaxNumInt;
     @try {
         interClickMaxNumInt = [interClickMaxNum intValue];
@@ -52,7 +53,7 @@ static ULCountCheck *instance = nil;
     }
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_interstitial_click_num" :interClickMaxNumInt];
     
-    NSString *interShowMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_interstitial_show_num" withDefaultString:defaultString];
+    NSString *interShowMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_interstitial_show_num" :defaultString];
     int interShowMaxNumInt;
     @try {
         interShowMaxNumInt = [interShowMaxNum intValue];
@@ -62,7 +63,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_interstitial_show_num" :interShowMaxNumInt];
     
     
-    NSString *videoClickMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_video_click_num" withDefaultString:defaultString];
+    NSString *videoClickMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_video_click_num" :defaultString];
     int videoClickMaxNumInt;
     @try {
         videoClickMaxNumInt = [videoClickMaxNum intValue];
@@ -72,7 +73,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_video_click_num" :videoClickMaxNumInt];
     
     
-    NSString *videoShowMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_video_show_num" withDefaultString:defaultString];
+    NSString *videoShowMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_video_show_num" :defaultString];
     int videoShowMaxNumInt;
     @try {
         videoShowMaxNumInt = [videoShowMaxNum intValue];
@@ -82,7 +83,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_video_show_num" :videoShowMaxNumInt];
     
     
-    NSString *bannerClickMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_banner_click_num" withDefaultString:defaultString];
+    NSString *bannerClickMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_banner_click_num" :defaultString];
     int bannerClickMaxNumInt;
     @try {
         bannerClickMaxNumInt = [bannerClickMaxNum intValue];
@@ -92,7 +93,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_banner_click_num" :bannerClickMaxNumInt];
     
     
-    NSString *bannerShowMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_banner_show_num" withDefaultString:defaultString];
+    NSString *bannerShowMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_banner_show_num" :defaultString];
     int bannerShowMaxNumInt;
     @try {
         bannerShowMaxNumInt = [bannerShowMaxNum intValue];
@@ -102,7 +103,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_banner_show_num" :bannerShowMaxNumInt];
     
     
-    NSString *embeddedClickMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_embedded_click_num" withDefaultString:defaultString];
+    NSString *embeddedClickMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_embedded_click_num" :defaultString];
     int embeddedClickMaxNumInt;
     @try {
         embeddedClickMaxNumInt = [embeddedClickMaxNum intValue];
@@ -112,7 +113,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_embedded_click_num" :embeddedClickMaxNumInt];
     
     
-    NSString *embeddedShowMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_embedded_show_num" withDefaultString:defaultString];
+    NSString *embeddedShowMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_embedded_show_num" :defaultString];
     int embeddedShowMaxNumInt;
     @try {
         embeddedShowMaxNumInt = [embeddedShowMaxNum intValue];
@@ -122,7 +123,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_embedded_show_num" :embeddedShowMaxNumInt];
     
     
-    NSString *fullscreenClickMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_fullscreen_click_num" withDefaultString:defaultString];
+    NSString *fullscreenClickMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_fullscreen_click_num" :defaultString];
     int fullscreenClickMaxNumInt;
     @try {
         fullscreenClickMaxNumInt = [fullscreenClickMaxNum intValue];
@@ -132,7 +133,7 @@ static ULCountCheck *instance = nil;
     [[ULCountTool getInstance]setMax:@"s_sdk_adv_fullscreen_click_num" :fullscreenClickMaxNumInt];
     
     
-    NSString *fullscreenShowMaxNum = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_fullscreen_show_num" withDefaultString:defaultString];
+    NSString *fullscreenShowMaxNum = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_fullscreen_show_num" :defaultString];
     int fullscreenShowMaxNumInt;
     @try {
         fullscreenShowMaxNumInt = [fullscreenShowMaxNum intValue];

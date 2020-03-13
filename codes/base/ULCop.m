@@ -41,9 +41,23 @@ static NSString *upCopInfoString = @"";
 + (void)initCopInfo{
     NSLog(@"%s",__func__);
     //是否读cop配置
-    NSString *isUseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
-    if ([isUseCop isEqualToString:@"1"]) {
+    NSString *isCloseCop = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_common_close_cop" :@"0"];
+    if ([isCloseCop isEqualToString:@"1"]) {
         NSLog(@"%s%@",__func__,@"cop is unavailable!");
+        //在不使用cop的时候检测是否支持默认cop配置
+        NSDictionary *defaultCopInfo = [ULTools GetNSDictionaryFromDic:[ULConfig getConfigInfo] :@"o_common_default_cop_info" :nil];
+        if (defaultCopInfo) {
+            NSMutableDictionary *newDefaultCopInfo = [NSMutableDictionary new];
+            //默认cop添加标识，不能让默认cop蒙蔽双眼，让cop相关配置错误逃脱
+            [newDefaultCopInfo setValue:@"1" forKey:@"isDefaultCopInfo"];
+            for (NSString *key in [defaultCopInfo allKeys]) {
+                [newDefaultCopInfo setValue:[defaultCopInfo objectForKey:key] forKey:key];
+            }
+            [self setCopJsonObject:newDefaultCopInfo];
+            [self returnCopInfo:[ULTools DictionaryToString:newDefaultCopInfo]];
+        }else{
+            //确实不支持本地默认cop配置
+        }
         return;
     }
     copFailedDataCountMap = [NSMutableDictionary new];
@@ -82,7 +96,9 @@ static NSString *upCopInfoString = @"";
     NSURL *url = [NSURL URLWithString:copRequestUrl];
     
     //2.创建请求对象
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    //设置请求5s超时
+    request.timeoutInterval = 5;
     
     //3.获得会话对象
     NSURLSession *session=[NSURLSession sharedSession];
@@ -116,6 +132,21 @@ static NSString *upCopInfoString = @"";
             if (code == -1) {
                 copRequestResult = @"failed";
                 copRequestFialReason = [ULTools GetStringFromDic:copObject :@"mess" :@""];
+                //这里需要检测是否本地配置导致读不到cop
+                //在不使用cop的时候检测是否支持默认cop配置
+                NSDictionary *defaultCopInfo = [ULTools GetNSDictionaryFromDic:[ULConfig getConfigInfo] :@"o_common_default_cop_info" :nil];
+                if (defaultCopInfo) {
+                    NSMutableDictionary *newDefaultCopInfo = [NSMutableDictionary new];
+                    //默认cop添加标识，不能让默认cop蒙蔽双眼，让cop相关配置错误逃脱
+                    [newDefaultCopInfo setValue:@"1" forKey:@"isDefaultCopInfo"];
+                    for (NSString *key in [defaultCopInfo allKeys]) {
+                        [newDefaultCopInfo setValue:[defaultCopInfo objectForKey:key] forKey:key];
+                    }
+                    copObject = newDefaultCopInfo;
+                    copInfoStr = [ULTools DictionaryToString:newDefaultCopInfo];
+                }else{
+                    //确实不支持本地默认cop配置
+                }
             }else{
                 copRequestResult = @"success";
                 copRequestFialReason = @"";
@@ -143,15 +174,21 @@ static NSString *upCopInfoString = @"";
 //                [NSThread exit];
 //            }
         }else{
+            //针对异常情况，多半都是链接异常或者网络异常，如果是网络异常那么本次也不会有收益产生，提供默认cop也毫无意义
             NSLog(@"%s%@%@",__func__,@"cop request error : ",error);
             copRequestResult = @"failed";
             if (error) {
-                NSString *errorMsg = error.localizedFailureReason;
-                if ([errorMsg length] > 120) {
-                    copRequestFialReason = [errorMsg substringWithRange:NSMakeRange(0, 120)];
+                NSString *errorMsg = error.localizedDescription;
+                if (!errorMsg) {
+                    copRequestFialReason = @"";
                 }else{
-                    copRequestFialReason = errorMsg;
+                    if ([errorMsg length] > 120) {
+                        copRequestFialReason = [errorMsg substringWithRange:NSMakeRange(0, 120)];
+                    }else{
+                        copRequestFialReason = errorMsg;
+                    }
                 }
+                
             }else{
                 copRequestFialReason = @"cop请求异常";
             }

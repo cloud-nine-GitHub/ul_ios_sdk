@@ -31,6 +31,7 @@
 #import "ULNotificationDispatcher.h"
 #import "ULModuleBaseSdk.h"
 #import "ULConfig.h"
+#import "ULCop.h"
 #import "ULModuleBaseAdv.h"
 #import "ULAdvBean.h"
 #import "ULRequestManager.h"
@@ -96,7 +97,7 @@ static double currentVolume = 0.00;
 + (void)initAdv
 {
     NSLog(@"%s",__func__);
-    NSDictionary *showListObject = [ULTools getCopOrConfigDictionaryWithKey:@"o_sdk_adv_show_list" withDefaultString:nil];
+    NSDictionary *showListObject = [ULTools GetNSDictionaryFromDic:[ULCop getCopInfo] :@"o_sdk_adv_show_list" :nil];
     if (!showListObject) {
         NSLog(@"%s%@",__func__,@"adv show list is null,请检查cop配置");
         return;

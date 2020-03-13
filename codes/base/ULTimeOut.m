@@ -12,6 +12,7 @@
 #import "ULStringConst.h"
 #import "ULTimer.h"
 #import "ULAdvCallBackManager.h"
+#import "ULCop.h"
 
 static int const UL_ADV_DEFAULT_TIMEOUT_TIME = 30;//单位秒
 
@@ -19,7 +20,7 @@ static int const UL_ADV_DEFAULT_TIMEOUT_TIME = 30;//单位秒
 
 + (void)startTimeOutTask:(NSMutableDictionary *)json
 {
-    NSString *isCloseTimeOut = [ULTools getCopOrConfigStringWithKey:@"s_sdk_close_timeout_system" withDefaultString:@"0"];
+    NSString *isCloseTimeOut = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_close_timeout_system" :@"0"];
     if ([isCloseTimeOut isEqualToString:@"1"]) {
         NSLog(@"%s%@",__func__,@"关闭超时处理");
         return;
@@ -40,7 +41,7 @@ static int const UL_ADV_DEFAULT_TIMEOUT_TIME = 30;//单位秒
     if ([advId isEqualToString:S_CONST_ADV_SPLASH_ADVID_DES]) {
         return;
     }
-    NSString *delayTimeStr = [ULTools getCopOrConfigStringWithKey:@"s_sdk_adv_request_timeout" withDefaultString:[NSString stringWithFormat:@"%d",UL_ADV_DEFAULT_TIMEOUT_TIME] ];
+    NSString *delayTimeStr = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_adv_request_timeout" :[NSString stringWithFormat:@"%d",UL_ADV_DEFAULT_TIMEOUT_TIME]];
     float delayTime = [delayTimeStr floatValue];
     
     long advRequestSerialNum = [ULTools GetLongFromDic:sdkAdvData :@"requestSerialNum" :-1];
@@ -69,7 +70,7 @@ static int const UL_ADV_DEFAULT_TIMEOUT_TIME = 30;//单位秒
 
 + (void)stopTimeOutTask:(NSMutableDictionary *)rpcCallJson
 {
-    NSString *isCloseTimeOut = [ULTools getCopOrConfigStringWithKey:@"s_sdk_close_timeout_system" withDefaultString:@"0"];
+    NSString *isCloseTimeOut = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_close_timeout_system" :@"0"];
      if ([isCloseTimeOut isEqualToString:@"1"]) {
          NSLog(@"%s%@",__func__,@"关闭超时处理");
          return;
