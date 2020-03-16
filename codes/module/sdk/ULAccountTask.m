@@ -310,8 +310,8 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
             [jsonArray addObject:array[4]];//返回的json字段
             break;
         case ULA_GAME_USER_EVENT:
-            for (NSString *str in array) {
-                [jsonArray addObject:str];
+            for (int i = 1; i < array.count; i++) {
+                [jsonArray addObject:array[i]];
             }
             [jsonArray addObject:copVersion];//cop版本
             [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
