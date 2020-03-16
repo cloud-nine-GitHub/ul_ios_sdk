@@ -49,7 +49,7 @@
 
 
 //测试界面模拟模块广告测试数据
-- (NSMutableDictionary *)getModuleAdvTestDataWithType:(NSString *)advType withEditParam:(NSString *)advParam withLocalParamKey:(NSString *)key
+- (NSMutableDictionary *)getModuleAdvTestDataWithModule:(NSString *)module withType:(NSString *)advType withEditParam:(NSString *)advParam withLocalParamKey:(NSString *)key
 {
     NSMutableDictionary *advData = [NSMutableDictionary new];
     NSMutableDictionary *gameAdvData = [NSMutableDictionary new];
@@ -60,6 +60,7 @@
     
     [sdkAdvData setValue:[NSNumber numberWithInt:true] forKey:@"isStopDispatch"];//测试模块广告调用，中断流程分发
     [sdkAdvData setValue:advType forKey:@"type"];
+    [sdkAdvData setValue:module forKey:@"module"];
     [sdkAdvData setValue:@"show" forKey:@"rewardType"];
     
     NSArray *advParamArray;

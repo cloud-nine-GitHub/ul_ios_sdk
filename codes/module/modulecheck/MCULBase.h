@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (int )getViewHeight;
 - (UIView *)getView;
 - (NSMutableDictionary *)getBaseAdvTestData:(NSString *)editAdvId;
-- (NSMutableDictionary *)getModuleAdvTestDataWithType:(NSString *)advType withEditParam:(NSString *)advParam withLocalParamKey:(NSString *)key;
+- (NSMutableDictionary *)getModuleAdvTestDataWithModule:(NSString *)module withType:(NSString *)advType withEditParam:(NSString *)advParam withLocalParamKey:(NSString *)key;
 - (NSMutableDictionary *)getBasePayTestData:(NSString *)editPayId;
 - (NSMutableDictionary *)getModulePayTestData:(NSString *)editPayId;
 - (BOOL)checkId:(NSString *)payId :(NSDictionary *)payInfo;

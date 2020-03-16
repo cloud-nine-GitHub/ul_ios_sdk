@@ -154,7 +154,7 @@
         key = @"s_sdk_adv_sigmob_videoid";
     }
     //未输入参数则使用本地默认的参数
-    NSMutableDictionary *advData = [self getModuleAdvTestDataWithType:_advType withEditParam:_advParam withLocalParamKey:key];
+    NSMutableDictionary *advData = [self getModuleAdvTestDataWithModule:@"ULSigmobAdv" withType:_advType withEditParam:_advParam withLocalParamKey:key];
     [self openAdv:advData];
 }
 

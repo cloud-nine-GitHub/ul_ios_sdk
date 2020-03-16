@@ -138,7 +138,7 @@
         return;
     }
     //未输入参数则使用本地默认的参数
-    NSMutableDictionary *advData = [self getModuleAdvTestDataWithType:_advType withEditParam:_advParam withLocalParamKey:@""];
+    NSMutableDictionary *advData = [self getModuleAdvTestDataWithModule:@"ULUrlAdv" withType:_advType withEditParam:_advParam withLocalParamKey:@""];
     [self openAdv:advData];
 }
 
