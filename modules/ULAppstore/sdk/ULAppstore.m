@@ -20,7 +20,11 @@
 #import "ULAccountType.h"
 
 
-
+/**
+ 
+ 补发功能已屏蔽：订单校验存在不可控网络因素，暂时屏蔽该功能，即暂不支持补发
+ 
+ */
 
 @interface ULAppstore ()<ULILifeCycle,SKPaymentTransactionObserver,SKProductsRequestDelegate>
 
@@ -36,7 +40,7 @@
     NSLog(@"%s",__func__);
     self->_priority = PAY_PRIORITY_APPSTORE;
     [self addListener];
-    [PayResultManager initManager];
+//    [PayResultManager initManager];
     //设置支付服务
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
@@ -63,7 +67,6 @@
 {
     NSLog(@"%s",__func__);
     
-    _payData = data;
     NSDictionary *gamePayData = [ULTools GetNSDictionaryFromDic:data :@"gamePayData" :nil];
     NSString *payId = [ULTools GetStringFromDic:gamePayData :@"payId" :@""];
     NSDictionary *payIdData = [ULTools GetNSDictionaryFromDic:[self getPayInfoObj] :payId :nil];
@@ -81,9 +84,11 @@
             [alert dismissViewControllerAnimated:YES completion:nil];
             alert = nil;
         }];
+        return;
     }
     _isPaying = YES;
-    
+    _payData = data;
+    //当前交易的订单还是会存在缓存
     NSMutableDictionary *saveData = [NSMutableDictionary new];
     [saveData setValue:_payData forKey:@"ul_appstore_payData"];
     [ULUserDefaults writeDataToUserDefault:saveData];
@@ -187,8 +192,17 @@
         switch (tran.transactionState) {
             case SKPaymentTransactionStatePurchased:
                 NSLog(@"%s,交易完成",__func__);
-                //[self payResult:paySuccess :_payData :[price floatValue]];
-                [self completeTransaction:tran];
+                //TODO 暂时屏蔽校验功能。反馈存在多条漏单只补发一条的情况。
+                if(_payData){
+                    [self payResult:paySuccess :_payData :[price floatValue] / 100];//直接返回成功
+                }else{
+                    NSDictionary *payData = [ULUserDefaults readDataFromUserDefault:@"ul_appstore_payData"];
+                    [ULModuleBaseSdk prePayResultCallBackWithCode:1 withMsg:@"补发成功" withPayData:payData];
+                }
+                [[SKPaymentQueue defaultQueue] finishTransaction:tran];
+                _isPaying = NO;
+//                [self completeTransaction:tran];
+                //购买到支付结果查询期间存在时间差，目前由于暂时屏蔽补单，那么也不会处理
                 break;
             case SKPaymentTransactionStatePurchasing:
                 NSLog(@"%s,商品添加进列表",__func__);
@@ -198,20 +212,26 @@
                 break;
             case SKPaymentTransactionStateRestored:
                 NSLog(@"%s,已经购买过商品",__func__);
-                [self payResult:payFailed :_payData :[price floatValue] / 100];
+                if (_payData) {
+                    [self payResult:payFailed :_payData :[price floatValue] / 100];
+                }
                 [[SKPaymentQueue defaultQueue] finishTransaction:tran];
                 _isPaying = NO;
                 
                 break;
             case SKPaymentTransactionStateFailed:
                 NSLog(@"%s,交易失败",__func__);
-                if (!_payData) {
-                    NSDictionary *payData = [ULUserDefaults readDataFromUserDefault:@"ul_appstore_payData"];
-                    [ULModuleBaseSdk prePayResultCallBackWithCode:-1 withMsg:@"补发失败" withPayData:payData];
-                }else{
+//                if (!_payData) {
+//                    NSDictionary *payData = [ULUserDefaults readDataFromUserDefault:@"ul_appstore_payData"];
+//                    [ULModuleBaseSdk prePayResultCallBackWithCode:-1 withMsg:@"补发失败" withPayData:payData];
+//                }else{
+//                    [self payResult:payFailed :_payData :[price floatValue] / 100];
+//                    _isPaying = NO;
+//                }
+                if (_payData) {
                     [self payResult:payFailed :_payData :[price floatValue] / 100];
-                    _isPaying = NO;
                 }
+                _isPaying = NO;
                 [[SKPaymentQueue defaultQueue] finishTransaction:tran];
                 break;
             default:
