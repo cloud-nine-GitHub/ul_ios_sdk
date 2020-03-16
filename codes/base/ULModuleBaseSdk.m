@@ -109,6 +109,9 @@
     if (payState == paySuccess) {
         [self payResultCallBackWithCode:1 withMsg:@"支付成功" withPayData:payData];
         payResult = @"success";
+        //支付结果统计
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],NSStringFromClass([self class]),@"",[NSString stringWithFormat:@"%.2f",price] ,payResult];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
         return;
     }
     NSMutableDictionary *sdkPayData = [ULTools GetNSMutableDictionaryFromDic:payData :@"sdkPayData" :nil];
@@ -139,7 +142,7 @@
     }
     
     //支付结果统计
-    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],NSStringFromClass([self class]),@"",[NSString stringWithFormat:@"%f",price] ,payResult];
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],NSStringFromClass([self class]),@"",[NSString stringWithFormat:@"%.2f",price] ,payResult];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
 
 }
