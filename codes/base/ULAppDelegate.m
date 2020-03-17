@@ -16,6 +16,8 @@
 
 @implementation ULAppDelegate
 
+static BOOL appStartFlag = FALSE;
+
 + (void)load{
     NSLog(@"%s",__func__);
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startSDK:) name:UL_NOTIFICATION_START_SDK object:nil];
@@ -46,13 +48,16 @@
         //1.获取应用网络权限 TODO 用户无论选择哪个选项都会进游戏
         //2.判断当前网络状况，进行无网提示 TODO
         
-        [ULCop initCopInfo];
-        
-        
-        [self startLogoView];
+        //3.TODO 网络状态改变会导致多次回调，同一次启动后续的回调都不能影响启动流程
+        if(!appStartFlag){
+            appStartFlag = TRUE;
+            [ULCop initCopInfo];
             
+            
+            [self startLogoView];
+        }
     }];
-        
+    
     [ZYNetworkAccessibity start:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"]];
     
     
