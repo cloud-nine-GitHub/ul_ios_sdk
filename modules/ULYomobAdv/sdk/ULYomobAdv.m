@@ -21,6 +21,7 @@
 @interface ULYomobAdv ()<TGPreloadADDelegate, TGADDelegate>
 
 @property (nonatomic,strong) NSDictionary *videoJson;
+@property (nonatomic,assign) BOOL isVideoClicked;
 @end
 
 @implementation ULYomobAdv
@@ -108,6 +109,7 @@
 {
     NSLog(@"%s",__func__);
     _videoJson = json;
+    _isVideoClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -212,7 +214,11 @@
 - (void) onAD:(NSString* _Nonnull)scene Click:(NSString* _Nonnull)result
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_videoJson :scene];
+    if (!_isVideoClicked) {
+        _isVideoClicked = YES;
+        [self showClicked:_videoJson :scene];
+    }
+    
 }
 
 - (void) onAD:(NSString* _Nonnull)scene Close:(NSString* _Nonnull)result Award:(BOOL)award

@@ -33,6 +33,7 @@
 
 //TODO
 @property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
+@property (nonatomic, assign)BOOL *advLoadObjByParamDic;
 @end
 
 

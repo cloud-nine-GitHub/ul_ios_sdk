@@ -45,7 +45,7 @@
 @property (nonatomic, strong) NSDictionary *splashJson,*interJson,*videoJson,*fullscreenJson,*bannerJson;
 @property (nonatomic, strong) NSString *splashId,*interId,*videoId,*fullscreenId,*bannerId;
 @property (nonatomic, assign) int bannerRefreshTime;
-@property (nonatomic, assign) BOOL isSplashClicked;
+@property (nonatomic, assign) BOOL isSplashClicked,isInterClicked,isVideoClicked,isFullscreenClicked;
 @end
 
 @implementation ULToutiaoAdv
@@ -245,6 +245,7 @@
 {
     NSLog(@"%s",__func__);
     _interJson = json;
+    _isInterClicked = NO;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
@@ -259,6 +260,7 @@
 {
     NSLog(@"%s",__func__);
     _videoJson = json;
+    _isVideoClicked = NO;
     //视频
     BURewardedVideoModel *videoModel = [[BURewardedVideoModel alloc] init];
     
@@ -281,6 +283,7 @@
     //每次请求数据 需要重新创建一个对应的 BUFullscreenVideoAd管理,不可使用同一条重复请求数据.
     
     _fullscreenJson = json;
+    _isFullscreenClicked = NO;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
@@ -386,8 +389,11 @@
 - (void)splashAdDidClick:(BUSplashAdView *)splashAd
 {
     NSLog(@"%s",__func__);
-    _isSplashClicked = YES;
-    [self showClicked:_splashJson :_splashId];
+    if (!_isSplashClicked) {
+        _isSplashClicked = YES;
+        [self showClicked:_splashJson :_splashId];
+    }
+    
 }
 
 /**
@@ -496,7 +502,11 @@
 
 - (void)nativeExpressSplashViewDidClick:(nonnull BUNativeExpressSplashView *)splashAdView {
     NSLog(@"%s",__func__);
-    [self showClicked:_splashJson :_splashId];
+    if (!_isSplashClicked) {
+        _isSplashClicked = YES;
+        [self showClicked:_splashJson :_splashId];
+    }
+    
 }
 
 
@@ -568,7 +578,11 @@
 
 - (void)nativeExpresInterstitialAdDidClick:(BUNativeExpressInterstitialAd *)interstitialAd {
     NSLog(@"%s",__func__);
-    [self showClicked:_interJson :_interId];
+    if (!_isInterClicked) {
+        _isInterClicked = YES;
+        [self showClicked:_interJson :_interId];
+    }
+    
 }
 
 - (void)nativeExpresInterstitialAdWillClose:(BUNativeExpressInterstitialAd *)interstitialAd {
@@ -659,7 +673,11 @@
 {
     
     NSLog(@"%s",__func__);
-    [self showClicked:_videoJson :_videoId];
+    if (!_isVideoClicked) {
+        _isVideoClicked = YES;
+        [self showClicked:_videoJson :_videoId];
+    }
+    
 }
 
 - (void)nativeExpressRewardedVideoAdDidClickSkip:(BUNativeExpressRewardedVideoAd *)rewardedVideoAd
@@ -773,7 +791,11 @@
 
 - (void)nativeExpressFullscreenVideoAdDidClick:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{
     NSLog(@"%s",__func__);
-    [self showClicked:_fullscreenJson :_fullscreenId];
+    if (!_isFullscreenClicked) {
+        _isFullscreenClicked = YES;
+        [self showClicked:_fullscreenJson :_fullscreenId];
+    }
+    
 }
 
 - (void)nativeExpressFullscreenVideoAdDidClickSkip:(BUNativeExpressFullscreenVideoAd *)fullscreenVideoAd{

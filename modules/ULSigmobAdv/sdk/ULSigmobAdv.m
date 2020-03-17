@@ -24,6 +24,8 @@
 
 //TODO
 @property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
+
+@property (nonatomic, assign)BOOL isSplashClicked,isVideoClicked,isFullscreenClick;
 @end
 
 
@@ -156,6 +158,7 @@
 {
     NSLog(@"%s",__func__);
     _splashJson = json;
+    _isSplashClicked = NO;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
@@ -178,6 +181,7 @@
     NSLog(@"%s",__func__);
     
     _videoJson = json;
+    _isVideoClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -221,6 +225,7 @@
 - (void)showFullscreenAdv:(NSDictionary *)json{
     NSLog(@"%s",__func__);
     _fullscreenJson = json;
+    _isFullscreenClick = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -310,7 +315,10 @@
 - (void)onSplashAdClicked:(WindSplashAd *)splashAd
 {
     NSLog(@"%s", __func__);
-    [self showClicked:_splashJson :splashAd.placementId];
+    if (!_isSplashClicked) {
+        _isSplashClicked = YES;
+        [self showClicked:_splashJson :splashAd.placementId];
+    }
     //sigmob开屏点击后也会回调关闭函数，但并未影响跳转。
 }
 
@@ -409,7 +417,11 @@
 -(void)onVideoAdClicked:(NSString * _Nullable)placementId
 {
     NSLog(@"%s", __func__);
-    [self showClicked:_videoJson :placementId];
+    if (!_isVideoClicked) {
+        _isVideoClicked = YES;
+        [self showClicked:_videoJson :placementId];
+    }
+    
 }
 
 /**
@@ -537,7 +549,11 @@
 - (void)onFullscreenVideoAdClicked:(NSString *)placementId
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_fullscreenJson :placementId];
+    if (!_isFullscreenClick) {
+        _isFullscreenClick = YES;
+        [self showClicked:_fullscreenJson :placementId];
+    }
+    
     
 }
 

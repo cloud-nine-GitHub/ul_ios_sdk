@@ -33,7 +33,7 @@
 @property (nonatomic, strong)GDTUnifiedInterstitialAd *fullscreenAd;
 
 @property (nonatomic, strong)NSString *splashId,*interId,*fullscreenId,*videoId;
-@property (nonatomic, assign)BOOL isVideoPlayComplete;
+@property (nonatomic, assign)BOOL isVideoPlayComplete,isSplashClicked,isInterClicked,isFullscreenClicked,isVideoClicked;
 @end
 
 
@@ -132,6 +132,7 @@
 {
     NSLog(@"%s",__func__);
     _splashJson = json;
+    _isSplashClicked = NO;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
@@ -152,6 +153,7 @@
 {
     NSLog(@"%s",__func__);
     _interJson = json;
+    _isInterClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -177,6 +179,7 @@
     
     _videoJson = json;
     _isVideoPlayComplete = NO;
+    _isVideoClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -197,6 +200,7 @@
 {
     NSLog(@"%s",__func__);
     _fullscreenJson = json;
+    _isFullscreenClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -284,7 +288,11 @@
 - (void)splashAdClicked:(GDTSplashAd *)splashAd
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_splashJson :_splashId];
+    if (!_isSplashClicked) {
+        _isSplashClicked = YES;
+        [self showClicked:_splashJson :_splashId];
+    }
+    
 }
 
 /**
@@ -459,9 +467,17 @@
     NSLog(@"%s",__func__);
     NSString *placementId = unifiedInterstitial.placementId;
     if ([placementId isEqualToString:_interId]) {//插屏回调
-        [self showClicked:_interJson :placementId];
+        if (!_isInterClicked) {
+            _isInterClicked = YES;
+            [self showClicked:_interJson :placementId];
+        }
+        
     }else if([placementId isEqualToString:_fullscreenId]){//全屏视频回调
-        [self showClicked:_fullscreenJson :placementId];
+        if (!_isFullscreenClicked) {
+            _isFullscreenClicked = YES;
+            [self showClicked:_fullscreenJson :placementId];
+        }
+        
     }
 }
 
@@ -611,7 +627,11 @@
 - (void)gdt_rewardVideoAdDidClicked:(GDTRewardVideoAd *)rewardedVideoAd
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_videoJson :_videoId];
+    if (!_isVideoClicked) {
+        _isVideoClicked = YES;
+        [self showClicked:_videoJson :_videoId];
+    }
+    
 }
 
 /**

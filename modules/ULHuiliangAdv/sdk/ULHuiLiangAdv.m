@@ -28,7 +28,7 @@
 
 @property (nonatomic, strong)NSDictionary *interJson,*videoJson,*fullscreenJson;
 @property (nonatomic, strong)NSString *videoLoadFailMsg,*fullscreenLoadFailMsg;
-@property (nonatomic, assign)BOOL isVideoPlayCompleted;
+@property (nonatomic, assign)BOOL isVideoPlayCompleted,isInterClicked,isVideoClicked,isFullscreenClicked;
 @property (nonatomic, strong)MTGInterstitialAdManager *interstitialAdManager;
 //TODO
 @property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
@@ -182,6 +182,7 @@
 - (void)showInterstitialAdv:(NSDictionary *)json{
     NSLog(@"%s",__func__);
     _interJson = json;
+    _isInterClicked = NO;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
@@ -197,6 +198,7 @@
     
     _videoJson = json;
     _isVideoPlayCompleted = NO;
+    _isVideoClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -230,6 +232,7 @@
 - (void)showFullscreenAdv:(NSDictionary *)json{
     NSLog(@"%s",__func__);
     _fullscreenJson = json;
+    _isFullscreenClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -355,7 +358,11 @@
 - (void) onInterstitialAdClick:(MTGInterstitialAdManager *_Nonnull)adManager
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_interJson :adManager.currentUnitId];
+    if (!_isInterClicked) {
+        _isInterClicked = YES;
+        [self showClicked:_interJson :adManager.currentUnitId];
+    }
+    
 }
 
 
@@ -452,7 +459,11 @@
 - (void)onVideoAdClicked:(nullable NSString *)unitId
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_videoJson :unitId];
+    if (!_isVideoClicked) {
+        _isVideoClicked = YES;
+        [self showClicked:_videoJson :unitId];
+    }
+    
 }
 
 /**
@@ -572,7 +583,11 @@
 - (void)onInterstitialVideoAdClick:(MTGInterstitialVideoAdManager *_Nonnull)adManager
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_fullscreenJson :adManager.currentUnitId];
+    if (!_isFullscreenClicked) {
+        _isFullscreenClicked = YES;
+        [self showClicked:_fullscreenJson :adManager.currentUnitId];
+    }
+    
 }
 
 /**
@@ -637,6 +652,8 @@
         errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"下载视频(zip)等资源/渲染web 超时"];
     }else if ([code isEqualToString:@"-1003"]){
         errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"系统回调：无法解析指定host"];
+    }else if ([code isEqualToString:@"-1009"]){
+        errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"The Internet connection appears to be offline."];
     }else if ([code isEqualToString:@"-1201"]){
         errorMsg = [[NSString alloc] initWithFormat:@"%@%@%@%@",@"errorCode = ",code,@";errorMsg = ",@"该unitID不存在/填写错误"];
     }else if ([code isEqualToString:@"-1202"]){
