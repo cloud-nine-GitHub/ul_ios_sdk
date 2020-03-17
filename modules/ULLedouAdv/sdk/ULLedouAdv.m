@@ -33,7 +33,7 @@
 
 //TODO
 @property (nonatomic, strong)NSMutableDictionary *advLoadObjByParamDic;
-@property (nonatomic, assign)BOOL *advLoadObjByParamDic;
+@property (nonatomic, assign)BOOL isSplashClicked,isInterClicked,isVideoClicked;
 @end
 
 
@@ -166,6 +166,7 @@
 {
     NSLog(@"%s",__func__);
     _splashJson = json;
+    _isSplashClicked = NO;
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
@@ -183,6 +184,7 @@
 - (void)showInterstitialAdv:(NSDictionary *)json{
     NSLog(@"%s",__func__);
     _interJson = json;
+    _isInterClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -204,6 +206,7 @@
     NSLog(@"%s",__func__);
     
     _videoJson = json;
+    _isVideoClicked = NO;
     //解析json获取参数类表,获取当前需要请求的广告参数
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:json :@"sdkAdvData" :nil];
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
@@ -329,7 +332,11 @@
 - (void)splashAdDidClicked:(NSString *)blockId
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_splashJson :blockId];
+    if (!_isSplashClicked) {
+        _isSplashClicked = YES;
+        [self showClicked:_splashJson :blockId];
+    }
+    
 }
 
 /**
@@ -458,7 +465,11 @@
 - (void)interstitialAdDidClicked:(NSString *)blockId
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_interJson :blockId];
+    if (!_isInterClicked) {
+        _isInterClicked = YES;
+        [self showClicked:_interJson :blockId];
+    }
+    
 }
 
 
@@ -557,7 +568,11 @@
 - (void)videoAdDidClicked:(NSString *)blockId
 {
     NSLog(@"%s",__func__);
-    [self showClicked:_videoJson :blockId];
+    if (!_isVideoClicked) {
+        _isVideoClicked = YES;
+        [self showClicked:_videoJson :blockId];
+    }
+    
     //测试该函数未回调
 }
 

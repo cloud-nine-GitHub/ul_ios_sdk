@@ -376,10 +376,9 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     NSString *contentType = [NSString stringWithFormat:@"application/x-www-form-urlencoded"];
     [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
     
-    //NSString *content = [request valueForHTTPHeaderField:@"Content-Type"];
+    NSLog(@"%s：上报数据:%@",__func__,jsonArrayStr);
     jsonArrayStr = [ULTools encodeToPercentEscapeString:jsonArrayStr];//包含；字符会被截断，此处进行转码
     NSString *requestData = [[NSString alloc] initWithFormat:@"%@=%@",@"updata",jsonArrayStr];
-    NSLog(@"%s：上报数据:%@",__func__,requestData);
     //设置请求参数
     [request setHTTPBody:[requestData dataUsingEncoding:NSUTF8StringEncoding]];
     //超时时长
