@@ -8,7 +8,7 @@
 
 /**
  在线时长：
-        取“UIApplicationDidBecomeActiveNotification”和“UIApplicationWillResignActiveNotification”两个系统消息之间的时长差值。iOS退到后台无论多长时间再回到前端都视为一次新启动。
+ 取“UIApplicationDidBecomeActiveNotification”和“UIApplicationWillResignActiveNotification”两个系统消息之间的时长差值。iOS退到后台无论多长时间再回到前端都视为一次新启动。
  
  */
 
@@ -110,12 +110,12 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         //TODO 数据存入失败的情况
         [[ULAccountSQLiteManager getInstance] insertData:data];
         
-
+        
         long dataCount = [[ULAccountSQLiteManager getInstance]getCountNumFromSqlite];
         NSLog(@"%s:当前数据库中数据总条数:%ld",__func__,dataCount);
         if (dataCount >= UL_ACCOUNT_DATA_THRESHOLD) {
             dispatch_async(dispatch_get_main_queue(), ^{
-            //超过指定数据量直接上报
+                //超过指定数据量直接上报
                 [[ULNotificationDispatcher getInstance]postNotificationWithName:UL_NOTIFICATION_ACCOUNT_READ_DATA withData:nil];
             });
         }
@@ -179,15 +179,15 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
             
         }
         
-
+        
         //删除某个id之前的全部数据
         ULAccountBean *lastBean = [upDataBeanList lastObject];
         long number = lastBean.upDataId;
         [[ULAccountSQLiteManager getInstance]deleteData:number];
-
+        
         [self requestPost:jsonArray];
     });
-
+    
     
 }
 
@@ -205,18 +205,18 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 - (void)upData:(NSArray *)array
 {
     NSLog(@"%s",__func__);
-//    if (!_isWriteThreadInitFinish) {//写入线程还未初始化完
-//        [self cacheData:array];
-//        return;
-//    }
+    //    if (!_isWriteThreadInitFinish) {//写入线程还未初始化完
+    //        [self cacheData:array];
+    //        return;
+    //    }
     //检查缓存数据
-//    if (_cacheList.count > 0) {
-//        //缓存本次数据
-//        [self cacheData:array];
-//        //上报缓存数据
-//        [self postCacheData:_cacheList];
-//        return;
-//    }
+    //    if (_cacheList.count > 0) {
+    //        //缓存本次数据
+    //        [self cacheData:array];
+    //        //上报缓存数据
+    //        [self postCacheData:_cacheList];
+    //        return;
+    //    }
     
     NSMutableDictionary *json = [self assembleJsonData:array];
     NSLog(@"%s%@",__func__,[ULTools DictionaryToString:json]);
@@ -263,7 +263,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     NSString *deviceId = [[NSString alloc] initWithFormat:@"%@%@%@",[ULGetDeviceId getUniqueDeviceId],@"_",copChannelId];
     [jsonArray addObject:deviceId];//唯一设备吗
     [jsonArray addObject:@""];//签名
-
+    
     switch ([array[0] intValue]) {
         case ULA_GAME_BASE_INFO:
             _gameStartTime = upDataTime;
@@ -361,25 +361,31 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:upArray options:NSJSONWritingPrettyPrinted error:nil];
     NSString *jsonArrayStr = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
     
-    NSLog(@"%s：上报数据:%@",__func__,jsonArrayStr);
+    //NSLog(@"%s：上报数据:%@",__func__,jsonArrayStr);
     //请求地址
     NSURL *url = [NSURL URLWithString:_accountAddr];
     //设置请求地址
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    //NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                       timeoutInterval:5];
     
     //设置请求方式
     request.HTTPMethod = @"POST";
+    //设置请求头格式
+    NSString *contentType = [NSString stringWithFormat:@"application/x-www-form-urlencoded"];
+    [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
     
-    NSDictionary * paramsDic = [[NSDictionary alloc]initWithObjectsAndKeys:
-                                jsonArrayStr,@"updata",nil];
-    
-    NSString *requestData = [self getRequestParams: paramsDic];
+    //NSString *content = [request valueForHTTPHeaderField:@"Content-Type"];
+    jsonArrayStr = [ULTools encodeToPercentEscapeString:jsonArrayStr];//包含；字符会被截断，此处进行转码
+    NSString *requestData = [[NSString alloc] initWithFormat:@"%@=%@",@"updata",jsonArrayStr];
+    NSLog(@"%s：上报数据:%@",__func__,requestData);
     //设置请求参数
-    request.HTTPBody = [requestData dataUsingEncoding:NSUTF8StringEncoding];
-    //关于parameters是NSDictionary拼接后的NSString.关于拼接看后面拼接方法说明
-    
+    [request setHTTPBody:[requestData dataUsingEncoding:NSUTF8StringEncoding]];
     //超时时长
-    request.timeoutInterval = 5;
+    //request.timeoutInterval = 5;
+    
+    
     //设置请求session
     NSURLSession *session = [NSURLSession sharedSession];
     
@@ -408,15 +414,21 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
                 }else{
                     NSLog(@"%s:数据上报成功",__func__);
                 }
-                    
+                
             }
         });
-            
+        
         
     }];
     //开始请求
     [dataTask resume];
 }
+
+
+
+
+
+
 
 //网络请求参数拼接：存在目前已知问题 1.字符串过长会出现被截取的情况 2.字符串中出现空格
 - (NSString *)getRequestParams :(NSDictionary *)parameters
@@ -464,7 +476,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 - (void)megadataAccount :(NSArray *)data
 {
-
+    
     NSLog(@"%s",__func__);
     if([_isCloseAccount isEqualToString:@"1"]){
         NSLog(@"%s:统计功能关闭",__func__);
@@ -513,11 +525,11 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
         for (int i = 0; i < data.count; i++) {
             //TODO 需要验证ios这边传过来的数组字符串是否也是异常
-//            @try {//传过来是字符类型，那么会""test""是这种的形式
-//                strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
-//            } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
-//                [strArray addObject:data[i]];
-//            }
+            //            @try {//传过来是字符类型，那么会""test""是这种的形式
+            //                strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
+            //            } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
+            //                [strArray addObject:data[i]];
+            //            }
             [strArray addObject:data[i]];
         }
         [strArray addObject:[NSString stringWithFormat:@"%ld",complete]];
@@ -527,15 +539,15 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
     for (int i = 0; i < data.count; i++) {
         //TODO 需要验证ios这边传过来的数组字符串是否也是异常
-//        @try {//传过来是字符类型，那么会""test""是这种的形式
-//            strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
-//        } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
-//            [strArray addObject:data[i]];
-//        }
+        //        @try {//传过来是字符类型，那么会""test""是这种的形式
+        //            strArray[i + 1] = [data[i] substringWithRange:NSMakeRange(1,[data[i] length]-1)];
+        //        } @catch (NSException *e) {//传过来的是非字符类型则不做去""处理
+        //            [strArray addObject:data[i]];
+        //        }
         [strArray addObject:data[i]];
     }
     [self upData:strArray];
-
+    
     
     
 }
@@ -568,13 +580,13 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 - (void)applicationDidEnterBackground {
     //开启后台任务,进行数据上报，测试只有3分钟
-//    UIApplication *application = [UIApplication sharedApplication];
-//    NSLog(@"%s:可持续后台运行时间：%f",__func__,application.backgroundTimeRemaining);
-//    __block UIBackgroundTaskIdentifier taskId = [application beginBackgroundTaskWithExpirationHandler:^{
-//        NSLog(@"%s",__func__);
-//        [[UIApplication sharedApplication] endBackgroundTask:taskId];
-//        taskId = UIBackgroundTaskInvalid;
-//    }];
+    //    UIApplication *application = [UIApplication sharedApplication];
+    //    NSLog(@"%s:可持续后台运行时间：%f",__func__,application.backgroundTimeRemaining);
+    //    __block UIBackgroundTaskIdentifier taskId = [application beginBackgroundTaskWithExpirationHandler:^{
+    //        NSLog(@"%s",__func__);
+    //        [[UIApplication sharedApplication] endBackgroundTask:taskId];
+    //        taskId = UIBackgroundTaskInvalid;
+    //    }];
 }
 
 - (void)applicationDidReceiveMemoryWarning {
@@ -618,6 +630,9 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 {
     NSLog(@"%s",__func__);
 }
+
+
+
 
 
 @end

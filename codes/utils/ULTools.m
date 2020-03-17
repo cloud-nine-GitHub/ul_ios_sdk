@@ -1097,6 +1097,37 @@
     childView.center = center;
 }
 
+#pragma mark - 字符串进行urlencoded转码
++ (NSString *)encodeToPercentEscapeString: (NSString *) input
+
+{
+    
+    NSString *outputStr = (NSString *)
+    CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                                                              (CFStringRef)input,
+                                                              NULL,
+                                                              (CFStringRef)@"!*'();:@&=+$,/?%#[]",
+                                                              kCFStringEncodingUTF8));
+    return outputStr;
+    
+}
+
+
+#pragma mark - 字符串进行urlencoded解码
++ (NSString *)decodeFromPercentEscapeString: (NSString *) input
+
+{
+    
+    NSMutableString *outputStr = [NSMutableString stringWithString:input];
+    
+    [outputStr replaceOccurrencesOfString:@"+"
+                               withString:@" "
+                                  options:NSLiteralSearch
+                                    range:NSMakeRange(0, [outputStr length])];
+    return [outputStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+}
+
 @end
 
 

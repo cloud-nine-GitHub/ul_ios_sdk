@@ -66,6 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIWindow *) getAppCurrentWindow;
 + (BOOL) isLandscapeScreen;
 + (void) adjustCenterH:(UIView *)childView :(UIView *)parentView;
++ (NSString *)encodeToPercentEscapeString: (NSString *) input;
++ (NSString *)decodeFromPercentEscapeString: (NSString *) input;
 
 @end
 
