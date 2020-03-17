@@ -197,7 +197,7 @@
                     [self payResult:paySuccess :_payData :[price floatValue] / 100];//直接返回成功
                 }else{
                     NSDictionary *payData = [ULUserDefaults readDataFromUserDefault:@"ul_appstore_payData"];
-                    [ULModuleBaseSdk prePayResultCallBackWithCode:1 withMsg:@"补发成功" withPayData:payData];
+                    [self prePayResultCallBackWithCode:1 withMsg:@"补发成功" withPayData:payData];
                 }
                 [[SKPaymentQueue defaultQueue] finishTransaction:tran];
                 _isPaying = NO;

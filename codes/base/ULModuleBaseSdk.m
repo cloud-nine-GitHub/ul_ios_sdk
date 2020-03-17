@@ -175,6 +175,8 @@
 + (void)prePayResultCallBackWithCode:(int )code withMsg:(NSString *)msg withPayData:(NSDictionary *)payData
 {
     
+    
+    
     NSDictionary *gamePayData = [ULTools GetNSDictionaryFromDic:payData :@"gamePayData" :nil];
     NSString *payId = [gamePayData objectForKey:@"payId"];
     NSString *userData = [gamePayData objectForKey:@"userData"];
@@ -184,6 +186,44 @@
     [data setValue:payId forKey:@"payId"];
     [data setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_PREPAYRESULT :data];
+    
+    NSDictionary *payIdDic = [ULTools GetNSDictionaryFromDic:[self getBasePayInfo] :payId :nil];
+    NSString *priceS = [ULTools GetStringFromDic:payIdDic :@"price" :@""];
+    float price = [priceS floatValue] / 100;
+    NSString *payResult = @"failed";
+    if (code == 1) {
+        payResult = @"success";
+    }
+    //支付结果统计
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],NSStringFromClass([self class]),@"",[NSString stringWithFormat:@"%.2f",price] ,payResult];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+}
+
+- (void)prePayResultCallBackWithCode:(int )code withMsg:(NSString *)msg withPayData:(NSDictionary *)payData
+{
+    
+    
+    
+    NSDictionary *gamePayData = [ULTools GetNSDictionaryFromDic:payData :@"gamePayData" :nil];
+    NSString *payId = [gamePayData objectForKey:@"payId"];
+    NSString *userData = [gamePayData objectForKey:@"userData"];
+    NSMutableDictionary *data = [NSMutableDictionary new];
+    [data setValue:[NSNumber numberWithInt:code] forKey:@"code"];
+    [data setValue:msg forKey:@"msg"];
+    [data setValue:payId forKey:@"payId"];
+    [data setValue:userData forKey:@"userData"];
+    [ULSDKManager JsonRpcCall:REMSG_CMD_PREPAYRESULT :data];
+    
+    NSDictionary *payIdDic = [ULTools GetNSDictionaryFromDic:[[self class] getBasePayInfo] :payId :nil];
+    NSString *priceS = [ULTools GetStringFromDic:payIdDic :@"price" :@""];
+    float price = [priceS floatValue] / 100;
+    NSString *payResult = @"failed";
+    if (code == 1) {
+        payResult = @"success";
+    }
+    //支付结果统计
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_PAY_INFO],NSStringFromClass([self class]),@"",[NSString stringWithFormat:@"%.2f",price] ,payResult];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
 }
 
 // ios 没有退出的嘛
