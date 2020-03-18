@@ -46,8 +46,9 @@
 //获取cop配置的支付优先级
 + (void)getPriorityFromCop
 {
-    PAY_PRIORITY_APPSTORE = [[ULTools GetStringFromDic:[ULCop getCopInfo]:@"s_sdk_pay_priority_appstore" :@"1000"] intValue];
-    PAY_PRIORITY_UNKNOW = [[ULTools GetStringFromDic:[ULCop getCopInfo]:@"s_sdk_pay_priority_unknow" :@"100"] intValue];
+    //在获取cop之前就被调用了，这种肯定失效了
+//    PAY_PRIORITY_APPSTORE = [[ULTools GetStringFromDic:[ULCop getCopInfo]:@"s_sdk_pay_priority_appstore" :@"1000"] intValue];
+//    PAY_PRIORITY_UNKNOW = [[ULTools GetStringFromDic:[ULCop getCopInfo]:@"s_sdk_pay_priority_unknow" :@"100"] intValue];
 }
 
 - (void)setListener
