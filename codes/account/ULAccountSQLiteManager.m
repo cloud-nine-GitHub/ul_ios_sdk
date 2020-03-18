@@ -20,7 +20,6 @@ static NSString *const ULA_SQLITE_TABLE_UP_DATA = @"up_data";
 @interface ULAccountSQLiteManager ()
 
 @property (nonatomic,assign) sqlite3 *db;
-@property (nonatomic,strong) NSMutableArray *list;
 
 @end
 
@@ -42,7 +41,7 @@ static ULAccountSQLiteManager *instance = nil;
 -(id)init
 {
     if (self = [super init]) {
-        _list = [NSMutableArray new];
+        
     }
     return self;
 }
@@ -200,12 +199,12 @@ static ULAccountSQLiteManager *instance = nil;
  **/
 - (NSMutableArray *)getCountUpData
 {
-    [_list removeAllObjects];
+    NSMutableArray *list = [NSMutableArray new];
     NSString *sql = [NSString stringWithFormat:@"select * from %@ order by up_data_id asc limit '%d'",ULA_SQLITE_TABLE_NAME,100];
     sqlite3_stmt *stmt = nil;
     if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &stmt, nil) != SQLITE_OK) {
         NSLog(@"%s,准备查询失败!",__func__);
-        return _list;
+        return list;
     }
     //准备成功,开始查询数据
     while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -218,8 +217,8 @@ static ULAccountSQLiteManager *instance = nil;
             
         ULAccountBean *bean = [[ULAccountBean alloc]initWithId:[upDataId longLongValue] andUpData:upData];
         //按理说每个bean对应的id都是唯一的（自增）
-        if (![_list containsObject:bean]) {
-            [_list addObject:bean];
+        if (![list containsObject:bean]) {
+            [list addObject:bean];
         }
         
     }
@@ -227,7 +226,7 @@ static ULAccountSQLiteManager *instance = nil;
     //释放句柄
     sqlite3_finalize(stmt);
     
-    return _list;
+    return list;
     
 }
 
