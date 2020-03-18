@@ -164,16 +164,15 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         //获取数据
         //把数组对象转成json字符串存起来
         NSMutableArray *upDataBeanList = [[ULAccountSQLiteManager getInstance] getCountUpData];
-        NSArray *upDataBeanArray = [NSArray arrayWithArray: upDataBeanList];
 
-        if(upDataBeanArray.count == 0){
+        if(upDataBeanList.count == 0){
             NSLog(@"%s:数据库中暂无可上报数据",__func__);
             return;
         }
         
         NSMutableArray *jsonArray = [NSMutableArray new];
         
-        for (ULAccountBean *bean in upDataBeanArray) {
+        for (ULAccountBean *bean in upDataBeanList) {
             NSString *upDataStr = bean.upData;
             NSLog(@"%s:bean.updata = %@",__func__,upDataStr);
             [jsonArray addObject:upDataStr];
@@ -182,7 +181,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         
         
         //删除某个id之前的全部数据
-        ULAccountBean *lastBean = [upDataBeanArray lastObject];
+        ULAccountBean *lastBean = [upDataBeanList lastObject];
         long number = lastBean.upDataId;
         [[ULAccountSQLiteManager getInstance]deleteData:number];
         
