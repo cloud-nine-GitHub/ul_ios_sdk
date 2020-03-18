@@ -200,8 +200,9 @@
 
 
 
-#pragma mark - 获取当前时间
-+ (NSString*)getCurrentTimes{
+#pragma mark - 获取当前时间按固定格式：这个工具函数应该将时间格式提出来
++ (NSString*)getCurrentTimes
+{
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     
@@ -221,6 +222,17 @@
     
     return currentTimeString;
     
+}
+
+#pragma mark - 获取当前时间以毫秒为单位如果需要秒则自行运算
++ (NSString *)getNowTimeTimestamp
+{
+
+    NSDate *datenow = [NSDate date];//现在时间,你可以输出来看下是什么格式
+
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)([datenow timeIntervalSince1970]*1000)];
+
+    return timeSp;
 }
 
 

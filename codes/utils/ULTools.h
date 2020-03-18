@@ -68,6 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void) adjustCenterH:(UIView *)childView :(UIView *)parentView;
 + (NSString *)encodeToPercentEscapeString: (NSString *) input;
 + (NSString *)decodeFromPercentEscapeString: (NSString *) input;
++ (NSString *)getNowTimeTimestamp;
 
 @end
 

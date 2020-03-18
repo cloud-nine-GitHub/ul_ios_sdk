@@ -410,7 +410,11 @@ static double currentVolume = 0.00;
     int payPolicy = [ULModuleBaseSdk getBasePayInfoPolicyWithPayId:payId];
     //添加一层，方便sdk内部传输数据
     NSMutableDictionary *sdkData = [NSMutableDictionary new];
+    long num = [[ULTools getNowTimeTimestamp] longLongValue];
+    [sdkData setValue:[NSNumber numberWithLong: num] forKey:@"requestSerialNum"];
+    
     NSMutableDictionary *payData = [NSMutableDictionary new];
+    
     [payData setValue:sdkData forKey:@"sdkPayData"];
     [payData setValue:data forKey:@"gamePayData"];
     switch (payPolicy) {
