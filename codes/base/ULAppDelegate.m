@@ -27,7 +27,8 @@ static BOOL appStartFlag = FALSE;
 //初始化sdk之前需要做一些处理
 + (void)startSDK:(NSNotification*) notification{
     NSLog(@"%s",__func__);
-    
+    // 将下面C函数的函数地址当做参数
+    NSSetUncaughtExceptionHandler(&UncaughtExceptionHandler);
     //TODO 为确保applicationDidBecomeActive生命周期能被正常监听，初始化函数必须及早调用，用于每个模块创建对象时注册消息监听，不能放在网络回调中处理，在回调时上述生命周期已经被调用
     [ULConfig initConfigInfo];
     [ULSDKManager init];
@@ -56,6 +57,7 @@ static BOOL appStartFlag = FALSE;
             
             [self startLogoView];
         }
+        //TODO 这儿存在回调问题，如果没有回调那么可能会影响进入游戏
     }];
     
     [ZYNetworkAccessibity start:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"]];
@@ -63,6 +65,14 @@ static BOOL appStartFlag = FALSE;
     
 }
 
+// 设置一个C函数，用来接收崩溃信息
+  void UncaughtExceptionHandler(NSException *exception){
+      // 可以通过exception对象获取一些崩溃信息，我们就是通过这些崩溃信息来进行解析的，例如下面的symbols数组就是我们的崩溃堆栈。
+      NSArray *symbols = [exception callStackSymbols];
+      NSString *reason = [exception reason];
+      NSString *name = [exception name];
+      NSLog(@"%s,symbols:%@/nreason:%@/nname:%@",__func__,symbols,reason,name);
+  }
 
 
 + (void)startLogoView{
@@ -77,7 +87,7 @@ static BOOL appStartFlag = FALSE;
     [window makeKeyAndVisible];
     ULLogoViewController *view = [[ULLogoViewController alloc] init];
     [window setRootViewController:view];
-    
+
 }
 
 
