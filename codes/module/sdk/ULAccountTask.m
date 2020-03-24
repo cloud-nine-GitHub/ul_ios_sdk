@@ -30,7 +30,7 @@
 static NSString *const UL_ACCOUNT_TASK_WRITE_THREAD = @"ul_account_task_write_thread";
 static NSString *const UL_ACCOUNT_TASK_THREAD = @"ul_account_task_thread";
 static int const UL_ACCOUNT_DATA_THRESHOLD = 100;
-static int const UL_ACCOUNT_TIMER_LOOP_TIME = 20;
+static int const UL_ACCOUNT_TIMER_LOOP_TIME = 10;
 static NSString *const UL_ACCOUNT_TIMER_NAME = @"ul_account_timer";
 static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/batchuploaddata";
 
@@ -47,6 +47,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 @property(nonatomic,strong)NSMutableArray *cacheList;
 @property(nonatomic,assign)BOOL isSaveDataToSqliteFirstCall;
 @property(nonatomic,strong)dispatch_queue_t writeQueue,readQueue;
+@property(nonatomic,assign)int updataTime;
 @end
 
 @implementation ULAccountTask
@@ -65,6 +66,13 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     if ([_accountAddr isEqualToString:@"0"]) {
         _accountAddr = UL_ACCOUNT_AAR_DEFAULT_URL;
     }
+    
+    
+    _updataTime = [ULTools GetIntFromDic:[ULConfig getConfigInfo] :@"i_sdk_common_account_updata_time" :0];
+    if (_updataTime == 0) {
+        _updataTime = UL_ACCOUNT_TIMER_LOOP_TIME;
+    }
+    
     [self addListener];
     
     
@@ -132,7 +140,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     if (_accountTimer) {
         return;
     }
-    _accountTimer = [[ULTimer getInstance] createTimerWithName:UL_ACCOUNT_TIMER_NAME withTarget:self withTime:UL_ACCOUNT_TIMER_LOOP_TIME withSel:@selector(sendMsgToReadThread:) withUserInfo:nil withRepeat:YES];
+    _accountTimer = [[ULTimer getInstance] createTimerWithName:UL_ACCOUNT_TIMER_NAME withTarget:self withTime:_updataTime withSel:@selector(sendMsgToReadThread:) withUserInfo:nil withRepeat:YES];
     //立即执行
     [_accountTimer fire];
     //线程中创建的timer需要添加到runloop中
