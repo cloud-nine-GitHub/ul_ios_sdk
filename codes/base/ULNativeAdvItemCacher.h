@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "ULINativeAdvItemProvider.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ULNativeAdvItemCacher : NSObject
 
 
-//-(id)initWithProvider:()
+-(id)initWithProvider:(id <ULINativeAdvItemProvider>)provider;
 @end
 
 NS_ASSUME_NONNULL_END

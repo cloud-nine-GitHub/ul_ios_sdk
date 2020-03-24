@@ -14,6 +14,6 @@
 
 @protocol ULINativeAdvItem <NSObject>
 
-- (void)load:(NSMutableDictionary *)gameJson;
+- (void)load:(NSDictionary *)gameJson;
 
 @end

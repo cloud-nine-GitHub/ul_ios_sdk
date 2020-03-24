@@ -16,6 +16,6 @@
 
 @protocol ULINativeAdvItemProvider <NSObject>
 
-- (ULINativeAdvItem *)getItem:(NSString *)advParam :(ULINativeAdvItemCallback *)callback;
+- (id <ULINativeAdvItem>)getItem:(NSString *)advParam :(id <ULINativeAdvItemCallback>)callback;
 
 @end
