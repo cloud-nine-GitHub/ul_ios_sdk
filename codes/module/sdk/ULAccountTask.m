@@ -587,6 +587,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 }
 
 - (void)applicationDidEnterBackground {
+    NSLog(@"%s",__func__);
     //开启后台任务,进行数据上报，测试只有3分钟
     //    UIApplication *application = [UIApplication sharedApplication];
     //    NSLog(@"%s:可持续后台运行时间：%f",__func__,application.backgroundTimeRemaining);

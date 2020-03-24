@@ -96,8 +96,10 @@ static NSMutableDictionary *typeWithClassArrayDic = nil;//装载当前消息的�
     int count = (int )[array count];
     for (int i=0; i<count; i++) {
         ULNotificationListener *listener = array[i];
-        id mClassObj = listener.callClassObj;//同一个对象只能注册一次,只能创建一个对象
-        if (classObj == mClassObj) {
+        id mClassObj = listener.callClassObj;
+        int pri = listener.priority;
+        NSString *name = listener.notificationName;
+        if (classObj == mClassObj && priority == pri && [notificationName isEqualToString:name]) {//对于完全一模一样的消息没必要多次注册
             //该消息已经注册，避免重复注册
             return;
         }
@@ -117,7 +119,8 @@ static NSMutableDictionary *typeWithClassArrayDic = nil;//装载当前消息的�
     
     //对象方法检测
     if ([classObj respondsToSelector:sel]) {
-        [[NSNotificationCenter defaultCenter] addObserver:classObj selector:sel name:notificationName object:classObj];
+        //通知命名：名称+优先级 确保唯一
+        [[NSNotificationCenter defaultCenter] addObserver:classObj selector:sel name:[NSString stringWithFormat:@"%@%d",notificationName,priority] object:classObj];
     }else{
         NSLog(@"%s%@%@",__func__,[classObj class],@" no such method,can't add observer");
     }
@@ -174,7 +177,7 @@ static NSMutableDictionary *typeWithClassArrayDic = nil;//装载当前消息的�
         
         if (mClassObj != nil) {
             //该字典创建方式无法使用nil作为参数（会导致crash）
-            [[NSNotificationCenter defaultCenter] postNotificationName:notification.name object:mClassObj userInfo:@{
+            [[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithFormat:@"%@%d",notification.name,listener.priority] object:mClassObj userInfo:@{
                 @"data":data,
                 @"extra":extra,
                 @"notification":notification
@@ -227,7 +230,7 @@ static NSMutableDictionary *typeWithClassArrayDic = nil;//装载当前消息的�
     if (array.count == 0) {
         [typeWithClassAndPriorityDic removeObjectForKey:notificationName];
     }
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:notificationName object:listener.callClassObj];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@%d",notificationName,listener.priority] object:listener.callClassObj];
 }
 
 //移除当前类型中所有消息
@@ -240,7 +243,7 @@ static NSMutableDictionary *typeWithClassArrayDic = nil;//装载当前消息的�
     for (id item in array) {
         ULNotificationListener *listener = item;
         [array removeObject:listener];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:notificationName object:listener.callClassObj];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithFormat:@"%@%d",notificationName,listener.priority] object:listener.callClassObj];
     }
     if (array.count == 0) {
         [typeWithClassAndPriorityDic removeObjectForKey:notificationName];
