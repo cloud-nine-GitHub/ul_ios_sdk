@@ -204,7 +204,7 @@ static NSMutableDictionary *typeWithClassArrayDic = nil;//装载当前消息的�
     for (id item in dispatchedArray) {
         ULNotificationListener *listener = item;
         [array removeObject:listener];
-        [[NSNotificationCenter defaultCenter] removeObserver:listener.callClassObj name:notification.name object:listener.callClassObj];
+        [[NSNotificationCenter defaultCenter] removeObserver:listener.callClassObj name:[NSString stringWithFormat:@"%@%d",notification.name,listener.priority] object:listener.callClassObj];
     }
     
     if (array.count ==0) {
