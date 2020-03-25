@@ -30,7 +30,7 @@
 static NSString *const UL_ACCOUNT_TASK_WRITE_THREAD = @"ul_account_task_write_thread";
 static NSString *const UL_ACCOUNT_TASK_THREAD = @"ul_account_task_thread";
 static int const UL_ACCOUNT_DATA_THRESHOLD = 100;
-static int const UL_ACCOUNT_TIMER_LOOP_TIME = 10;
+static int const UL_ACCOUNT_TIMER_LOOP_TIME = 5;
 static NSString *const UL_ACCOUNT_TIMER_NAME = @"ul_account_timer";
 static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/batchuploaddata";
 
