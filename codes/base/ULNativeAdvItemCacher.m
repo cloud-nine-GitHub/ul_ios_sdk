@@ -12,17 +12,14 @@
 #import "ULTools.h"
 #import "ULQueue.h"
 
-@protocol CacheCallback <NSObject>
 
-- (void) onGetAdItem:(NSDictionary *)gameJson :(id)response;
-- (void) onGetAdItemFailed:(NSDictionary *)gameJson :(id)response :(id)error;
-
-@end
 
 
 static const int UL_NATIVE_RESPONSE_CACHE_DEFAULT_TIME = 15 * 1000;
 static const int UL_NATIVE_RESPONSE_CACHE_MIN_TIME = 0;
 static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
+
+
 
 @interface ULNativeAdvItemCacher ()<ULINativeAdvItemCallback>
 
@@ -44,6 +41,7 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 
 @property (nonatomic,strong) NSMutableDictionary *nativeCallBackJsonMap;
 @property (nonatomic,strong) NSMutableDictionary *nativeItemParamsMap;
+
 @end
 
 @implementation ULNativeAdvItemCacher
@@ -135,11 +133,11 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
     return queue;
 }
 
-- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson :(id <CacheCallback>) callback
+- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson :(CacheCallback) callback
 {
     [_randomParamAdvTagMap setValue:paramString forKey:advId];
     //TODO 字典不能将对象作为key
-    [_nativeCallBackJsonMap setValue:gameJson forKey:callback];
+    [_nativeCallBackJsonMap setValue:gameJson forKey:@""];
     
     ULQueue *queue = [self getCallbackQueue:paramString];
     [queue enQueue:callback];
@@ -188,13 +186,13 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 {
     ULQueue *queue = [self getCallbackQueue:advParam];
     while (true) {
-        id<CacheCallback> callback = [queue deQueue];
+        CacheCallback callback = [queue deQueue];
         if (!callback) {
             break;
         }
         NSDictionary *gameJson = [_nativeCallBackJsonMap objectForKey:callback];
         [_nativeCallBackJsonMap removeObjectForKey:callback];
-        [callback onGetAdItem:gameJson :response];
+        callback(gameJson,response,nil);
     }
 }
 
@@ -202,13 +200,13 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 {
     ULQueue *queue = [self getCallbackQueue:advParam];
     while (true) {
-        id<CacheCallback> callback = [queue deQueue];
+        CacheCallback callback = [queue deQueue];
         if (!callback) {
             break;
         }
         NSDictionary *gameJson = [_nativeCallBackJsonMap objectForKey:callback];
         [_nativeCallBackJsonMap removeObjectForKey:callback];
-        [callback onGetAdItemFailed:gameJson :nil :error];
+        callback(gameJson,nil,error);
     }
 }
 

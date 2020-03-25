@@ -10,10 +10,17 @@
 #import "ULINativeAdvItemProvider.h"
 NS_ASSUME_NONNULL_BEGIN
 
+static NSString *const NATIVE_DEFAULT_TITLE = @"广告";
+static NSString *const NATIVE_DEFAULT_DESC = @"哇！这个实在太棒啦！";
+
+typedef void (^CacheCallback)(NSDictionary *gameJson,id __nullable reponse,id __nullable error);
+
 @interface ULNativeAdvItemCacher : NSObject
 
 
 -(id)initWithProvider:(id <ULINativeAdvItemProvider>)provider;
+- (id)pollUsingItem :(NSString *)advId;
+- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson :(CacheCallback) callback;
 @end
 
 NS_ASSUME_NONNULL_END
