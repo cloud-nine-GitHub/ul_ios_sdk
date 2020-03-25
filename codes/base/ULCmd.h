@@ -18,6 +18,7 @@ static NSString *const MSG_CMD_OPENPAY = @"/c/openPay";//打开支付页
 static NSString *const MSG_CMD_OPENADV = @"/c/openAdv";//请求广告
 static NSString *const MSG_CMD_EXITGAME = @"/c/exitGame";// 退出游戏
 static NSString *const MSG_CMD_CLICKNATIVEADV = @"/c/clickNativeAdv";//原生广告点击
+static NSString *const MSG_CMD_CLOSENATIVEADV = @"/c/closeNativeAdv";//原生广告关闭
 static NSString *const MSG_CMD_CLOSEADV = @"/c/closeAdv";//关闭广告
 static NSString *const MSG_CMD_OPENSHARE = @"/c/openShare";//打开分享
 static NSString *const MSG_CMD_OPENWEBVIEW = @"/c/ulWebView";//打开webView

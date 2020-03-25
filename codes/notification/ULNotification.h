@@ -83,7 +83,10 @@ static NSString *const UL_NOTIFICATION_MC_SHOW_TUIA_URL_ADV = @"ulNotificationMc
 static NSString *const UL_NOTIFICATION_MC_SHOW_TUIA_ADV_CALLBACK = @"ulNotificationMcShowTuiaAdvCallback";
 static NSString *const UL_NOTIFICATION_MC_SHOW_YOMOB_VIDEO_ADV = @"ulNotificationMcShowYomobVideoAdv";
 static NSString *const UL_NOTIFICATION_MC_SHOW_YOMOB_ADV_CALLBACK = @"ulNotificationMcShowYomobAdvCallback";
-
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_INTER_ADV = @"ulNotificationMcShowLedouNativeInterAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_BANNER_ADV = @"ulNotificationMcShowLedouNativeBannerAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_EMBEDDED_ADV = @"ulNotificationMcShowLedouEmbeddedAdv";
+static NSString *const UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_ADV_CALLBACK = @"ulNotificationMcShowLedouNativeAdvCallback";
 
 
 

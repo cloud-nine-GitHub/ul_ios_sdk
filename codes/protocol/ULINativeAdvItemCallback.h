@@ -14,7 +14,7 @@
 
 @protocol ULINativeAdvItemCallback <NSObject>
 
-- (void)onGetItemSuccessed:(NSMutableDictionary *)gameJson :(id )response :(NSString *)advParam;
-- (void)onGetItemFailed:(NSMutableDictionary *)gameJson :(id )response :(NSString *)advParam :(id )error;
+- (void)onGetItemSuccessed:(NSDictionary *)gameJson :(id )response :(NSString *)advParam;
+- (void)onGetItemFailed:(NSDictionary *)gameJson :(id )response :(NSString *)advParam :(id )error;
 
 @end
