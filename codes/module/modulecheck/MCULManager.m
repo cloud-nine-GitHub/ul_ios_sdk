@@ -184,7 +184,7 @@ static NSMutableArray *moduleObjList = nil;
             Class nativeClass = NSClassFromString(mcNativeModule);
             if (nativeClass) {
                 //测试模块对象创建
-                MCULBase *nativeClassObj = [[class alloc] initWithY:height];
+                MCULBase *nativeClassObj = [[nativeClass alloc] initWithY:height];
                 [mcModuleObjList addObject:nativeClassObj];
                 
                 height = height + [nativeClassObj getViewHeight];
