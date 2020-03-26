@@ -135,6 +135,8 @@
     [item onDispose];
     
     [_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
+    
+    [[NativePolymerization sharedInstance] unAttachAd:response toView:item.containerView];
 }
 
 

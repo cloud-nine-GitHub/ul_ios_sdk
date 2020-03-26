@@ -163,10 +163,10 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
     NSLog(@"%s",__func__);
     id response = [_nativeResponseUsingMap objectForKey:paramString];
     id timeoutTick = [_nativeResponseUsingTimeoutMap objectForKey:paramString];
-    if (response && (timeoutTick && [timeoutTick longValue] < [[ULTools getNowTimeTimestamp] longLongValue])) {
+    if (response && (timeoutTick && [(NSString *)timeoutTick longLongValue] < [[ULTools getNowTimeTimestamp] longLongValue])) {
         [(ULNativeAdvResponseDataItem *)response onDispose];
     }
-    if(!response || (timeoutTick && [timeoutTick longValue] < [[ULTools getNowTimeTimestamp] longLongValue])){
+    if(!response || (timeoutTick && [(NSString *)timeoutTick longLongValue] < [[ULTools getNowTimeTimestamp] longLongValue])){
         response = [[self getNativeResponseCacheQueue:paramString] deQueue];
         
         if (!response) {
