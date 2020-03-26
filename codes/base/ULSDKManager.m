@@ -183,7 +183,8 @@ static double currentVolume = 0.00;
     
     //NSLog(@"%s%@",__func__,moduleTypeParamsDic);
     
-    //step3
+    //step3 不能遗漏原生广告模块的创建
+    [self initModuleClassWithClassList:initAdvModuleArray withSuperClassName:[ULModuleBaseAdv class]];
     //step4
     NSMutableDictionary *advBeansWithTagMutDic = [NSMutableDictionary new];
     NSArray *tagKeys = [advTagsObject allKeys];
@@ -221,8 +222,8 @@ static double currentVolume = 0.00;
     //step5 调用广告初始化函数
     for (NSString *module in initAdvModuleArray) {
         ULModuleBaseAdv *advObj = [moduleObjDic objectForKey:module];
-        if (!advObj) {
-            NSLog(@"%s%@",__func__,@"未创建对象的模块不调用广告初始化函数");
+        if (!advObj) {//cop配置了，但是打包未包含的情况
+            NSLog(@"%s%@%@%@",__func__,@"包内未包含[",module,@"]模块，不调用广告初始化函数");
             continue;
         }
         //设置对应广告所在模块的消息监听
@@ -245,6 +246,7 @@ static double currentVolume = 0.00;
 
 + (void)initModuleClass
 {
+    //此处只能初始化出包时加入了的模块
     [self initModuleClassWithClassList:[ULConfig getModuleList] withSuperClassName:nil];
 }
 
@@ -262,10 +264,14 @@ static double currentVolume = 0.00;
         
         if ([moduleClassDic objectForKey:aModuleNameList]) {
             //该模块已经初始化
+            NSLog(@"%s:%@%@%@",__func__,@"the class [",aModuleNameList,@"] has already init");
             continue;
         }
         
-        if (classFilter != nil && ![aModuleNameList isKindOfClass:classFilter]) {
+
+        if (classFilter != nil && ![class isSubclassOfClass:classFilter]) {
+            //该模块不是指定类型
+            NSLog(@"%s:%@%@%@",__func__,@"the class [",aModuleNameList,@"] not target class");
             continue;
         }
         [moduleClassDic setValue:class forKey:aModuleNameList];
