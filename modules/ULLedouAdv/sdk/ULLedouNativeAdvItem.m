@@ -57,9 +57,9 @@
         _advParam = advParam;
         _myNativeAdvCallback = callback;
         
-        // TODO 这里分开初始化，和总体一起初始化是否有什么问题
-        //NSString *appKey = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_ledou_appkey" :@""];
-        //[[NativePolymerization sharedInstance] initSDK:appKey blockids:@[advParam]];
+        //不能重复初始化
+//        NSString *appKey = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_adv_ledou_appkey" :@""];
+//        [[NativePolymerization sharedInstance] initSDK:appKey blockids:@[advParam]];
         
     }
     return self;
@@ -93,7 +93,7 @@
         detailsInfo.isGame = YES;
         
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 1, 1)];//先给个1像素
-        view .backgroundColor = UIColor.clearColor;//设置透明
+        view.backgroundColor = UIColor.clearColor;//设置透明
         
         [[ULTools getCurrentViewController].view addSubview:view];
         

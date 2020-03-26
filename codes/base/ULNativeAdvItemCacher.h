@@ -17,10 +17,11 @@ typedef void (^CacheCallback)(NSDictionary *gameJson,id __nullable reponse,id __
 
 @interface ULNativeAdvItemCacher : NSObject
 
+@property(nonatomic,copy) CacheCallback cacheCallback;
 
 -(id)initWithProvider:(id <ULINativeAdvItemProvider>)provider;
 - (id)pollUsingItem :(NSString *)advId;
-- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson :(CacheCallback) callback;
+- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson;
 @end
 
 NS_ASSUME_NONNULL_END

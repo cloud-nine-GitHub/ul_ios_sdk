@@ -11,6 +11,7 @@
 #import "ULConfig.h"
 #import "ULTools.h"
 #import "ULQueue.h"
+#import "ULNativeAdvResponseDataItem.h"
 
 
 
@@ -42,6 +43,8 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 @property (nonatomic,strong) NSMutableDictionary *nativeCallBackJsonMap;
 @property (nonatomic,strong) NSMutableDictionary *nativeItemParamsMap;
 
+@property (nonatomic,assign) long callbackLogo;
+@property (nonatomic,strong) NSMutableDictionary *callbackLogoMap;
 @end
 
 @implementation ULNativeAdvItemCacher
@@ -68,7 +71,7 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
                 
         }
         _responseCacheTimeout = timeoutInt;
-        NSLog(@"%s%@",__func__,[[NSString alloc]initWithFormat:@"%@%d%@", @"原生缓存时间:",_responseCacheTimeout,@"s"]);
+        NSLog(@"%s%@",__func__,[[NSString alloc]initWithFormat:@"%@%d%@", @"原生缓存时间:",_responseCacheTimeout,@"ms"]);
         [self init:provider];
     }
     return self;
@@ -86,11 +89,13 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
     _randomParamAdvTagMap = [NSMutableDictionary new];
     _nativeCallBackJsonMap = [NSMutableDictionary new];
     _nativeItemParamsMap = [NSMutableDictionary new];
+    _callbackLogoMap = [NSMutableDictionary new];
     _advCallback = self;
 }
 
 - (void)onGetItemSuccessed:(NSMutableDictionary *)gameJson :(id )response :(NSString *)advParam
 {
+    NSLog(@"%s",__func__);
     //当前返回的response放入队列并yy投入使用
     ULQueue *cacheQueue = [self getNativeResponseCacheQueue:advParam];
     [cacheQueue enQueue:response];
@@ -105,6 +110,7 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 
 - (void)onGetItemFailed:(NSMutableDictionary *)gameJson :(id )response :(NSString *)advParam :(id )error
 {
+    NSLog(@"%s",__func__);
     id requestingFlag = [_requestingMap objectForKey:advParam];
     if (requestingFlag && [requestingFlag boolValue]) {
         [_requestingMap removeObjectForKey:advParam];
@@ -115,6 +121,7 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 
 - (ULQueue *)getNativeResponseCacheQueue: (NSString *)advParam
 {
+    NSLog(@"%s",__func__);
     ULQueue *queue = [_nativeResponseCacheQueueMap objectForKey:advParam];
     if (!queue) {
         queue =  [[ULQueue alloc]init];
@@ -125,6 +132,7 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 
 - (ULQueue *)getCallbackQueue :(NSString *)advParam
 {
+    NSLog(@"%s",__func__);
     ULQueue *queue = [_nativeAdvCallbackQueueMap objectForKey:advParam];
     if (!queue) {
         queue =  [[ULQueue alloc]init];
@@ -133,26 +141,32 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
     return queue;
 }
 
-- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson :(CacheCallback) callback
+- (void)getAdvItem :(NSString *)advId :(NSString *)paramString :(NSDictionary *)gameJson
 {
+    NSLog(@"%s",__func__);
     [_randomParamAdvTagMap setValue:paramString forKey:advId];
-    //TODO 字典不能将对象作为key
-    [_nativeCallBackJsonMap setValue:gameJson forKey:@""];
+    //TODO 由于callback始终是同一个地址那么每次回调都提供一个唯一标识  这里可能不能一一对应
+    _callbackLogo++;
+    NSString *callbackLogoStr = [NSString stringWithFormat:@"%ld",_callbackLogo];
+    NSLog(@"%s:%@",__func__,callbackLogoStr);
+    [_nativeCallBackJsonMap setValue:gameJson forKey:callbackLogoStr];
+    
     
     ULQueue *queue = [self getCallbackQueue:paramString];
-    [queue enQueue:callback];
+    [queue enQueue:callbackLogoStr];
     
     [self tryGetItem:paramString :gameJson];
 }
 
 - (void)tryGetItem:(NSString *)paramString :(NSDictionary *)gameJson
 {
+    NSLog(@"%s",__func__);
     id response = [_nativeResponseUsingMap objectForKey:paramString];
     id timeoutTick = [_nativeResponseUsingTimeoutMap objectForKey:paramString];
     if (response && (timeoutTick && [timeoutTick longValue] < [[ULTools getNowTimeTimestamp] longLongValue])) {
-        //
+        [(ULNativeAdvResponseDataItem *)response onDispose];
     }
-    if(!response || (!timeoutTick && [timeoutTick longValue] < [[ULTools getNowTimeTimestamp] longLongValue])){
+    if(!response || (timeoutTick && [timeoutTick longValue] < [[ULTools getNowTimeTimestamp] longLongValue])){
         response = [[self getNativeResponseCacheQueue:paramString] deQueue];
         
         if (!response) {
@@ -173,7 +187,10 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
             return;
         }else{
             [_nativeResponseUsingMap setValue:response forKey:paramString];
-            [_nativeResponseUsingTimeoutMap setValue:[NSString stringWithFormat:@"%lld",[[ULTools getNowTimeTimestamp] longLongValue] + _responseCacheTimeout] forKey:paramString];
+            
+            NSString *currentTime = [ULTools getNowTimeTimestamp];
+            long currentTimeLong = [currentTime longLongValue];
+            [_nativeResponseUsingTimeoutMap setValue:[NSString stringWithFormat:@"%ld",currentTimeLong + _responseCacheTimeout] forKey:paramString];
             
             [_nativeItemParamsMap setValue:response forKey:paramString];
         }
@@ -184,34 +201,38 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 
 - (void)callSuccess:(NSString *)advParam :(id)response
 {
+    NSLog(@"%s",__func__);
     ULQueue *queue = [self getCallbackQueue:advParam];
     while (true) {
-        CacheCallback callback = [queue deQueue];
-        if (!callback) {
+        NSString *callbackLogo = [queue deQueue];
+        if (!callbackLogo) {
             break;
         }
-        NSDictionary *gameJson = [_nativeCallBackJsonMap objectForKey:callback];
-        [_nativeCallBackJsonMap removeObjectForKey:callback];
-        callback(gameJson,response,nil);
+        NSDictionary *gameJson = [_nativeCallBackJsonMap objectForKey:callbackLogo];
+        [_nativeCallBackJsonMap removeObjectForKey:callbackLogo];
+        _cacheCallback(gameJson,response,nil);
     }
 }
 
 - (void)callFailed:(NSString *)advParam :(id)error
 {
+    NSLog(@"%s",__func__);
     ULQueue *queue = [self getCallbackQueue:advParam];
     while (true) {
-        CacheCallback callback = [queue deQueue];
-        if (!callback) {
+        NSString *callbackLogo = [queue deQueue];
+        if (!callbackLogo) {
             break;
         }
-        NSDictionary *gameJson = [_nativeCallBackJsonMap objectForKey:callback];
-        [_nativeCallBackJsonMap removeObjectForKey:callback];
-        callback(gameJson,nil,error);
+
+        NSDictionary *gameJson = [_nativeCallBackJsonMap objectForKey:callbackLogo];
+        [_nativeCallBackJsonMap removeObjectForKey:callbackLogo];
+        _cacheCallback(gameJson,nil,error);
     }
 }
 
 - (id)pollUsingItem :(NSString *)advId
 {
+    NSLog(@"%s",__func__);
     NSString *paramString = [_randomParamAdvTagMap objectForKey:advId];
     if (!paramString) {
         return nil;

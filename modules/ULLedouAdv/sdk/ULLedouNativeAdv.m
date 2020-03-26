@@ -46,6 +46,7 @@
 {
     NSLog(@"%s",__func__);
     
+    
     [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_BANNER_ADV withSelector:@selector(onShowBannerAdv:) withPriority:PRIORITY_NONE];
     
     [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_INTER_ADV withSelector:@selector(onShowInterAdv:) withPriority:PRIORITY_NONE];
@@ -208,10 +209,10 @@
     }
     
     
-    //设置一些可选的属性，如logo标志位置（该方法要在初始化方法之前调用）
-    NativeAdExtraOptionInfo *optionInfo = [[NativeAdExtraOptionInfo alloc] init];
-    optionInfo.logoLocation = MGNativeAdLogoLocation_BottomRight;
-    [[NativePolymerization sharedInstance] setOptionInfo:optionInfo];
+//    //设置一些可选的属性，如logo标志位置（该方法要在初始化方法之前调用）
+//    NativeAdExtraOptionInfo *optionInfo = [[NativeAdExtraOptionInfo alloc] init];
+//    optionInfo.logoLocation = MGNativeAdLogoLocation_BottomRight;
+//    [[NativePolymerization sharedInstance] setOptionInfo:optionInfo];
     //初始化
     [[NativePolymerization sharedInstance] initSDK:appKey blockids:arr2];
     
@@ -294,12 +295,30 @@
     NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
     NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
     NSString *paramString = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_ledou_nativeid" withDefaultParam:@"" withSplitString:@"|"];
+    //参数为空会导致乐逗sdk出现crash，那么我们直接将隐患扼杀在摇篮中
+    if (paramString.length == 0){
+        //失败
+        //该广告位展示的不是当前模块的广告
+        [self->_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
+        NSMutableDictionary *nativeDataJson = [NSMutableDictionary new];
+        [nativeDataJson setValue:@"" forKey:@"title"];
+        [nativeDataJson setValue:@"" forKey:@"desc"];
+        [nativeDataJson setValue:@"" forKey:@"url"];
+        [nativeDataJson setValue:@"" forKey:@"targetTitle"];
+        [self showNativeAdvResultFailed:nativeDataJson :advData];
+        [self showNextAdv:advData :paramString :@"param is empty"];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_ADV_CALLBACK withData:@"param is empty"];
+        return;
+    }
+        
     
-    [_nativeAdvItemCacher getAdvItem:advId :paramString :advData :^(NSDictionary *gameJson,id __nullable response,id __nullable error){
+    //先设置回调，不然block会造成空指针
+    __block ULLedouNativeAdv *ledouNativeAdv = self;
+    _nativeAdvItemCacher.cacheCallback = ^(NSDictionary *gameJson,id __nullable response,id __nullable error){
         if (!error) {
             //成功
             //该广告位展示的是当前模块的广告
-            [self->_advShowStateMap setValue:[NSNumber numberWithBool:YES] forKey:advId];
+            [ledouNativeAdv->_advShowStateMap setValue:[NSNumber numberWithBool:YES] forKey:advId];
             
             ULNativeAdvResponseDataItem *nativeResponse = response;
             NativeAdData *nativeAdData = nativeResponse.response;
@@ -314,26 +333,28 @@
             }
             [nativeDataJson setValue:title forKey:@"title"];
             [nativeDataJson setValue:desc forKey:@"desc"];
-            [nativeDataJson setValue:[self getNativeUrl:nativeAdData] forKey:@"url"];
+            [nativeDataJson setValue:[ledouNativeAdv getNativeUrl:nativeAdData] forKey:@"url"];
             [nativeDataJson setValue:@"点击查看" forKey:@"targetTitle"];
             
-            [self showNativeAdvResultSuccess:nativeDataJson :gameJson];
-            [self onNativeAdvExposured:gameJson :response :paramString];
+            [ledouNativeAdv showNativeAdvResultSuccess:nativeDataJson :gameJson];
+            [ledouNativeAdv onNativeAdvExposured:gameJson :response :paramString];
             [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_ADV_CALLBACK withData:[ULTools DictionaryToString:nativeDataJson]];
         }else{
             //失败
             //该广告位展示的不是当前模块的广告
-            [self->_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
+            [ledouNativeAdv->_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
             NSMutableDictionary *nativeDataJson = [NSMutableDictionary new];
             [nativeDataJson setValue:@"" forKey:@"title"];
             [nativeDataJson setValue:@"" forKey:@"desc"];
             [nativeDataJson setValue:@"" forKey:@"url"];
             [nativeDataJson setValue:@"" forKey:@"targetTitle"];
-            [self showNativeAdvResultFailed:nativeDataJson :gameJson];
-            [self showNextAdv:gameJson :paramString :error];
+            [ledouNativeAdv showNativeAdvResultFailed:nativeDataJson :gameJson];
+            [ledouNativeAdv showNextAdv:gameJson :paramString :error];
             [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_ADV_CALLBACK withData:error];
         }
-    }];
+    };
+    
+    [_nativeAdvItemCacher getAdvItem:advId :paramString :advData];
 }
 
 
