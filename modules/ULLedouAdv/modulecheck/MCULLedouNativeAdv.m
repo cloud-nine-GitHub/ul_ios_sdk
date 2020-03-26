@@ -131,7 +131,7 @@
 {
     _advType = @"";
     _advParam = @"";
-    _advTypeArray = @[UL_ADV_SPLAH,UL_ADV_INTERSTITIAL,UL_ADV_BANNER,UL_ADV_EMBEDDED];
+    _advTypeArray = @[UL_ADV_INTERSTITIAL,UL_ADV_BANNER,UL_ADV_EMBEDDED];
 }
 
 
@@ -165,9 +165,7 @@
     NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:advData :@"sdkAdvData" :nil];
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     
-    if ([type isEqualToString:UL_ADV_SPLAH]) {
-        [MCULModuleLayoutCreater showTipsWithTitile:@"提示" withDesc:@"广告消息未注册,请检查cop是否配置该广告" withBtnText:@"知道了"];
-    }else if([type isEqualToString:UL_ADV_INTERSTITIAL]){
+    if([type isEqualToString:UL_ADV_INTERSTITIAL]){
         
         //广告请求统计 对于多参数来说并不知道本次请求的是哪一个参数
         NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"ULLedouNativeAdv",UL_ADV_FULLSCREEN,@"branchAdvRequest",@"",@"",S_CONST_ADV_MC_ADVID_DES,S_CONST_ADV_MC_ADVID_DES,@"",@""];
