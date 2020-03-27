@@ -1,0 +1,3 @@
+需要添加配置资源：
+	ul_native_splash_bg_image.jpg
+	ul_native_splash_bg_box.png
