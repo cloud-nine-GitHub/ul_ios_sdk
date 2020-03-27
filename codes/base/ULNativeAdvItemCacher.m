@@ -148,7 +148,7 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
     //TODO 由于callback始终是同一个地址那么每次回调都提供一个唯一标识  这里可能不能一一对应
     _callbackLogo++;
     NSString *callbackLogoStr = [NSString stringWithFormat:@"%ld",_callbackLogo];
-    NSLog(@"%s:%@",__func__,callbackLogoStr);
+    //NSLog(@"%s:%@",__func__,callbackLogoStr);
     [_nativeCallBackJsonMap setValue:gameJson forKey:callbackLogoStr];
     
     
@@ -160,13 +160,18 @@ static const int UL_NATIVE_RESPONSE_CACHE_MAX_TIME = 30 * 1000;
 
 - (void)tryGetItem:(NSString *)paramString :(NSDictionary *)gameJson
 {
-    NSLog(@"%s",__func__);
+    NSLog(@"%s%@",__func__,paramString);
     id response = [_nativeResponseUsingMap objectForKey:paramString];
     id timeoutTick = [_nativeResponseUsingTimeoutMap objectForKey:paramString];
-    if (response && (timeoutTick && [(NSString *)timeoutTick longLongValue] < [[ULTools getNowTimeTimestamp] longLongValue])) {
-        [(ULNativeAdvResponseDataItem *)response onDispose];
+    NSString *currentTime = [ULTools getNowTimeTimestamp];
+    if (response && (timeoutTick && [(NSString *)timeoutTick longLongValue] < [currentTime longLongValue])) {
+        ULNativeAdvResponseDataItem *nativeItem = response;
+        id <ULINativeAdvItem> advItem = [_nativeAdvItemMap objectForKey:paramString];
+        [advItem onDispose:nativeItem];//对象释放（不一定每个sdk都有释放方法） 这行和下行顺序不能调换
+        [nativeItem onDispose];//彻底清空view和对象
+        [_nativeResponseUsingMap removeObjectForKey:paramString];
     }
-    if(!response || (timeoutTick && [(NSString *)timeoutTick longLongValue] < [[ULTools getNowTimeTimestamp] longLongValue])){
+    if(!response || (timeoutTick && [(NSString *)timeoutTick longLongValue] < [currentTime longLongValue])){
         response = [[self getNativeResponseCacheQueue:paramString] deQueue];
         
         if (!response) {

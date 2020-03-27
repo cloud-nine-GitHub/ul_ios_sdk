@@ -12,8 +12,11 @@
 
 #endif /* ULINativeAdvItem_h */
 
+#import "ULNativeAdvResponseDataItem.h"
+
 @protocol ULINativeAdvItem <NSObject>
 
 - (void)load:(NSDictionary *)gameJson;
+- (void)onDispose:(ULNativeAdvResponseDataItem *)response;
 
 @end

@@ -67,6 +67,7 @@
             
             self->_clickView = nil;
             self->_containerView = nil;
+            self->_response = nil;
         }
     });
 }

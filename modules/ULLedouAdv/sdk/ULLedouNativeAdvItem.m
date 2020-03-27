@@ -71,6 +71,11 @@
     [self loadAd:gameJson];
 }
 
+- (void)onDispose:(ULNativeAdvResponseDataItem *)response
+{
+    [[NativePolymerization sharedInstance] unAttachAd:response.response toView:response.containerView];
+}
+
 
 - (void)loadAd:(NSDictionary *)gameJson
 {

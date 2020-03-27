@@ -34,8 +34,8 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
 @property (nonatomic,strong) NSMutableDictionary *advIdTypeMap;
 @property (nonatomic,strong) NSMutableDictionary *advShowStateMap;//记录广告展示状态
 @property (nonatomic,strong) NSDictionary *splashJson;
-@property (nonatomic,strong) NSString *splashId;
-@property (nonatomic,strong) NSString *splashTitle;
+@property (nonatomic,strong) NativeAdData *splashResponse;
+@property (nonatomic,strong) ULNativeSplashAdvLayout *layout;
 @end
 
 @implementation ULLedouNativeAdv
@@ -134,18 +134,21 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     [advData setValue:data forKey:@"gameAdvData"];
     NSMutableDictionary *sdkAdvData = [NSMutableDictionary new];
     [sdkAdvData setValue:type forKey:@"type"];
+    [sdkAdvData setValue:NSStringFromClass([self class]) forKey:@"module"];
     [advData setValue:sdkAdvData forKey:@"sdkAdvData"];
     
-    [ULAdvCallBackManager clickCallBack:1 :@"show adv clicked" :advData];
+    //[ULAdvCallBackManager clickCallBack:1 :@"show adv clicked" :advData];
     NSString *title = response.title;
     NSString *nativeAdvTitle = title.length <= 6 ? title : [title substringToIndex:6];
     [self showClicked:advData :response.blockid :nativeAdvTitle];
     
-    [item onDispose];
+    
     
     [_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
     
     [[NativePolymerization sharedInstance] unAttachAd:response toView:item.containerView];
+    
+    [item onDispose];//顺序不能调换
 }
 
 
@@ -159,6 +162,7 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     }
     [self showNativeCloseResultSuccess:data];
     [_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
+
 }
 
 
@@ -285,43 +289,57 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     _splashJson = gameJson;
     ULNativeAdvResponseDataItem *nativeItem = response;
     NativeAdData *nativeResponse = nativeItem.response;
+    _splashResponse = nativeResponse;
     NSString *title = nativeResponse.title;
     NSString *desc = nativeResponse.descriptionText;
-    NSString *url = [self getNativeUrl:nativeResponse];
+    //NSString *url = [self getNativeUrl:nativeResponse];
     //NSString *targetTitle = UL_NATIVE_ADV_DEFAULT_TARGET_TITLE;
     NSString *blockId = nativeResponse.blockid;
-    _splashId = blockId;
+    
     //创建开屏ui对象
-    ULNativeSplashAdvLayout *layout = [[ULNativeSplashAdvLayout alloc] initWithOrientation:[ULTools isLandscapeScreen] withViewController:[ULTools getCurrentViewController]];
+    _layout = [[ULNativeSplashAdvLayout alloc] initWithOrientation:[ULTools isLandscapeScreen] withViewController:[ULTools getCurrentViewController]];
     
     //填充view内容
-    layout.titleLabel.text = title;
-    layout.descLabel.text = desc;
-    NSData *imgData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];//TODO 同步加载网络图片可能会导致ui线程卡顿
-    layout.imageUI.image = [UIImage imageWithData:imgData];
+    _layout.titleLabel.text = title;
+    _layout.descLabel.text = desc;
+    //NSData *imgData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];//TODO 同步加载网络图片可能会导致ui线程卡顿
+    //layout.imageUI.image = [UIImage imageWithData:imgData];
+    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];//异步加载图片，避免ui线程阻塞
+    NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(downloadImage) object:nil];
+    [operationQueue addOperation:op];
     
     //注册广告页面点击事件，全局的
     UITapGestureRecognizer *parentTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(parentTap:)];
-    [layout.parentView addGestureRecognizer:parentTap];
-    layout.parentView.userInteractionEnabled = YES;
+    [_layout.parentView addGestureRecognizer:parentTap];
+    _layout.parentView.userInteractionEnabled = YES;
     
     
     //跳过按钮开始倒计时动画
     __weak __typeof(self) weakSelf = self;
-    [layout.drawCircleBtn startAnimationDuration:UL_NATIVE_SPLASH_ADV_SHOW_TIME withBlock:^{
+    [_layout.drawCircleBtn startAnimationDuration:UL_NATIVE_SPLASH_ADV_SHOW_TIME withBlock:^{
         [weakSelf onNativeSplashDismiss];
     }];
     //跳过按钮注册点击事件
-    [layout.drawCircleBtn addTarget:self action:@selector(removeSplash) forControlEvents:UIControlEventTouchUpInside];
+    [_layout.drawCircleBtn addTarget:self action:@selector(removeSplash) forControlEvents:UIControlEventTouchUpInside];
     
     //截取标题前6个字符进行数据上报
     NSString *nativeAdvTitle = title.length <= 6 ? title : [title substringToIndex:6];
-    _splashTitle = nativeAdvTitle;
     [self showAdv:gameJson :blockId :nativeAdvTitle];
 }
 
+- (void)downloadImage
+{
+    NSURL *imageUrl = [NSURL URLWithString:[self getNativeUrl:_splashResponse]];
+    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:imageUrl]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self->_layout.imageUI.image = image;
+    });
+    
+}
+
 - (void)parentTap:(UITapGestureRecognizer *)gr {
-    [self showClicked:_splashJson :_splashId :_splashTitle];
+    NSString *nativeAdvTitle = _splashResponse.title.length <= 6 ? _splashResponse.title : [_splashResponse.title substringToIndex:6];
+    [self showClicked:_splashJson :_splashResponse.blockid :nativeAdvTitle];
     [self onNativeSplashDismiss];
 }
 
