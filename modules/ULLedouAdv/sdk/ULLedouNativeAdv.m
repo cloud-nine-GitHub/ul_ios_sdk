@@ -23,13 +23,18 @@
 #import "ULCmd.h"
 #import "ULNativeAdvResponseDataItem.h"
 #import "ULAdvCallBackManager.h"
+#import "ULNativeSplashAdvLayout.h"
 
+
+static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
 
 @interface ULLedouNativeAdv ()<ULINativeAdvItemProvider>
 
 @property (nonatomic,strong) ULNativeAdvItemCacher *nativeAdvItemCacher;
 @property (nonatomic,strong) NSMutableDictionary *advIdTypeMap;
 @property (nonatomic,strong) NSMutableDictionary *advShowStateMap;//记录广告展示状态
+@property (nonatomic,strong) NSDictionary *splashJson;
+@property (nonatomic,strong) NSString *splashId;
 @end
 
 @implementation ULLedouNativeAdv
@@ -240,9 +245,89 @@
 - (void)showSplashAdv:(NSDictionary *)json
 {
     NSLog(@"%s",__func__);
-    //TODO 手写通用广告布局
+    NSDictionary *advData = json;
+    NSDictionary *gameAdvData = [ULTools GetNSDictionaryFromDic:advData :@"gameAdvData" :nil];
+    NSDictionary *sdkAdvData = [ULTools GetNSDictionaryFromDic:advData :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSArray *paramsArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParams" :nil];
+    NSArray *paramProbabilitysArray = [ULTools GetArrayFromDic:sdkAdvData :@"advParamProbabilities" :nil];
+    NSString *paramString = [ULTools getRandomParamByCopOrConfigWithParamArray:paramsArray withProbabilityArray:paramProbabilitysArray withParamKey:@"s_sdk_adv_ledou_nativeid" withDefaultParam:@"" withSplitString:@"|"];
+    //参数为空会导致乐逗sdk出现crash，那么我们直接将隐患扼杀在摇篮中
+    if (paramString.length == 0){
+        //失败
+        [self showNextAdv:advData :paramString :@"param is empty"];
+        return;
+    }
+        
+    
+    //先设置回调，不然block会造成空指针
+    __block ULLedouNativeAdv *ledouNativeAdv = self;
+    _nativeAdvItemCacher.cacheCallback = ^(NSDictionary *gameJson,id __nullable response,id __nullable error){//乐逗原生加载为同步回调，应该不会出现无回调情况导致开屏卡住
+        if (!error) {
+            //成功
+            [ledouNativeAdv onSplashAdvShow:gameJson :response];
+            
+        }else{
+            //失败
+            [ledouNativeAdv showNextAdv:gameJson :paramString :error];
+        }
+    };
+    
+    [_nativeAdvItemCacher getAdvItem:advId :paramString :advData];
 }
 
+- (void)onSplashAdvShow:(NSDictionary *)gameJson :(id )response
+{
+    _splashJson = gameJson;
+    ULNativeAdvResponseDataItem *nativeItem = response;
+    NativeAdData *nativeResponse = nativeItem.response;
+    NSString *title = nativeResponse.title;
+    NSString *desc = nativeResponse.descriptionText;
+    NSString *url = [self getNativeUrl:nativeResponse];
+    //NSString *targetTitle = UL_NATIVE_ADV_DEFAULT_TARGET_TITLE;
+    NSString *blockId = nativeResponse.blockid;
+    _splashId = blockId;
+    //创建开屏ui对象
+    ULNativeSplashAdvLayout *layout = [[ULNativeSplashAdvLayout alloc] initWithOrientation:[ULTools isLandscapeScreen] withViewController:[ULTools getCurrentViewController]];
+    
+    //填充view内容
+    layout.titleLabel.text = title;
+    layout.descLabel.text = desc;
+    NSData *imgData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];//TODO 同步加载网络图片可能会导致ui线程卡顿
+    layout.imageUI.image = [UIImage imageWithData:imgData];
+    
+    //注册广告页面点击事件，全局的
+    UITapGestureRecognizer *parentTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(parentTap:)];
+    [layout.parentView addGestureRecognizer:parentTap];
+    layout.parentView.userInteractionEnabled = YES;
+    
+    
+    //跳过按钮开始倒计时动画
+    __weak __typeof(self) weakSelf = self;
+    [layout.drawCircleBtn startAnimationDuration:UL_NATIVE_SPLASH_ADV_SHOW_TIME withBlock:^{
+        [weakSelf onNativeSplashDismiss];
+    }];
+    //跳过按钮注册点击事件
+    [layout.drawCircleBtn addTarget:self action:@selector(removeSplash) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self showAdv:gameJson :blockId];
+}
+
+- (void)parentTap:(UITapGestureRecognizer *)gr {
+    [self showClicked:_splashJson :_splashId];
+    [self onNativeSplashDismiss];
+}
+
+- (void)removeSplash
+{
+    [self onNativeSplashDismiss];
+}
+
+
+- (void)onNativeSplashDismiss
+{
+    [[ULSplashViewController getInstance]removeSplashView];
+}
 
 
 - (void)showInterstitialAdv:(NSDictionary *)json{
@@ -336,7 +421,7 @@
             [nativeDataJson setValue:title forKey:@"title"];
             [nativeDataJson setValue:desc forKey:@"desc"];
             [nativeDataJson setValue:[ledouNativeAdv getNativeUrl:nativeAdData] forKey:@"url"];
-            [nativeDataJson setValue:@"点击查看" forKey:@"targetTitle"];
+            [nativeDataJson setValue:UL_NATIVE_ADV_DEFAULT_TARGET_TITLE forKey:@"targetTitle"];
             
             [ledouNativeAdv showNativeAdvResultSuccess:nativeDataJson :gameJson];
             [ledouNativeAdv onNativeAdvExposured:gameJson :response :paramString];
