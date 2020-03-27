@@ -225,15 +225,15 @@
     }
     
     if (![[ULNotificationDispatcher getInstance] postNotificationWithName:[[NSString alloc]initWithFormat:@"%@%@",UL_NOTIFICATION_SHOW_ADV_BASE,advId] withData:data]) {
-        if([advId isEqualToString:S_CONST_ADV_SPLASH_ADVID_DES]){
+        
+        [sdkAdvData setValue:type forKey:@"type"];
+        [sdkAdvData setValue:module forKey:@"module"];
+        [sdkAdvData setValue:rewardType forKey:@"rewardType"];
+        [sdkAdvData setValue:advParams forKey:@"advParams"];
+        [sdkAdvData setValue:advParamProbabilities forKey:@"advParamProbabilities"];
+        [self showFailed:(NSMutableDictionary *)data :param :failedReason];
+        if([advId isEqualToString:S_CONST_ADV_SPLASH_ADVID_DES]){//开屏还要多个跳转的操作
             [[ULSplashViewController getInstance]removeSplashView];
-        }else{
-            [sdkAdvData setValue:type forKey:@"type"];
-            [sdkAdvData setValue:module forKey:@"module"];
-            [sdkAdvData setValue:rewardType forKey:@"rewardType"];
-            [sdkAdvData setValue:advParams forKey:@"advParams"];
-            [sdkAdvData setValue:advParamProbabilities forKey:@"advParamProbabilities"];
-            [self showFailed:(NSMutableDictionary *)data :param :failedReason];
         }
         
     }else{
@@ -285,6 +285,42 @@
     NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     if (![type isEqualToString:UL_ADV_VIDEO]) {
         NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,advId,@"",param];
+        [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    }
+    
+    if(![type isEqualToString:UL_ADV_SPLAH]){
+        [ULAdvCallBackManager callBackEntry:showed :data];
+    }
+}
+
+- (void)showClicked:(NSMutableDictionary *)data :(NSString *)param :(NSString *)nativeAdvTitle
+{
+    
+    //广告点击统计
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
+    
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,advId,nativeAdvTitle,param];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
+    if(![type isEqualToString:UL_ADV_SPLAH]){
+        [ULAdvCallBackManager callBackEntry:clicked :data];
+    }
+}
+
+- (void)showAdv:(NSMutableDictionary *)data :(NSString *)param :(NSString *)nativeAdvTitle
+{
+    
+    //广告展示统计
+    NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
+    NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
+    NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
+    NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
+    if (![type isEqualToString:UL_ADV_VIDEO]) {
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,advId,nativeAdvTitle,param];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
     

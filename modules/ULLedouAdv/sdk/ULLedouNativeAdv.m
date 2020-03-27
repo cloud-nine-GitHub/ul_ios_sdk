@@ -35,6 +35,7 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
 @property (nonatomic,strong) NSMutableDictionary *advShowStateMap;//记录广告展示状态
 @property (nonatomic,strong) NSDictionary *splashJson;
 @property (nonatomic,strong) NSString *splashId;
+@property (nonatomic,strong) NSString *splashTitle;
 @end
 
 @implementation ULLedouNativeAdv
@@ -136,6 +137,9 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     [advData setValue:sdkAdvData forKey:@"sdkAdvData"];
     
     [ULAdvCallBackManager clickCallBack:1 :@"show adv clicked" :advData];
+    NSString *title = response.title;
+    NSString *nativeAdvTitle = title.length <= 6 ? title : [title substringToIndex:6];
+    [self showClicked:advData :response.blockid :nativeAdvTitle];
     
     [item onDispose];
     
@@ -310,11 +314,14 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     //跳过按钮注册点击事件
     [layout.drawCircleBtn addTarget:self action:@selector(removeSplash) forControlEvents:UIControlEventTouchUpInside];
     
-    [self showAdv:gameJson :blockId];
+    //截取标题前6个字符进行数据上报
+    NSString *nativeAdvTitle = title.length <= 6 ? title : [title substringToIndex:6];
+    _splashTitle = nativeAdvTitle;
+    [self showAdv:gameJson :blockId :nativeAdvTitle];
 }
 
 - (void)parentTap:(UITapGestureRecognizer *)gr {
-    [self showClicked:_splashJson :_splashId];
+    [self showClicked:_splashJson :_splashId :_splashTitle];
     [self onNativeSplashDismiss];
 }
 
@@ -452,7 +459,12 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     [_advIdTypeMap setValue:type forKey:advId];
-    [self showAdv:gameJson :param];
+    
+    ULNativeAdvResponseDataItem *nativeItem = response;
+    NativeAdData *nativeResponse = nativeItem.response;
+    NSString *title = nativeResponse.title;
+    NSString *nativeAdvTitle = title.length <= 6 ? title : [title substringToIndex:6];
+    [self showAdv:gameJson :param :nativeAdvTitle];
 }
 
 - (NSString *)getNativeUrl :(NativeAdData *)response

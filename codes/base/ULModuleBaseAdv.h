@@ -67,6 +67,10 @@ static int SDK_ADV_STATE = 1;
 
 - (void)showAdv:(NSDictionary *)data :(NSString *)param ;
 
+- (void)showClicked:(NSDictionary *)data :(NSString *)param :(NSString *)nativeAdvTitle;
+
+- (void)showAdv:(NSDictionary *)data :(NSString *)param  :(NSString *)nativeAdvTitle;
+
 - (void)showClose:(NSDictionary *)data :(NSString *)param ;
 
 - (void)showNativeAdvResultSuccess:(NSDictionary *)nativeData :(NSDictionary *)data;
