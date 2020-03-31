@@ -225,8 +225,8 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     
     
     //native debug start
-    [NativePolymerization sharedInstance].debug = YES;
-    [NativePolymerization validateIntergration];
+//    [NativePolymerization sharedInstance].debug = YES;
+//    [NativePolymerization validateIntergration];
     //native debug end
     //    //设置一些可选的属性，如logo标志位置（该方法要在初始化方法之前调用）
     //    NativeAdExtraOptionInfo *optionInfo = [[NativeAdExtraOptionInfo alloc] init];
