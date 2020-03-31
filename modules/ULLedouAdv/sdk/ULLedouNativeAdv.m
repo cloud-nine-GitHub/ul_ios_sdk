@@ -28,7 +28,7 @@
 
 static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
 
-@interface ULLedouNativeAdv ()<ULINativeAdvItemProvider>
+@interface ULLedouNativeAdv ()<ULINativeAdvItemProvider,NativeAdDelegate>
 
 @property (nonatomic,strong) ULNativeAdvItemCacher *nativeAdvItemCacher;
 @property (nonatomic,strong) NSMutableDictionary *advIdTypeMap;
@@ -233,10 +233,75 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     //    optionInfo.logoLocation = MGNativeAdLogoLocation_BottomRight;
     //    [[NativePolymerization sharedInstance] setOptionInfo:optionInfo];
     //初始化
-    [[NativePolymerization sharedInstance] initSDK:appKey blockids:arr2];
+    [[NativePolymerization sharedInstance] initSDK:appKey blockids:arr2 delegate:self];
     
     _nativeAdvItemCacher = [[ULNativeAdvItemCacher alloc] initWithProvider:self];
     
+}
+
+#pragma mark -NativeAdDelegate
+/**
+ *  CP可通过该回调，实时收到广告数据准备就绪的通知; CP可通过调用getNativeAd接口拿到广告数据!
+ *
+ *  @param blockId 广告位ID
+ */
+- (void)nativeAdLoadSuccess:(NSString *)blockId
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  This method is called when an ad load fails.
+ *
+ *  @param  blockId   Detailed message  ad id.
+ *  @param  error  Detailed message loading failure.
+ */
+- (void)nativeAdLoadFailed:(NSString *)blockId
+                     error:(NSError *)error
+{
+    NSLog(@"%s%@",__func__,error);
+}
+
+/**
+ *  This method is called when an ad has been presented
+ *
+ *  @param  blockId   Detailed message  ad id.
+ */
+- (void)nativeAdShowSuccess:(NSString *)blockId
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  Called when the ad failed to display for some reason
+ *
+ *  @param  blockId   Detailed message  ad id.
+ *  @param error  Description to show the cause of the failure.
+ */
+- (void)nativeAdShowFailed:(NSString *)blockId
+                     error:(NSError *)error
+{
+    NSLog(@"%s%@",__func__,error);
+}
+
+/**
+ *  This method is invoked when an ad has been clicked.
+ *
+ *  @param  blockId   Detailed message  ad id.
+ */
+- (void)nativeAdDidClicked:(NSString *)blockId
+{
+    NSLog(@"%s",__func__);
+}
+
+/**
+ *  This method is called when an ad has been dismissed.
+ *
+ *  @param  blockId   Detailed message  ad id.
+ */
+- (void)nativeAdDidClosed:(NSString *)blockId
+{
+    NSLog(@"%s",__func__);
 }
 
 
