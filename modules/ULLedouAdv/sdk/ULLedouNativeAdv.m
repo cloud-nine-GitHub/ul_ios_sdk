@@ -162,7 +162,7 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     }
     [self showNativeCloseResultSuccess:data];
     [_advShowStateMap setValue:[NSNumber numberWithBool:NO] forKey:advId];
-
+    
 }
 
 
@@ -224,10 +224,14 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     }
     
     
-//    //设置一些可选的属性，如logo标志位置（该方法要在初始化方法之前调用）
-//    NativeAdExtraOptionInfo *optionInfo = [[NativeAdExtraOptionInfo alloc] init];
-//    optionInfo.logoLocation = MGNativeAdLogoLocation_BottomRight;
-//    [[NativePolymerization sharedInstance] setOptionInfo:optionInfo];
+    //native debug start
+    [NativePolymerization sharedInstance].debug = YES;
+    [NativePolymerization validateIntergration];
+    //native debug end
+    //    //设置一些可选的属性，如logo标志位置（该方法要在初始化方法之前调用）
+    //    NativeAdExtraOptionInfo *optionInfo = [[NativeAdExtraOptionInfo alloc] init];
+    //    optionInfo.logoLocation = MGNativeAdLogoLocation_BottomRight;
+    //    [[NativePolymerization sharedInstance] setOptionInfo:optionInfo];
     //初始化
     [[NativePolymerization sharedInstance] initSDK:appKey blockids:arr2];
     
@@ -266,7 +270,7 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
         [self showNextAdv:advData :paramString :@"param is empty"];
         return;
     }
-        
+    
     
     //先设置回调，不然block会造成空指针
     __block ULLedouNativeAdv *ledouNativeAdv = self;
@@ -422,7 +426,7 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_MC_SHOW_LEDOU_NATIVE_ADV_CALLBACK withData:@"param is empty"];
         return;
     }
-        
+    
     
     //先设置回调，不然block会造成空指针
     __block ULLedouNativeAdv *ledouNativeAdv = self;
