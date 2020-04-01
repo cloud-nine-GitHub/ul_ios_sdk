@@ -128,6 +128,8 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
     
     [item onClick];
     
+
+    
     NativeAdData *response = item.response;
     [[NativePolymerization sharedInstance] clickAd:response];
     
@@ -410,6 +412,7 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
 
 - (void)parentTap:(UITapGestureRecognizer *)gr {
     NSString *nativeAdvTitle = _splashResponse.title.length <= 6 ? _splashResponse.title : [_splashResponse.title substringToIndex:6];
+    [[NativePolymerization sharedInstance] clickAd:_splashResponse];
     [self showClicked:_splashJson :_splashResponse.blockid :nativeAdvTitle];
     [self onNativeSplashDismiss];
 }
