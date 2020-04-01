@@ -35,6 +35,7 @@ static NSMutableDictionary *advRequestSerialNumDataMap;
         return;
     }
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:gameAdvData :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:gameAdvData :@"userData" :@""];
     long advRequestSerialNum = [ULTools GetLongFromDic:sdkAdvData :@"requestSerialNum" :-1];
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
@@ -43,6 +44,7 @@ static NSMutableDictionary *advRequestSerialNumDataMap;
     [json setValue:[NSNumber numberWithInt:code] forKey:@"code"];
     [json setValue:msg forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [json setValue:[NSNumber numberWithLong:advRequestSerialNum] forKey:@"requestSerialNum"];
     if (code == 1) {
@@ -72,11 +74,13 @@ static NSMutableDictionary *advRequestSerialNumDataMap;
         return;
     }
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:gameAdvData :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:gameAdvData :@"userData" :@""];
     NSMutableDictionary *json = [NSMutableDictionary new];
     [json setValue:[NSNumber numberWithInt:code] forKey:@"code"];
     [json setValue:msg forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLICKADVRESULT :json];
     

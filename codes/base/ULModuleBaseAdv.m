@@ -151,8 +151,12 @@
     
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     //广告请求统计 对于多参数来说并不知道本次请求的是哪一个参数
-    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],moduleS,typeS,@"branchAdvRequest",@"",@"",advId,advId,@"",@""];
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],moduleS,typeS,@"branchAdvRequest",@"",@"",advId,tag,@"",@""];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
@@ -218,7 +222,10 @@
     [sdkAdvData removeObjectForKey:@"advParamProbabilities"];
     
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
-    
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     BOOL isStopDispatch = [ULTools GetBoolFromDic:data :@"isStopDispatch" :NO];
     if (isStopDispatch) {
         return;
@@ -237,7 +244,7 @@
         }
         
     }else{
-        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"failed",failedReason,@"",advId,advId,@"",param];
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"failed",failedReason,@"",advId,tag,@"",param];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
     
@@ -250,10 +257,14 @@
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     
-    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"failed",failedReason,@"",advId,advId,@"",param];
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"failed",failedReason,@"",advId,tag,@"",param];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
 }
 
@@ -264,10 +275,14 @@
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     
-    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,advId,@"",param];
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,tag,@"",param];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     if(![type isEqualToString:UL_ADV_SPLAH]){
         [ULAdvCallBackManager callBackEntry:clicked :data];
@@ -281,10 +296,14 @@
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     if (![type isEqualToString:UL_ADV_VIDEO]) {
-        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,advId,@"",param];
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,tag,@"",param];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
     
@@ -300,10 +319,14 @@
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     
-    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,advId,nativeAdvTitle,param];
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"clicked",@"",@"",advId,tag,nativeAdvTitle,param];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     if(![type isEqualToString:UL_ADV_SPLAH]){
         [ULAdvCallBackManager callBackEntry:clicked :data];
@@ -317,10 +340,14 @@
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     NSString *module = [ULTools GetStringFromDic:sdkAdvData :@"module" :@""];
     if (![type isEqualToString:UL_ADV_VIDEO]) {
-        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,advId,nativeAdvTitle,param];
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],module,type,@"success",@"",@"",advId,tag,nativeAdvTitle,param];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
     
@@ -336,10 +363,14 @@
     NSMutableDictionary *gameAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"gameAdvData" :nil];
     NSMutableDictionary *sdkAdvData = [ULTools GetNSMutableDictionaryFromDic:data :@"sdkAdvData" :nil];
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [gameAdvData objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
     NSString *type = [ULTools GetStringFromDic:sdkAdvData :@"type" :@""];
     
     if ([type isEqualToString:UL_ADV_VIDEO]) {
-        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],NSStringFromClass([self class]),type,@"success",@"",@"",advId,advId,@"",param];
+        NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],NSStringFromClass([self class]),type,@"success",@"",@"",advId,tag,@"",param];
         [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     }
 }
@@ -356,6 +387,7 @@
     NSString *rewardTag = [ULTools GetStringFromDic:sdkAdvData :@"rewardTag" :@""];
     
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:gameAdvData :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:gameAdvData :@"userData" :@""];
     
     
@@ -364,6 +396,7 @@
     [json setValue:S_CONST_ADV_NATIVE_SUCCESS_DES forKey:@"msg"];
     [json setValue:nativeData forKey:@"nativeData"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [json setValue:type forKey:@"type"];
     [json setValue:rewardTag forKey:@"rewardType"];
@@ -379,6 +412,7 @@
         return;
     }
     NSString *advId = [ULTools GetStringFromDic:gameAdvData :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:gameAdvData :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:gameAdvData :@"userData" :@""];
     
     
@@ -387,6 +421,7 @@
     [json setValue:S_CONST_ADV_NATIVE_FAIL_DES forKey:@"msg"];
     [json setValue:nativeData forKey:@"nativeData"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_OPENNATIVEADVRESULT :json];
 }
@@ -395,6 +430,7 @@
 {
     
     NSString *advId = [ULTools GetStringFromDic:data :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:data :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     
     
@@ -402,6 +438,7 @@
     [json setValue:[NSNumber numberWithInt:0] forKey:@"code"];
     [json setValue:S_CONST_ADV_NATIVE_CLICK_FAIL_DES forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLICKNATIVEADVRESULT :json];
 }
@@ -409,6 +446,7 @@
 - (void)showNativeClickResultSucess:(NSMutableDictionary *)data
 {
     NSString *advId = [ULTools GetStringFromDic:data :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:data :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     
     
@@ -416,6 +454,7 @@
     [json setValue:[NSNumber numberWithInt:1] forKey:@"code"];
     [json setValue:S_CONST_ADV_NATIVE_CLICK_SUCCESS_DES forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLICKNATIVEADVRESULT :json];
 }
@@ -423,6 +462,7 @@
 - (void)showNativeCloseResultSuccess:(NSMutableDictionary *)data
 {
     NSString *advId = [ULTools GetStringFromDic:data :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:data :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     
     
@@ -430,6 +470,7 @@
     [json setValue:[NSNumber numberWithInt:1] forKey:@"code"];
     [json setValue:S_CONST_ADV_NATIVE_CLOSE_SUCCESS_DES forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLOSENATIVEADVRESULT :json];
 }
@@ -437,6 +478,7 @@
 - (void)showNativeCloseResultFailed:(NSMutableDictionary *)data
 {
     NSString *advId = [ULTools GetStringFromDic:data :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:data :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     
     
@@ -444,6 +486,7 @@
     [json setValue:[NSNumber numberWithInt:0] forKey:@"code"];
     [json setValue:S_CONST_ADV_NATIVE_CLOSE_FAIL_DES forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLOSENATIVEADVRESULT :json];
 }
@@ -451,6 +494,7 @@
 - (void)showCloseResultSuccess:(NSMutableDictionary *)data
 {
     NSString *advId = [ULTools GetStringFromDic:data :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:data :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     
     
@@ -458,6 +502,7 @@
     [json setValue:[NSNumber numberWithInt:1] forKey:@"code"];
     [json setValue:S_CONST_ADV_CLOSE_SUCCESS_DES forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLOSEADVRESULT :json];
 }
@@ -465,6 +510,7 @@
 - (void)showCloseResultFailed:(NSMutableDictionary *)data
 {
     NSString *advId = [ULTools GetStringFromDic:data :@"advId" :@""];
+    NSString *tag = [ULTools GetStringFromDic:data :@"tag" :@""];
     NSString *userData = [ULTools GetStringFromDic:data :@"userData" :@""];
     
     
@@ -472,6 +518,7 @@
     [json setValue:[NSNumber numberWithInt:0] forKey:@"code"];
     [json setValue:S_CONST_ADV_CLOSE_FAIL_DES forKey:@"msg"];
     [json setValue:advId forKey:@"advId"];
+    [json setValue:tag forKey:@"tag"];
     [json setValue:userData forKey:@"userData"];
     [ULSDKManager JsonRpcCall:REMSG_CMD_CLOSEADVRESULT :json];
 }

@@ -464,7 +464,11 @@ static double currentVolume = 0.00;
     [ULTimeOut startTimeOutTask:json];
     [ULAdvCallBackManager callBackInit:advData];
     //广告埋点统计
-    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"",@"",@"totalAdvRequest",@"",@"",advId,advId,@"",@""];
+    NSString *tag = [data objectForKey:@"tag"];
+    if (!tag) {
+        tag = advId;
+    }
+    NSArray *array = @[[NSString stringWithFormat:@"%d",ULA_GAME_ADV_INFO],@"",@"",@"totalAdvRequest",@"",@"",advId,tag,@"",@""];
     [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_ACCOUNT_UP_DATA withData:array];
     
     //开始调用聚合流程
@@ -615,7 +619,7 @@ static double currentVolume = 0.00;
 
 //[[NSNotificationCenter defaultCenter] removeObserver:self name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
 
- //[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+//[[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 
 
 @end
