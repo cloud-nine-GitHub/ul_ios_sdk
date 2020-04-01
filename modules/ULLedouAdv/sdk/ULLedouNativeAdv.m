@@ -126,6 +126,8 @@ static NSString *const UL_NATIVE_ADV_DEFAULT_TARGET_TITLE = @"点击查看";
         return;
     }
     
+    [item onClick];
+    
     NativeAdData *response = item.response;
     [[NativePolymerization sharedInstance] clickAd:response];
     

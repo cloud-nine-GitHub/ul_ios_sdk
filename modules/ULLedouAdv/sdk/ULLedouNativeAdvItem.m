@@ -99,10 +99,11 @@
         
         UIView *view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 1, 1)];//先给个1像素
         view.backgroundColor = UIColor.clearColor;//设置透明
+        view.alpha = 0.02;
         
         [[ULTools getCurrentViewController].view addSubview:view];
         
-        ULNativeAdvResponseDataItem *response = [[ULNativeAdvResponseDataItem alloc] initWithResponse:data withContainerView:view];
+        ULNativeAdvResponseDataItem *response = [[ULNativeAdvResponseDataItem alloc] initWithResponse:data withContainerView:view withClickView:view];
         
         [_myNativeAdvCallback onGetItemSuccessed:item.gameJson :response :_advParam ];
         
