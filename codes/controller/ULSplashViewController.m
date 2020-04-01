@@ -76,19 +76,20 @@ static ULSplashViewController* instance=nil;
 - (void)removeSplashView
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSString *mainController = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_common_main_controller" :@""];
-        if ([mainController isEqualToString:@""]) {
-            NSLog(@"%s%@",__func__,@"main controll 属于必配置项，请检查相关配置");
-            return;
-        }
-        //这里需要重新设置游戏所在的viewControoler
-        
-        UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        [UIApplication sharedApplication].delegate.window = window;
-        window.backgroundColor = [UIColor whiteColor];
-        [window makeKeyAndVisible];
-        id controller = [[NSClassFromString(mainController) alloc]init];
-        [window setRootViewController:controller];
+//        NSString *mainController = [ULTools GetStringFromDic:[ULConfig getConfigInfo]:@"s_common_main_controller" :@""];
+//        if ([mainController isEqualToString:@""]) {
+//            NSLog(@"%s%@",__func__,@"main controll 属于必配置项，请检查相关配置");
+//            return;
+//        }
+//        //这里需要重新设置游戏所在的viewControoler
+//
+//        UIWindow* window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//        [UIApplication sharedApplication].delegate.window = window;
+//        window.backgroundColor = [UIColor whiteColor];
+//        [window makeKeyAndVisible];
+//        id controller = [[NSClassFromString(mainController) alloc]init];
+//        [window setRootViewController:controller];
+        //这里只需要发送启动消息即可，无需创建应用的vc
         [[NSNotificationCenter defaultCenter] postNotificationName:UL_NOTIFICATION_START_GAME object:nil];
         
         
