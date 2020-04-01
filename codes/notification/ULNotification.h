@@ -22,7 +22,7 @@ static NSString *const UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND = @"app
 static NSString *const UL_NOTIFICATION_APPLICATION_DID_BECOME_ACTIVE = @"applicationDidBecomeActive";
 static NSString *const UL_NOTIFICATION_APPLICATION_WILL_TERMINATE = @"applicationWillTerminate";
 static NSString *const UL_NOTIFICATION_APPLICATION_DID_RECEIVE_MEMORYWARNING = @"applicationDidReceiveMemoryWarning";
-static NSString *const UL_NOTIFICATION_VC_VIEWDIDLOAD = @"viewDidLoad";
+static NSString *const UL_NOTIFICATION_VC_VIEWDIDAPPEAR = @"viewDidAppear";
 
 static NSString *const UL_NOTIFICATION_ULSDKMANAGER_INIT = @"ulsdkManagerInit";
 static NSString *const UL_NOTIFICATION_ONJSONAPI = @"onJsonAPI";

@@ -555,11 +555,11 @@ static double currentVolume = 0.00;
     [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 
-+ (void)viewDidLoad {
++ (void)viewDidAppear {
     NSLog(@"%s",__func__);
-    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_VC_VIEWDIDLOAD withData:nil];
+    [[ULNotificationDispatcher getInstance] postNotificationWithName:UL_NOTIFICATION_VC_VIEWDIDAPPEAR withData:nil];
     NSMutableDictionary *json = [NSMutableDictionary new];
-    [json setValue:@"viewDidLoad" forKey:@"lifeCycle"];
+    [json setValue:@"viewDidAppear" forKey:@"lifeCycle"];
     [self JsonRpcCall:REMSG_CMD_LIFECYCLE :json];
 }
 

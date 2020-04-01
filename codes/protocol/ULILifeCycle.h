@@ -28,6 +28,6 @@
 
 - (void)applicationDidReceiveMemoryWarning;
 
-- (void)viewDidLoad;
+- (void)viewDidAppear;
 
 @end

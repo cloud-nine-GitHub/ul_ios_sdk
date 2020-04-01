@@ -188,7 +188,7 @@ static NSString *privacyPolicyUrl = UL_PRIVACY_POLICY_DEFAULT_URL;
     NSLog(@"%s",__func__);
 }
 
-- (void)viewDidLoad
+- (void)viewDidAppear
 {
     NSLog(@"%s",__func__);
     [self showPrivacyPolicy];

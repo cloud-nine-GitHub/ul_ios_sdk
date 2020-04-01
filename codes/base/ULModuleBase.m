@@ -67,7 +67,7 @@
     
     [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_APPLICATION_WILL_ENTER_FOREGROUND withSelector:@selector(onApplicationWillEnterForeground:) withPriority:PRIORITY_NONE];
     
-    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_VC_VIEWDIDLOAD withSelector:@selector(onViewDidLoad:) withPriority:PRIORITY_NONE];
+    [[ULNotificationDispatcher getInstance] addNotificationWithObserver:self withName:UL_NOTIFICATION_VC_VIEWDIDAPPEAR withSelector:@selector(onViewDidAppear:) withPriority:PRIORITY_NONE];
     
 }
 
@@ -129,10 +129,10 @@
     [lifeCycle applicationDidReceiveMemoryWarning];
 }
 
-- (void)onViewDidLoad:(NSNotification *)notification
+- (void)onViewDidAppear:(NSNotification *)notification
 {
     id<ULILifeCycle> lifeCycle = (id)self;
-    [lifeCycle viewDidLoad];
+    [lifeCycle viewDidAppear];
 }
 
 @end

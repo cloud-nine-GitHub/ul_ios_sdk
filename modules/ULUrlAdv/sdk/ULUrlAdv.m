@@ -184,7 +184,7 @@
     
 }
 
-- (void)viewDidLoad
+- (void)viewDidAppear
 {
     NSLog(@"%s",__func__);
 }
