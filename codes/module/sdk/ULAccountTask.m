@@ -52,6 +52,8 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
 
 @implementation ULAccountTask
 
+static NSMutableDictionary *pointEventDic = nil;
+
 - (void)onInitModule {
     NSLog(@"%s",__func__);
     _isCloseAccount = [ULTools GetStringFromDic:[ULConfig getConfigInfo] :@"s_sdk_close_account_system" :@"0"];//统计开关不能通过cop来控制，因为cop本身也存在被统计行为
@@ -332,6 +334,15 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
             [jsonArray addObject:copVersion];//cop版本
             [jsonArray addObject:[ULConfig getUlsdkVersion]];//sdk版本号
             break;
+        case ULA_GAME_USER_POINT_EVENT:
+            //打点统计不需要基础数据字段
+            [jsonArray removeAllObjects];
+            [jsonArray addObject:deviceId];//uid
+            [jsonArray addObject:copChannelId];//渠道id
+            for (int i = 2; i < array.count; i++) {
+                [jsonArray addObject:array[i]];
+            }
+            break;
     }
     
     [json setValue:jsonArray forKey:@"updata"];
@@ -519,6 +530,83 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     
     NSMutableArray *strArray = [NSMutableArray new];
     NSString *actionTypeStr = data[0];
+    //判断统计类型
+    if ([actionTypeStr isEqualToString:@"pointEvent"]){//打点统计上报id与其他自定义统计不同
+        //打点统计是否关闭
+        NSString *pointEventOpneIds = [ULTools GetStringFromDic:[ULCop getCopInfo] :@"s_sdk_megadata_point_event_open_category_ids" :@""];
+        if ([pointEventOpneIds length] == 0) {//cop未配置或者配置的是空字符串
+            //没有开启打点统计档位
+            NSLog(@"%s,打点统计档位未开启",__func__);
+            return;
+        }
+        [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_POINT_EVENT]];
+        //存在开启的打点统计档位
+        NSArray *idArray = [pointEventOpneIds componentsSeparatedByString:@";"];
+        //当前上报的档位是否属于配置的档位
+        NSString *eventId;
+        NSString *eventResult;
+        @try {
+            eventId = data[1];
+            eventResult = data[2];
+        } @catch (NSException *exception) {
+            
+            NSLog(@"%s,打点事件格式异常不做上报，可能是数组越界的异常",__func__);
+            return;
+            
+        }
+        long eventIdLong;
+        @try {
+            eventIdLong = [eventId longLongValue];
+        } @catch (NSException *exception) {
+            //非数字类型，不做上报
+            NSLog(@"%s,打点事件id[%@%@",__func__,eventId,@"]数据类型异常不做上报");
+            return;
+            
+        }
+        
+        
+        //0-[0,999]  1-[1000,1999] 2-[2000,2999] ... 9-[9000,9999],10-[10000,10999]
+        // [min = i * 1000,max = i * 1000 + 999]
+        BOOL canPost = NO;
+        for (int i = 0 ; i < idArray.count; i++) {
+            NSString *idItem = idArray[i];
+            int idItemInt;
+            @try {
+                idItemInt = [idItem intValue];
+            } @catch (NSException *exception) {
+                //配置的该档位为非数字类型,直接跳过
+                continue;
+            }
+            long min = idItemInt * 1000;
+            long max = idItemInt * 1000 + 999;
+            if (eventIdLong > min && eventIdLong < max) {
+                //允许上报
+                canPost = YES;
+            }
+        }
+        
+        if (!canPost) {
+            NSLog(@"%s,打点事件id[%@%@",__func__,eventId,@"]所属档位关闭上报");
+            return;
+        }
+        
+        //能正常上报
+        if (!pointEventDic) {//初始化打点统计缓存dic
+            pointEventDic = [NSMutableDictionary new];
+        }
+        //当前事件上报的次数
+        NSString *event = [[NSString alloc] initWithFormat:@"%@%@%@",eventId,@"-",eventResult];
+        id eventNum = [pointEventDic objectForKey:event];
+        if (!eventNum) {
+            [pointEventDic setValue:[NSNumber numberWithInt:1] forKey:event];
+        }else{
+            int newEventNum = [eventNum intValue] + 1;
+            [pointEventDic setValue:[NSNumber numberWithInt:newEventNum] forKey:event];
+        }
+        
+    }else{
+        [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
+    }
     if ([actionTypeStr isEqualToString:@"gameLevelStart"]) {//关卡开始
         NSDate *datenow = [NSDate date];//当前时间戳，单位s
         NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[datenow timeIntervalSince1970]];
@@ -544,7 +632,7 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
         [self upData:strArray];
         return;
     }
-    [strArray addObject:[NSString stringWithFormat:@"%d",ULA_GAME_USER_EVENT]];
+    
     for (int i = 0; i < data.count; i++) {
         //TODO 需要验证ios这边传过来的数组字符串是否也是异常
         //        @try {//传过来是字符类型，那么会""test""是这种的形式
@@ -558,6 +646,12 @@ static NSString *const UL_ACCOUNT_AAR_DEFAULT_URL = @"http://192.168.1.246:6011/
     
     
     
+}
+
++ (NSMutableDictionary *)getPointEventDic
+{
+    //如果没有打点统计上报，那么将返回空
+    return pointEventDic;
 }
 
 

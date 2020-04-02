@@ -17,6 +17,7 @@ static int const ULA_GAME_ADV_INFO = 3;//广告信息统计
 static int const ULA_GAME_COP_REQUEST = 4;//cop请求日志上报统计
 static int const ULA_GAME_USER_EVENT = 5;//用户行为统计
 static int const ULA_GAME_USER_ONLINE_TIME = 6;//用户在线时长统计
+static int const ULA_GAME_USER_POINT_EVENT = 7;//客户端打点统计
 
 
 
